@@ -29,6 +29,7 @@
 		A10694C82B56F478009E5843 /* ProfileSceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10694C72B56F478009E5843 /* ProfileSceneView.swift */; };
 		A10694CA2B56F497009E5843 /* ProfileSceneViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10694C92B56F497009E5843 /* ProfileSceneViewModel.swift */; };
 		A10694CE2B56F787009E5843 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10694CD2B56F787009E5843 /* UIColor+Extension.swift */; };
+		A10694D12B56FB66009E5843 /* GenericNetworkLayer in Frameworks */ = {isa = PBXBuildFile; productRef = A10694D02B56FB66009E5843 /* GenericNetworkLayer */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -63,6 +64,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A10694D12B56FB66009E5843 /* GenericNetworkLayer in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -227,6 +229,9 @@
 			dependencies = (
 			);
 			name = BookSmart;
+			packageProductDependencies = (
+				A10694D02B56FB66009E5843 /* GenericNetworkLayer */,
+			);
 			productName = BookSmart;
 			productReference = A10694862B56EC73009E5843 /* BookSmart.app */;
 			productType = "com.apple.product-type.application";
@@ -255,6 +260,9 @@
 				Base,
 			);
 			mainGroup = A106947D2B56EC73009E5843;
+			packageReferences = (
+				A10694CF2B56FB66009E5843 /* XCRemoteSwiftPackageReference "GenericNetworkLayer" */,
+			);
 			productRefGroup = A10694872B56EC73009E5843 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -441,6 +449,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -469,6 +478,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -504,6 +514,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A10694CF2B56FB66009E5843 /* XCRemoteSwiftPackageReference "GenericNetworkLayer" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/luk407/GenericNetworkLayer.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A10694D02B56FB66009E5843 /* GenericNetworkLayer */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A10694CF2B56FB66009E5843 /* XCRemoteSwiftPackageReference "GenericNetworkLayer" */;
+			productName = GenericNetworkLayer;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = A106947E2B56EC73009E5843 /* Project object */;
 }
