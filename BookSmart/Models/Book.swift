@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct BookData: Decodable {
+struct Book: Decodable {
     let docs: [Doc]
 }
 

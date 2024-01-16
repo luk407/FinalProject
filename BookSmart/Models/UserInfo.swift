@@ -15,6 +15,7 @@ struct UserInfo: Identifiable {
     var displayName: String
     let registrationDate: String
     var bio: String
+    var image: String
     var badges: [BadgeInfo]
     var posts: [PostInfo]
     var comments: [CommentInfo]
