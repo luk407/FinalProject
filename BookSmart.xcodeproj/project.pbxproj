@@ -30,6 +30,8 @@
 		A10694CA2B56F497009E5843 /* ProfileSceneViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10694C92B56F497009E5843 /* ProfileSceneViewModel.swift */; };
 		A10694CE2B56F787009E5843 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10694CD2B56F787009E5843 /* UIColor+Extension.swift */; };
 		A10694D12B56FB66009E5843 /* GenericNetworkLayer in Frameworks */ = {isa = PBXBuildFile; productRef = A10694D02B56FB66009E5843 /* GenericNetworkLayer */; };
+		A10694D32B56FE8B009E5843 /* Book.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10694D22B56FE8B009E5843 /* Book.swift */; };
+		A10694D52B56FFD8009E5843 /* Quote.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10694D42B56FFD8009E5843 /* Quote.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -57,6 +59,8 @@
 		A10694C72B56F478009E5843 /* ProfileSceneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSceneView.swift; sourceTree = "<group>"; };
 		A10694C92B56F497009E5843 /* ProfileSceneViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSceneViewModel.swift; sourceTree = "<group>"; };
 		A10694CD2B56F787009E5843 /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
+		A10694D22B56FE8B009E5843 /* Book.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Book.swift; sourceTree = "<group>"; };
+		A10694D42B56FFD8009E5843 /* Quote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quote.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +120,8 @@
 				A10694A12B56F052009E5843 /* PostInfo.swift */,
 				A10694A32B56F069009E5843 /* CommentInfo.swift */,
 				A10694A52B56F07E009E5843 /* BadgeInfo.swift */,
+				A10694D22B56FE8B009E5843 /* Book.swift */,
+				A10694D42B56FFD8009E5843 /* Quote.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -294,6 +300,7 @@
 				A10694C02B56F3CF009E5843 /* CreatePostSceneViewModel.swift in Sources */,
 				A10694A02B56F034009E5843 /* UserInfo.swift in Sources */,
 				A10694AF2B56F185009E5843 /* SignupSceneViewModel.swift in Sources */,
+				A10694D52B56FFD8009E5843 /* Quote.swift in Sources */,
 				A106948A2B56EC73009E5843 /* AppDelegate.swift in Sources */,
 				A106948C2B56EC73009E5843 /* SceneDelegate.swift in Sources */,
 				A10694BE2B56F3BD009E5843 /* CreatePostSceneView.swift in Sources */,
@@ -302,6 +309,7 @@
 				A10694B92B56F2B9009E5843 /* AnnouncementSceneViewModel.swift in Sources */,
 				A10694C32B56F40F009E5843 /* LeaderboardSceneViewModel.swift in Sources */,
 				A10694C82B56F478009E5843 /* ProfileSceneView.swift in Sources */,
+				A10694D32B56FE8B009E5843 /* Book.swift in Sources */,
 				A10694B62B56F247009E5843 /* HomeSceneViewModel.swift in Sources */,
 				A10694A62B56F07E009E5843 /* BadgeInfo.swift in Sources */,
 				A10694CA2B56F497009E5843 /* ProfileSceneViewModel.swift in Sources */,

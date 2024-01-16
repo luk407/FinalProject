@@ -7,6 +7,11 @@
 
 import Foundation
 
-struct CommentInfo {
-    
+struct CommentInfo: Identifiable {
+    let id = UUID()
+    let authorID: [UserInfo.ID]
+    let commentTime: String
+    var body: String
+    var likedBy: [UserInfo.ID]
+    var comments: [CommentInfo]
 }

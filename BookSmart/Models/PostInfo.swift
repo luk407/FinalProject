@@ -7,6 +7,22 @@
 
 import Foundation
 
-struct PostInfo {
-    
+enum PostType {
+    case story, achievement
+}
+
+enum AchievementType {
+    case startedBook, finishedBook
+}
+
+struct PostInfo: Identifiable {
+    let id = UUID()
+    let type: PostType
+    var header: String
+    var body: String
+    let postingTime: String
+    var likedBy: [UserInfo.ID]
+    var comments: [CommentInfo]
+    var spoilersAllowed: Bool
+    var achievementType: AchievementType?
 }

@@ -7,6 +7,19 @@
 
 import Foundation
 
-struct UserInfo {
-    
+struct UserInfo: Identifiable {
+    let id = UUID()
+    var userName: String
+    var email: String
+    var password: String
+    var displayName: String
+    let registrationDate: String
+    var bio: String
+    var badges: [BadgeInfo]
+    var posts: [PostInfo]
+    var comments: [CommentInfo]
+    var likedPosts: [PostInfo]
+    var connections: [UserInfo]
+    var booksFinished: [Book]
+    var quotesUsed: [Quote]
 }
