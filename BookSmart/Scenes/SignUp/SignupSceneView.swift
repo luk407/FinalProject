@@ -36,6 +36,12 @@ class SignupSceneView: UIViewController {
     
     private var signupButton = UIButton()
     
+    private var passwordStrengthChecklistView = PasswordStrengthChecklistView(
+        isMinLengthMet: false,
+        isCapitalLetterMet: false,
+        isNumberMet: false,
+        isUniqueCharacterMet: false)
+    
     var signupSceneViewModel = SignupSceneViewModel()
     
     // MARK: - LifeCycle
@@ -62,6 +68,7 @@ class SignupSceneView: UIViewController {
         passwordStackView.addArrangedSubview(passwordLabel)
         passwordStackView.addArrangedSubview(passwordTextField)
         mainStackView.addArrangedSubview(signupButton)
+        mainStackView.addArrangedSubview(passwordStrengthChecklistView)
     }
     
     private func setupConstraints() {
@@ -160,7 +167,7 @@ class SignupSceneView: UIViewController {
         mainStackView.translatesAutoresizingMaskIntoConstraints = false
         mainStackView.axis = .vertical
         mainStackView.alignment = .center
-        mainStackView.spacing = 50
+        mainStackView.spacing = 20
         mainStackView.distribution = .fillProportionally
     }
     
@@ -239,13 +246,13 @@ class SignupSceneView: UIViewController {
         passwordTextField.borderStyle = .roundedRect
         passwordTextField.backgroundColor = .customAccentColor.withAlphaComponent(0.5)
         passwordTextField.attributedPlaceholder = NSAttributedString(string: "Password...", attributes: [NSAttributedString.Key.foregroundColor: UIColor.black])
-        passwordTextField.text = signupSceneViewModel.password
+        passwordTextField.addTarget(self, action: #selector(SignupSceneView.textFieldDidChange(_:)), for: .editingChanged)
     }
     
     private func setupSignupButtonUI() {
         signupButton.setTitle("Sign Up", for: .normal)
         signupButton.setTitleColor(.black, for: .normal)
-        signupButton.backgroundColor = .customAccentColor
+        signupButton.backgroundColor = .lightGray
         signupButton.layer.cornerRadius = 8
         signupButton.addTarget(self, action: #selector(signupButtonPressed), for: .touchUpInside)
     }
@@ -254,5 +261,34 @@ class SignupSceneView: UIViewController {
     @objc private func signupButtonPressed() {
         signupSceneViewModel.register()
         navigationController?.popViewController(animated: true)
+    }
+    
+    @objc private func textFieldDidChange(_ textField: UITextField) {
+        DispatchQueue.main.async {
+            self.signupSceneViewModel.passwordTextChange(textField.text ?? "")
+            self.updateTextField()
+        }
+    }
+    
+    private func updateTextField() {
+        signupSceneViewModel.updatePasswordCriteria(password: passwordTextField.text ?? "")
+        passwordTextField.text = signupSceneViewModel.password
+        passwordStrengthChecklistView.isMinLengthMet = signupSceneViewModel.isMinLengthMet
+        passwordStrengthChecklistView.isNumberMet = signupSceneViewModel.isNumberMet
+        passwordStrengthChecklistView.isCapitalLetterMet = signupSceneViewModel.isCapitalLetterMet
+        passwordStrengthChecklistView.isUniqueCharacterMet = signupSceneViewModel.isUniqueCharacterMet
+        updateSignupButton()
+    }
+    
+    private func updateSignupButton() {
+        DispatchQueue.main.async {
+            if !self.signupSceneViewModel.isSignUpEnabled {
+                self.signupButton.isEnabled = false
+                self.signupButton.backgroundColor = .lightGray
+            } else {
+                self.signupButton.isEnabled = true
+                self.signupButton.backgroundColor = .customAccentColor
+            }
+        }
     }
 }

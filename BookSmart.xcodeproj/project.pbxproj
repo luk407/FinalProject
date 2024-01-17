@@ -35,6 +35,8 @@
 		A10694E42B5718C5009E5843 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = A10694E32B5718C5009E5843 /* FirebaseAuth */; };
 		A10694F02B5718C5009E5843 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = A10694EF2B5718C5009E5843 /* FirebaseFirestore */; };
 		A10695132B57D9A4009E5843 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A10695122B57D9A4009E5843 /* GoogleService-Info.plist */; };
+		A10695162B583B90009E5843 /* PasswordStrengthChecklistUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10695152B583B90009E5843 /* PasswordStrengthChecklistUIView.swift */; };
+		A10695182B584525009E5843 /* ChecklistItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10695172B584525009E5843 /* ChecklistItemView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -65,6 +67,8 @@
 		A10694D22B56FE8B009E5843 /* Book.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Book.swift; sourceTree = "<group>"; };
 		A10694D42B56FFD8009E5843 /* Quote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quote.swift; sourceTree = "<group>"; };
 		A10695122B57D9A4009E5843 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		A10695152B583B90009E5843 /* PasswordStrengthChecklistUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordStrengthChecklistUIView.swift; sourceTree = "<group>"; };
+		A10695172B584525009E5843 /* ChecklistItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChecklistItemView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +107,7 @@
 				A106949D2B56EFAE009E5843 /* App */,
 				A106949E2B56EFC3009E5843 /* Models */,
 				A10694A72B56F0C9009E5843 /* Scenes */,
+				A10695142B583B57009E5843 /* Components */,
 				A10694CB2B56F53F009E5843 /* Extensions */,
 				A10694CC2B56F622009E5843 /* Resources */,
 				A10694972B56EC75009E5843 /* Info.plist */,
@@ -226,6 +231,15 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		A10695142B583B57009E5843 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				A10695152B583B90009E5843 /* PasswordStrengthChecklistUIView.swift */,
+				A10695172B584525009E5843 /* ChecklistItemView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -305,6 +319,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A10695182B584525009E5843 /* ChecklistItemView.swift in Sources */,
 				A10694AC2B56F129009E5843 /* LoginSceneViewModel.swift in Sources */,
 				A10694CE2B56F787009E5843 /* UIColor+Extension.swift in Sources */,
 				A10694A22B56F052009E5843 /* PostInfo.swift in Sources */,
@@ -318,6 +333,7 @@
 				A10694C52B56F425009E5843 /* LeaderboardSceneView.swift in Sources */,
 				A10694A42B56F069009E5843 /* CommentInfo.swift in Sources */,
 				A10694B92B56F2B9009E5843 /* AnnouncementSceneViewModel.swift in Sources */,
+				A10695162B583B90009E5843 /* PasswordStrengthChecklistUIView.swift in Sources */,
 				A10694C32B56F40F009E5843 /* LeaderboardSceneViewModel.swift in Sources */,
 				A10694C82B56F478009E5843 /* ProfileSceneView.swift in Sources */,
 				A10694D32B56FE8B009E5843 /* Book.swift in Sources */,

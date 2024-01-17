@@ -22,9 +22,11 @@ final class SignupSceneViewModel {
     
     // MARK: - Methods
     func register() {
-        Auth.auth().createUser(withEmail: email, password: password) { result, error in
-            if error != nil {
-                print(error?.localizedDescription)
+        if isSignUpEnabled {
+            Auth.auth().createUser(withEmail: email, password: password) { result, error in
+                if error != nil {
+                    print(error?.localizedDescription)
+                }
             }
         }
     }
@@ -35,5 +37,9 @@ final class SignupSceneViewModel {
         isNumberMet = password.rangeOfCharacter(from: .decimalDigits) != nil
         isUniqueCharacterMet = password.rangeOfCharacter(from: CharacterSet(charactersIn: "!@#$%^&*")) != nil
         isSignUpEnabled = isMinLengthMet && isCapitalLetterMet && isNumberMet && isUniqueCharacterMet
+    }
+    
+    func passwordTextChange(_ textFieldText: String) {
+        password = textFieldText
     }
 }
