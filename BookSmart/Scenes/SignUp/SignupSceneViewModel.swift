@@ -21,9 +21,9 @@ final class SignupSceneViewModel {
     var isUniqueCharacterMet = false
     
     // MARK: - Methods
-    func register() {
+    func register(emailText: String, passwordText: String) {
         if isSignUpEnabled {
-            Auth.auth().createUser(withEmail: email, password: password) { result, error in
+            Auth.auth().createUser(withEmail: emailText, password: passwordText) { result, error in
                 if error != nil {
                     print(error?.localizedDescription)
                 }

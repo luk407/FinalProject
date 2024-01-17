@@ -42,7 +42,9 @@ class SignupSceneView: UIViewController {
         isNumberMet: false,
         isUniqueCharacterMet: false)
     
-    var signupSceneViewModel = SignupSceneViewModel()
+    private var emptyAlert = UIAlertController(title: "Nickname or Email field is empty", message: "Please fill in all fields to sign up", preferredStyle: .alert)
+    
+    private var signupSceneViewModel = SignupSceneViewModel()
     
     // MARK: - LifeCycle
     override func viewDidLoad() {
@@ -97,6 +99,7 @@ class SignupSceneView: UIViewController {
         setupPasswordLabelUI()
         setupPasswordTextFieldUI()
         setupSignupButtonUI()
+        setupEmptyAlertUI()
     }
     
     // MARK: - Constraints
@@ -197,6 +200,7 @@ class SignupSceneView: UIViewController {
     }
     
     private func setupNicknameTextFieldUI() {
+        nicknameTextField.autocapitalizationType = .none
         nicknameTextField.font = .systemFont(ofSize: 14)
         nicknameTextField.backgroundColor = .white
         nicknameTextField.borderStyle = .roundedRect
@@ -219,6 +223,7 @@ class SignupSceneView: UIViewController {
     }
     
     private func setupEmailTextFieldUI() {
+        emailTextField.autocapitalizationType = .none
         emailTextField.font = .systemFont(ofSize: 14)
         emailTextField.backgroundColor = .white
         emailTextField.borderStyle = .roundedRect
@@ -241,6 +246,8 @@ class SignupSceneView: UIViewController {
     }
     
     private func setupPasswordTextFieldUI() {
+        passwordTextField.isSecureTextEntry = true
+        passwordTextField.autocapitalizationType = .none
         passwordTextField.font = .systemFont(ofSize: 14)
         passwordTextField.backgroundColor = .white
         passwordTextField.borderStyle = .roundedRect
@@ -257,10 +264,18 @@ class SignupSceneView: UIViewController {
         signupButton.addTarget(self, action: #selector(signupButtonPressed), for: .touchUpInside)
     }
     
+    private func setupEmptyAlertUI() {
+        emptyAlert.addAction(UIAlertAction(title: "OK", style: .cancel))
+    }
+    
     // MARK: - Private Methods
     @objc private func signupButtonPressed() {
-        signupSceneViewModel.register()
-        navigationController?.popViewController(animated: true)
+        if nicknameTextField.text == "" || emailTextField.text == "" {
+            present(emptyAlert, animated: true, completion: nil)
+        } else {
+            signupSceneViewModel.register(emailText: emailTextField.text ?? "", passwordText: passwordTextField.text ?? "")
+            navigationController?.popViewController(animated: true)
+        }
     }
     
     @objc private func textFieldDidChange(_ textField: UITextField) {
