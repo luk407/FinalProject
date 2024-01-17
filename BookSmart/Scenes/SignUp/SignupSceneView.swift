@@ -247,5 +247,12 @@ class SignupSceneView: UIViewController {
         signupButton.setTitleColor(.black, for: .normal)
         signupButton.backgroundColor = .customAccentColor
         signupButton.layer.cornerRadius = 8
+        signupButton.addTarget(self, action: #selector(signupButtonPressed), for: .touchUpInside)
+    }
+    
+    // MARK: - Private Methods
+    @objc private func signupButtonPressed() {
+        signupSceneViewModel.register()
+        navigationController?.popViewController(animated: true)
     }
 }
