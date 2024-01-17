@@ -34,6 +34,7 @@
 		A10694D52B56FFD8009E5843 /* Quote.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10694D42B56FFD8009E5843 /* Quote.swift */; };
 		A10694E42B5718C5009E5843 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = A10694E32B5718C5009E5843 /* FirebaseAuth */; };
 		A10694F02B5718C5009E5843 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = A10694EF2B5718C5009E5843 /* FirebaseFirestore */; };
+		A10695132B57D9A4009E5843 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A10695122B57D9A4009E5843 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -63,7 +64,7 @@
 		A10694CD2B56F787009E5843 /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		A10694D22B56FE8B009E5843 /* Book.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Book.swift; sourceTree = "<group>"; };
 		A10694D42B56FFD8009E5843 /* Quote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quote.swift; sourceTree = "<group>"; };
-		A106950F2B5719E3009E5843 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		A10695122B57D9A4009E5843 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,7 +105,6 @@
 				A10694A72B56F0C9009E5843 /* Scenes */,
 				A10694CB2B56F53F009E5843 /* Extensions */,
 				A10694CC2B56F622009E5843 /* Resources */,
-				A106950F2B5719E3009E5843 /* GoogleService-Info.plist */,
 				A10694972B56EC75009E5843 /* Info.plist */,
 			);
 			path = BookSmart;
@@ -221,6 +221,7 @@
 			isa = PBXGroup;
 			children = (
 				A10694922B56EC75009E5843 /* Assets.xcassets */,
+				A10695122B57D9A4009E5843 /* GoogleService-Info.plist */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -293,6 +294,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A10694932B56EC75009E5843 /* Assets.xcassets in Resources */,
+				A10695132B57D9A4009E5843 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
