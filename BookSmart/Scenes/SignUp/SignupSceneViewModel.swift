@@ -8,5 +8,7 @@
 import Foundation
 
 class SignupSceneViewModel {
-    
+    var nickname: String = ""
+    var email: String = ""
+    var password: String = ""
 }
