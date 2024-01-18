@@ -11,6 +11,6 @@ class HomeSceneView: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        view.backgroundColor = .customBackgroundColor
     }
 }

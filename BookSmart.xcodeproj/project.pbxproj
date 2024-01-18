@@ -37,6 +37,7 @@
 		A10695132B57D9A4009E5843 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A10695122B57D9A4009E5843 /* GoogleService-Info.plist */; };
 		A10695162B583B90009E5843 /* PasswordStrengthChecklistUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10695152B583B90009E5843 /* PasswordStrengthChecklistUIView.swift */; };
 		A10695182B584525009E5843 /* ChecklistItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10695172B584525009E5843 /* ChecklistItemView.swift */; };
+		A106951A2B590EBE009E5843 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10695192B590EBE009E5843 /* TabBarController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -69,6 +70,7 @@
 		A10695122B57D9A4009E5843 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A10695152B583B90009E5843 /* PasswordStrengthChecklistUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordStrengthChecklistUIView.swift; sourceTree = "<group>"; };
 		A10695172B584525009E5843 /* ChecklistItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChecklistItemView.swift; sourceTree = "<group>"; };
+		A10695192B590EBE009E5843 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -140,6 +142,7 @@
 		A10694A72B56F0C9009E5843 /* Scenes */ = {
 			isa = PBXGroup;
 			children = (
+				A10695192B590EBE009E5843 /* TabBarController.swift */,
 				A10694C62B56F462009E5843 /* Profile */,
 				A10694C12B56F3EC009E5843 /* Leaderboard */,
 				A10694BC2B56F3A7009E5843 /* CreatePost */,
@@ -320,6 +323,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A10695182B584525009E5843 /* ChecklistItemView.swift in Sources */,
+				A106951A2B590EBE009E5843 /* TabBarController.swift in Sources */,
 				A10694AC2B56F129009E5843 /* LoginSceneViewModel.swift in Sources */,
 				A10694CE2B56F787009E5843 /* UIColor+Extension.swift in Sources */,
 				A10694A22B56F052009E5843 /* PostInfo.swift in Sources */,
