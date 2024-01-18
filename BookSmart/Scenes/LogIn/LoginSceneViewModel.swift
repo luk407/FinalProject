@@ -10,7 +10,7 @@ import Firebase
 
 final class LoginSceneViewModel {
     // MARK: - Properties
-    var fetchedUserData: [UserInfo] = []
+    var fetchedUserData: UserInfo?
     
     // MARK: - Init
     init() {
@@ -18,7 +18,7 @@ final class LoginSceneViewModel {
     }
     
     // MARK: - Methods
-    private func login(email: String, password: String) {
+    func login(email: String, password: String) {
         Auth.auth().signIn(withEmail: email, password: password) { result, error in
             if error != nil {
                 print(error?.localizedDescription)
@@ -26,23 +26,24 @@ final class LoginSceneViewModel {
         }
     }
     
+    func navigateToTabBarController(navigationController: UINavigationController) {
+        guard let fetchedUserData else { return }
+        let tabbarController = TabBarController(userInfo: fetchedUserData)
+        navigationController.pushViewController(tabbarController, animated: true)
+    }
+    
     func signupButtonPressed(navigationController: UINavigationController) {
         let signupScene = SignupSceneView()
         navigationController.pushViewController(signupScene, animated: true)
     }
     
-    func fetchUserInfoAndLogin(email: String, password: String) {
-        fetchedUserData = []
-        
-        login(email: email, password: password)
-        
+    func fetchUserInfoAndLogin(email: String, password: String, completion: @escaping (Bool) -> Void) {
         let database = Firestore.firestore()
         let reference = database.collection("UserInfo")
         
-        reference.getDocuments() { snapshot, error in
-            if error != nil {
-                print(error?.localizedDescription)
-            }
+        reference.getDocuments() { [weak self] snapshot, error in
+            
+            guard let self = self else { return }
             
             if let snapshot = snapshot {
                 for document in snapshot.documents {
@@ -85,9 +86,16 @@ final class LoginSceneViewModel {
                             booksFinished: booksFinished,
                             quotesUsed: quotesUsed)
                         
-                        self.fetchedUserData.append(userInfo)
+                        self.fetchedUserData = userInfo
                     }
                 }
+                completion(true)
+            } else {
+                completion(false)
+            }
+            
+            if error != nil {
+                print(error)
             }
         }
     }

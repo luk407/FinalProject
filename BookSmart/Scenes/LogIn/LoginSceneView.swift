@@ -36,8 +36,10 @@ final class LoginSceneView: UIViewController {
     
     private var loginButton = UIButton()
     
+    private var emptyAlert = UIAlertController(title: "Email or Password field is empty", message: "Please fill in all fields to log in", preferredStyle: .alert)
+    
     var loginSceneViewModel = LoginSceneViewModel()
-
+    
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -87,6 +89,7 @@ final class LoginSceneView: UIViewController {
         setupDontHaveAccountLabelUI()
         setupSignUpButtonUI()
         setupLoginButtonUI()
+        setupEmptyAlertUI()
     }
     
     // MARK: - Constraints
@@ -191,9 +194,9 @@ final class LoginSceneView: UIViewController {
     }
     
     private func setupPasswordLabelUI() {
-       passwordLabel.text = "Password"
-       passwordLabel.font = .systemFont(ofSize: 14)
-       passwordLabel.textColor = .customAccentColor
+        passwordLabel.text = "Password"
+        passwordLabel.font = .systemFont(ofSize: 14)
+        passwordLabel.textColor = .customAccentColor
     }
     
     private func setupPasswordTextFieldUI() {
@@ -231,6 +234,10 @@ final class LoginSceneView: UIViewController {
         loginButton.addTarget(self, action: #selector(loginButtonPressed), for: .touchUpInside)
     }
     
+    private func setupEmptyAlertUI() {
+        emptyAlert.addAction(UIAlertAction(title: "OK", style: .cancel))
+    }
+    
     // MARK: - Private Methods
     @objc private func signupButtonPressed() {
         guard let navigationControllerToPass = self.navigationController else { return }
@@ -238,8 +245,25 @@ final class LoginSceneView: UIViewController {
     }
     
     @objc private func loginButtonPressed() {
-        loginSceneViewModel.fetchUserInfoAndLogin(
-            email: emailTextField.text ?? "",
-            password: passwordTextField.text ?? "")
+        guard let navigationControllerToPass = self.navigationController else { return }
+        
+        if emailTextField.text == "" || passwordTextField.text == "" {
+            present(emptyAlert, animated: true, completion: nil)
+        } else {
+            loginSceneViewModel.login(
+                email: emailTextField.text ?? "",
+                password: passwordTextField.text ?? "")
+            
+            loginSceneViewModel.fetchUserInfoAndLogin(
+                email: emailTextField.text ?? "",
+                password: passwordTextField.text ?? "") { [weak self] success in
+                    guard let self = self else { return }
+                    if success {
+                        self.loginSceneViewModel.navigateToTabBarController(navigationController: navigationControllerToPass)
+                    } else {
+                        print("Failed to fetch user information.")
+                    }
+                }
+        }
     }
 }
