@@ -175,12 +175,12 @@ final class LoginSceneView: UIViewController {
     }
     
     private func setupEmailTextFieldUI() {
+        emailTextField.autocapitalizationType = .none
         emailTextField.font = .systemFont(ofSize: 14)
         emailTextField.backgroundColor = .white
         emailTextField.borderStyle = .roundedRect
         emailTextField.backgroundColor = .customAccentColor.withAlphaComponent(0.5)
         emailTextField.attributedPlaceholder = NSAttributedString(string: "Email...", attributes: [NSAttributedString.Key.foregroundColor: UIColor.black])
-        emailTextField.text = loginSceneViewModel.email
     }
     
     private func setupPasswordStackViewUI() {
@@ -197,12 +197,13 @@ final class LoginSceneView: UIViewController {
     }
     
     private func setupPasswordTextFieldUI() {
+        passwordTextField.autocapitalizationType = .none
+        passwordTextField.isSecureTextEntry = true
         passwordTextField.font = .systemFont(ofSize: 14)
         passwordTextField.backgroundColor = .white
         passwordTextField.borderStyle = .roundedRect
         passwordTextField.backgroundColor = .customAccentColor.withAlphaComponent(0.5)
         passwordTextField.attributedPlaceholder = NSAttributedString(string: "Password...", attributes: [NSAttributedString.Key.foregroundColor: UIColor.black])
-        passwordTextField.text = loginSceneViewModel.email
     }
     
     private func setupDontHaveAccountStackViewUI() {
@@ -227,11 +228,18 @@ final class LoginSceneView: UIViewController {
         loginButton.setTitleColor(.black, for: .normal)
         loginButton.backgroundColor = .customAccentColor
         loginButton.layer.cornerRadius = 8
+        loginButton.addTarget(self, action: #selector(loginButtonPressed), for: .touchUpInside)
     }
     
     // MARK: - Private Methods
-    @objc func signupButtonPressed() {
+    @objc private func signupButtonPressed() {
         guard let navigationControllerToPass = self.navigationController else { return }
         loginSceneViewModel.signupButtonPressed(navigationController: navigationControllerToPass)
+    }
+    
+    @objc private func loginButtonPressed() {
+        loginSceneViewModel.fetchUserInfoAndLogin(
+            email: emailTextField.text ?? "",
+            password: passwordTextField.text ?? "")
     }
 }

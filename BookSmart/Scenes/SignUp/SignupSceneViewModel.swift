@@ -43,6 +43,7 @@ final class SignupSceneViewModel {
     
     func addUserData(username: String, email: String, password: String) {
         let createdUserInfo = UserInfo(
+            id: UUID(),
             userName: username,
             email: email,
             password: password,
@@ -59,7 +60,7 @@ final class SignupSceneViewModel {
             quotesUsed: [])
         
         let database = Firestore.firestore()
-        let reference = database.collection("UserInfo").document()
+        let reference = database.collection("UserInfo").document(createdUserInfo.id.uuidString)
         
         reference.setData([
             "id": createdUserInfo.id.uuidString,
