@@ -47,7 +47,7 @@ final class LoginSceneView: UIViewController {
         setupUI()
     }
     
-    // MARK: - Methods
+    // MARK: - Setup Subviews, Constraints, UI
     private func setupSubviews() {
         view.addSubview(mainStackView)
         mainStackView.addArrangedSubview(appNameLabel)

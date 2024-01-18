@@ -13,7 +13,7 @@ struct UserInfo: Identifiable {
     var email: String
     var password: String
     var displayName: String
-    let registrationDate: String
+    let registrationDate: Date
     var bio: String
     var image: String
     var badges: [BadgeInfo]

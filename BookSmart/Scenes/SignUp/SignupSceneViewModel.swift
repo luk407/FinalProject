@@ -11,8 +11,6 @@ import Firebase
 final class SignupSceneViewModel {
     
     // MARK: - Properties
-    var nickname: String = ""
-    var email: String = ""
     var password: String = ""
     var isSignUpEnabled = false
     var isMinLengthMet = false
@@ -41,5 +39,48 @@ final class SignupSceneViewModel {
     
     func passwordTextChange(_ textFieldText: String) {
         password = textFieldText
+    }
+    
+    func addUserData(username: String, email: String, password: String) {
+        let createdUserInfo = UserInfo(
+            userName: username,
+            email: email,
+            password: password,
+            displayName: username,
+            registrationDate: Date.now,
+            bio: "",
+            image: "",
+            badges: [],
+            posts: [],
+            comments: [],
+            likedPosts: [],
+            connections: [],
+            booksFinished: [],
+            quotesUsed: [])
+        
+        let database = Firestore.firestore()
+        let reference = database.collection("UserInfo").document()
+        
+        reference.setData([
+            "id": createdUserInfo.id.uuidString,
+            "username": createdUserInfo.userName,
+            "email": createdUserInfo.email,
+            "password": createdUserInfo.password,
+            "displayName": createdUserInfo.displayName,
+            "registrationDate": createdUserInfo.registrationDate,
+            "bio": createdUserInfo.bio,
+            "image": createdUserInfo.image,
+            "badges": createdUserInfo.badges,
+            "posts": createdUserInfo.posts,
+            "comments": createdUserInfo.comments,
+            "likedPosts": createdUserInfo.likedPosts,
+            "connections": createdUserInfo.connections,
+            "booksFinished": createdUserInfo.booksFinished,
+            "quotesUsed": createdUserInfo.quotesUsed
+        ]) { error in
+            if error != nil {
+                print(error?.localizedDescription)
+            }
+        }
     }
 }

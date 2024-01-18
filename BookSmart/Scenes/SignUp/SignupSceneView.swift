@@ -16,11 +16,11 @@ class SignupSceneView: UIViewController {
     
     private var inputInfoStackView = UIStackView()
     
-    private var nicknameStackView = UIStackView()
+    private var usernameStackView = UIStackView()
     
-    private var nicknameLabel = UILabel()
+    private var usernameLabel = UILabel()
     
-    private var nicknameTextField = UITextField()
+    private var usernameTextField = UITextField()
     
     private var emailStackView = UIStackView()
     
@@ -55,14 +55,14 @@ class SignupSceneView: UIViewController {
         setupUI()
     }
     
-    // MARK: - Methods
+    // MARK: - Setup Subviews, Constraints, UI
     private func setupSubviews() {
         view.addSubview(mainStackView)
         mainStackView.addArrangedSubview(appNameLabel)
         mainStackView.addArrangedSubview(inputInfoStackView)
-        inputInfoStackView.addArrangedSubview(nicknameStackView)
-        nicknameStackView.addArrangedSubview(nicknameLabel)
-        nicknameStackView.addArrangedSubview(nicknameTextField)
+        inputInfoStackView.addArrangedSubview(usernameStackView)
+        usernameStackView.addArrangedSubview(usernameLabel)
+        usernameStackView.addArrangedSubview(usernameTextField)
         inputInfoStackView.addArrangedSubview(emailStackView)
         emailStackView.addArrangedSubview(emailLabel)
         emailStackView.addArrangedSubview(emailTextField)
@@ -121,14 +121,14 @@ class SignupSceneView: UIViewController {
     
     private func setupNicknameStackViewConstraints() {
         NSLayoutConstraint.activate([
-            nicknameStackView.widthAnchor.constraint(equalToConstant: 300),
+            usernameStackView.widthAnchor.constraint(equalToConstant: 300),
         ])
     }
     
     private func setupNicknameTextFieldConstraints() {
         NSLayoutConstraint.activate([
-            nicknameTextField.widthAnchor.constraint(equalTo: nicknameStackView.widthAnchor),
-            nicknameTextField.heightAnchor.constraint(equalToConstant: 50),
+            usernameTextField.widthAnchor.constraint(equalTo: usernameStackView.widthAnchor),
+            usernameTextField.heightAnchor.constraint(equalToConstant: 50),
         ])
     }
     
@@ -187,26 +187,25 @@ class SignupSceneView: UIViewController {
         inputInfoStackView.distribution = .fillProportionally
     }
     private func setupNicknameStackViewUI() {
-        nicknameStackView.axis = .vertical
-        nicknameStackView.alignment = .leading
-        nicknameStackView.spacing = 5
-        nicknameStackView.distribution = .fillProportionally
+        usernameStackView.axis = .vertical
+        usernameStackView.alignment = .leading
+        usernameStackView.spacing = 5
+        usernameStackView.distribution = .fillProportionally
     }
     
     private func setupNicknameLabelUI() {
-        nicknameLabel.text = "Nickname"
-        nicknameLabel.font = .systemFont(ofSize: 14)
-        nicknameLabel.textColor = .customAccentColor
+        usernameLabel.text = "Nickname"
+        usernameLabel.font = .systemFont(ofSize: 14)
+        usernameLabel.textColor = .customAccentColor
     }
     
     private func setupNicknameTextFieldUI() {
-        nicknameTextField.autocapitalizationType = .none
-        nicknameTextField.font = .systemFont(ofSize: 14)
-        nicknameTextField.backgroundColor = .white
-        nicknameTextField.borderStyle = .roundedRect
-        nicknameTextField.backgroundColor = .customAccentColor.withAlphaComponent(0.5)
-        nicknameTextField.attributedPlaceholder = NSAttributedString(string: "Nickname...", attributes: [NSAttributedString.Key.foregroundColor: UIColor.black])
-        nicknameTextField.text = signupSceneViewModel.nickname
+        usernameTextField.autocapitalizationType = .none
+        usernameTextField.font = .systemFont(ofSize: 14)
+        usernameTextField.backgroundColor = .white
+        usernameTextField.borderStyle = .roundedRect
+        usernameTextField.backgroundColor = .customAccentColor.withAlphaComponent(0.5)
+        usernameTextField.attributedPlaceholder = NSAttributedString(string: "Nickname...", attributes: [NSAttributedString.Key.foregroundColor: UIColor.black])
     }
     
     private func setupEmailStackViewUI() {
@@ -229,7 +228,6 @@ class SignupSceneView: UIViewController {
         emailTextField.borderStyle = .roundedRect
         emailTextField.backgroundColor = .customAccentColor.withAlphaComponent(0.5)
         emailTextField.attributedPlaceholder = NSAttributedString(string: "Email...", attributes: [NSAttributedString.Key.foregroundColor: UIColor.black])
-        emailTextField.text = signupSceneViewModel.email
     }
     
     private func setupPasswordStackViewUI() {
@@ -270,10 +268,14 @@ class SignupSceneView: UIViewController {
     
     // MARK: - Private Methods
     @objc private func signupButtonPressed() {
-        if nicknameTextField.text == "" || emailTextField.text == "" {
+        if usernameTextField.text == "" || emailTextField.text == "" {
             present(emptyAlert, animated: true, completion: nil)
         } else {
             signupSceneViewModel.register(emailText: emailTextField.text ?? "", passwordText: passwordTextField.text ?? "")
+            signupSceneViewModel.addUserData(
+                username: usernameTextField.text ?? "",
+                email: emailTextField.text ?? "",
+                password: passwordTextField.text ?? "")
             navigationController?.popViewController(animated: true)
         }
     }

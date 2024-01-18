@@ -8,7 +8,7 @@
 import Foundation
 
 enum BadgeCategory {
-    case booksCount, commentsCount, likesCount, connectionsCount, quotesCount
+    case booksCount, commentsCount, likesCount, connectionsCount, quotesCount, oneYearClub, fiveYearClub
 }
 
 enum BadgeType {
