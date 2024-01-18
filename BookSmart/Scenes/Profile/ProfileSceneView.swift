@@ -11,6 +11,6 @@ class ProfileSceneView: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        view.backgroundColor = .customBackgroundColor
     }
 }
