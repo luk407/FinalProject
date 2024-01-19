@@ -7,6 +7,7 @@
 
 import UIKit
 import SwiftUI
+import Firebase
 
 final class PostsTableViewCell: UITableViewCell {
     
@@ -19,31 +20,33 @@ final class PostsTableViewCell: UITableViewCell {
     private let authorImageView = UIImageView()
     
     private let namesStackView = UIStackView()
-    
     private let nameLabel = UILabel()
-    
     private let usernameLabel = UILabel()
     
     private let timeLabel = UILabel()
     
     private let postContentStackView = UIStackView()
-    
     private let headerLabel = UILabel()
-    
     private let bodyLabel = UILabel()
     
-    private let interactionStackView = UIStackView()
+    private let likeCommentShareStackView = UIStackView()
     
-    private let likeButton = UIButton()
+    private let likeStackView = UIStackView()
+    private let likeButtonImageView = UIImageView()
+    private let likeButtonLabel = UILabel()
     
-    private let commentButton = UIButton()
+    private let commentStackView = UIStackView()
+    private let commentButtonImageView = UIImageView()
+    private let commentButtonLabel = UILabel()
     
-    private let shareButton = UIButton()
+    private let shareStackView = UIStackView()
+    private let shareButtonImageView = UIImageView()
+    private let shareButtonLabel = UILabel()
     
     private var userInfo: UserInfo?
     
     private var postInfo: PostInfo?
-
+    
     // MARK: - Init
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -52,14 +55,14 @@ final class PostsTableViewCell: UITableViewCell {
         setupConstraints()
         setupUI()
     }
-
+    
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupSubViews()
         setupConstraints()
         setupUI()
     }
-
+    
     override func prepareForReuse() {
         super.prepareForReuse()
         authorImageView.image = nil
@@ -68,10 +71,11 @@ final class PostsTableViewCell: UITableViewCell {
         timeLabel.text = nil
         headerLabel.text = nil
         bodyLabel.text = nil
+        likeButtonImageView.image = nil
     }
     
     // MARK: - Setup Subviews, Constraints, UI
-
+    
     private func setupSubViews() {
         addSubview(mainStackView)
         mainStackView.addArrangedSubview(authorInfoStackView)
@@ -83,10 +87,10 @@ final class PostsTableViewCell: UITableViewCell {
         mainStackView.addArrangedSubview(postContentStackView)
         postContentStackView.addArrangedSubview(headerLabel)
         postContentStackView.addArrangedSubview(bodyLabel)
-        mainStackView.addArrangedSubview(interactionStackView)
-        interactionStackView.addArrangedSubview(likeButton)
-        interactionStackView.addArrangedSubview(commentButton)
-        interactionStackView.addArrangedSubview(shareButton)
+        mainStackView.addArrangedSubview(likeCommentShareStackView)
+        likeCommentShareStackView.addArrangedSubview(likeStackView)
+        likeCommentShareStackView.addArrangedSubview(commentStackView)
+        likeCommentShareStackView.addArrangedSubview(shareStackView)
     }
     
     private func setupConstraints() {
@@ -109,18 +113,16 @@ final class PostsTableViewCell: UITableViewCell {
         setupPostContentStackViewUI()
         setupHeaderLabelUI()
         setupBodyLabelUI()
-        setupInteractionStackViewUI()
-        setupLikeButtonUI()
-        setupCommentButtonUI()
-        setupShareButtonUI()
+        setupLikeCommentShareStackViewUI()
+        setupLikeStackViewUI()
+        setupCommentStackViewUI()
+        setupShareStackViewUI()
     }
     
     func configureCell(userInfo: UserInfo, post: PostInfo) {
-        #warning("fetch real user image")
-        self.userInfo = userInfo
-        self.postInfo = post
-        
+#warning("fetch real user image")
         let timeAgo = timeAgoString(from: post.postingTime)
+        let isLiked = userInfo.likedPosts.contains(post.id)
         
         authorImageView.image = UIImage(systemName: "person.fill")?.withTintColor(.customAccentColor)
         nameLabel.text = "placeHolderName"
@@ -129,8 +131,14 @@ final class PostsTableViewCell: UITableViewCell {
         headerLabel.text = post.header
         bodyLabel.text = post.body
         
+        self.userInfo = userInfo
+        self.postInfo = post
         self.backgroundColor = .clear
         self.selectionStyle = .none
+        
+        DispatchQueue.main.async {
+            self.updateLikeButtonUI(isLiked: isLiked)
+        }
     }
     
     // MARK: - Constraints
@@ -160,8 +168,8 @@ final class PostsTableViewCell: UITableViewCell {
     
     private func setupTimeLabelConstraints() {
         NSLayoutConstraint.activate([
-            timeLabel.widthAnchor.constraint(equalToConstant: 20),
-            timeLabel.heightAnchor.constraint(equalToConstant: 20)
+            timeLabel.widthAnchor.constraint(equalToConstant: 30),
+            timeLabel.heightAnchor.constraint(equalToConstant: 30)
         ])
     }
     
@@ -171,7 +179,7 @@ final class PostsTableViewCell: UITableViewCell {
             postContentStackView.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor, constant: -20),
         ])
     }
-
+    
     private func setupBodyLabelConstraints() {
         NSLayoutConstraint.activate([
             bodyLabel.leadingAnchor.constraint(equalTo: postContentStackView.leadingAnchor),
@@ -261,101 +269,45 @@ final class PostsTableViewCell: UITableViewCell {
         bodyLabel.setContentCompressionResistancePriority(.required, for: .vertical)
     }
     
-    private func setupInteractionStackViewUI() {
-        interactionStackView.axis = .horizontal
-        interactionStackView.distribution = .fillEqually
-        interactionStackView.alignment = .center
-        interactionStackView.spacing = 16
+    private func setupLikeCommentShareStackViewUI() {
+        likeCommentShareStackView.axis = .horizontal
+        likeCommentShareStackView.distribution = .fillProportionally
+        likeCommentShareStackView.alignment = .center
+        likeCommentShareStackView.spacing = 32
     }
     
-    private func setupLikeButtonUI() {
-        likeButton.addTarget(self, action: #selector(likeButtonTapped), for: .touchUpInside)
-        
-        let imageView = UIImageView(image: UIImage(systemName: "heart.fill"))
-        imageView.contentMode = .scaleAspectFit
-        imageView.tintColor = UIColor.customLikeButtonColor
-        
-        let label = UILabel()
-        label.text = "Like"
-        label.textColor = UIColor.customLikeButtonColor
-        label.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
-        
-        likeButton.addSubview(imageView)
-        likeButton.addSubview(label)
-        
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            imageView.leadingAnchor.constraint(equalTo: likeButton.leadingAnchor, constant: 8),
-            imageView.centerYAnchor.constraint(equalTo: likeButton.centerYAnchor),
-            imageView.widthAnchor.constraint(equalToConstant: 20),
-            imageView.heightAnchor.constraint(equalToConstant: 20),
-        ])
-        
-        label.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            label.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: 4),
-            label.centerYAnchor.constraint(equalTo: likeButton.centerYAnchor),
-        ])
+    private func setupLikeStackViewUI() {
+        likeButtonImageView.image = UIImage(systemName: "heart")
+        setupInteractiveStackView(likeStackView, imageView: likeButtonImageView, label: likeButtonLabel, labelText: "Like", buttonColor: .customLikeButtonColor, action: #selector(likeButtonTapped))
     }
     
-    private func setupCommentButtonUI() {
-        commentButton.addTarget(self, action: #selector(commentButtonTapped), for: .touchUpInside)
-        
-        let imageView = UIImageView(image: UIImage(systemName: "text.bubble.fill"))
-        imageView.contentMode = .scaleAspectFit
-        imageView.tintColor = UIColor.customCommentButtonColor
-        
-        let label = UILabel()
-        label.text = "Comment"
-        label.textColor = UIColor.customCommentButtonColor
-        label.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
-        
-        commentButton.addSubview(imageView)
-        commentButton.addSubview(label)
-        
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            imageView.leadingAnchor.constraint(equalTo: commentButton.leadingAnchor, constant: 8),
-            imageView.centerYAnchor.constraint(equalTo: commentButton.centerYAnchor),
-            imageView.widthAnchor.constraint(equalToConstant: 20),
-            imageView.heightAnchor.constraint(equalToConstant: 20),
-        ])
-        
-        label.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            label.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: 4),
-            label.centerYAnchor.constraint(equalTo: commentButton.centerYAnchor),
-        ])
+    private func setupCommentStackViewUI() {
+        commentButtonImageView.image = UIImage(systemName: "text.bubble")
+        setupInteractiveStackView(commentStackView, imageView: commentButtonImageView, label: commentButtonLabel, labelText: "Comment", buttonColor: .customCommentButtonColor, action: #selector(commentButtonTapped))
     }
     
-    private func setupShareButtonUI() {
-        shareButton.addTarget(self, action: #selector(shareButtonTapped), for: .touchUpInside)
+    private func setupShareStackViewUI() {
+        shareButtonImageView.image = UIImage(systemName: "square.and.arrow.up")
+        setupInteractiveStackView(shareStackView, imageView: shareButtonImageView, label: shareButtonLabel, labelText: "Share", buttonColor: .customShareButtonColor, action: #selector(shareButtonTapped))
+    }
+    
+    private func setupInteractiveStackView(_ stackView: UIStackView, imageView: UIImageView, label: UILabel, labelText: String, buttonColor: UIColor, action: Selector) {
+        stackView.axis = .horizontal
+        stackView.alignment = .center
+        stackView.spacing = 8
         
-        let imageView = UIImageView(image: UIImage(systemName: "square.and.arrow.up.fill"))
         imageView.contentMode = .scaleAspectFit
-        imageView.tintColor = UIColor.customCommentButtonColor
+        imageView.tintColor = buttonColor
         
-        let label = UILabel()
-        label.text = "Share"
-        label.textColor = UIColor.customCommentButtonColor
-        label.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
+        label.font = .systemFont(ofSize: 14, weight: .semibold)
+        label.textColor = .customAccentColor
+        label.text = labelText
         
-        shareButton.addSubview(imageView)
-        shareButton.addSubview(label)
+        let gestureRecognizer = UITapGestureRecognizer(target: self, action: action)
+        stackView.addGestureRecognizer(gestureRecognizer)
         
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            imageView.leadingAnchor.constraint(equalTo: shareButton.leadingAnchor, constant: 8),
-            imageView.centerYAnchor.constraint(equalTo: shareButton.centerYAnchor),
-            imageView.widthAnchor.constraint(equalToConstant: 20),
-            imageView.heightAnchor.constraint(equalToConstant: 20),
-        ])
-        
-        label.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            label.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: 4),
-            label.centerYAnchor.constraint(equalTo: shareButton.centerYAnchor),
-        ])
+        stackView.addArrangedSubview(imageView)
+        stackView.addArrangedSubview(label)
     }
     
     // MARK: - Private Methods
@@ -379,9 +331,9 @@ final class PostsTableViewCell: UITableViewCell {
             return "Now"
         }
     }
-
+    
     @objc private func authorImageTapped(sender: UITapGestureRecognizer) {
-        #warning("changee")
+#warning("changee")
         if sender.state == .ended {
             UIView.animate(withDuration: 0.1, animations: {
                 self.authorImageView.alpha = 0.2
@@ -395,7 +347,7 @@ final class PostsTableViewCell: UITableViewCell {
     }
     
     @objc private func postHeaderOrBodyTapped(sender: UITapGestureRecognizer) {
-        #warning("changee")
+#warning("changee")
         if sender.state == .ended {
             UIView.animate(withDuration: 0.1, animations: {
                 self.headerLabel.alpha = 0.5
@@ -410,15 +362,138 @@ final class PostsTableViewCell: UITableViewCell {
         }
     }
     
-    @objc private func likeButtonTapped() {
-        print("Like")
+    @objc private func likeButtonTapped(sender: UITapGestureRecognizer) {
+        toggleLikePost()
+        if sender.state == .ended {
+            UIView.animate(withDuration: 0.1, animations: {
+                self.likeButtonImageView.alpha = 0.2
+                self.likeButtonLabel.alpha = 0.2
+            }) { _ in
+                UIView.animate(withDuration: 0.1) {
+                    self.likeButtonImageView.alpha = 1.0
+                    self.likeButtonLabel.alpha = 1.0
+                }
+            }
+        }
     }
     
-    @objc private func commentButtonTapped() {
-        print("Comment")
+    @objc private func commentButtonTapped(sender: UITapGestureRecognizer) {
+        if sender.state == .ended {
+            UIView.animate(withDuration: 0.1, animations: {
+                self.commentButtonImageView.alpha = 0.2
+                self.commentButtonLabel.alpha = 0.2
+            }) { _ in
+                UIView.animate(withDuration: 0.1) {
+                    self.commentButtonImageView.alpha = 1.0
+                    self.commentButtonLabel.alpha = 1.0
+                }
+            }
+        }
     }
     
-    @objc private func shareButtonTapped() {
-        print("Share")
+    @objc private func shareButtonTapped(sender: UITapGestureRecognizer) {
+        sharePost()
+        if sender.state == .ended {
+            UIView.animate(withDuration: 0.1, animations: {
+                self.shareButtonImageView.alpha = 0.2
+                self.shareButtonLabel.alpha = 0.2
+            }) { _ in
+                UIView.animate(withDuration: 0.1) {
+                    self.shareButtonImageView.alpha = 1.0
+                    self.shareButtonLabel.alpha = 1.0
+                }
+            }
+        }
+    }
+    
+    private func toggleLikePost() {
+        guard let postInfo = postInfo, let userInfo = userInfo else {
+            print("PostInfo or UserInfo is nil. Cannot toggle like status on Firebase.")
+            return
+        }
+        
+        let database = Firestore.firestore()
+        
+        let userReference = database.collection("UserInfo").document(userInfo.id.uuidString)
+        let postReference = database.collection("PostInfo").document(postInfo.id.uuidString)
+        
+        
+        let isLiked = userInfo.likedPosts.contains(postInfo.id)
+        
+        if isLiked {
+            userReference.updateData([
+                "likedPosts": FieldValue.arrayRemove([postInfo.id.uuidString])
+            ]) { error in
+                if let error = error {
+                    print("Error removing liked post from UserInfo: \(error.localizedDescription)")
+                    return
+                }
+                
+                postReference.updateData([
+                    "likedBy": FieldValue.arrayRemove([userInfo.id.uuidString])
+                ]) { error in
+                    if let error = error {
+                        print("Error removing user from likedBy in PostInfo: \(error.localizedDescription)")
+                        return
+                    }
+                    
+                    self.updateLikeButtonUI(isLiked: false)
+                }
+            }
+        } else {
+            userReference.updateData([
+                "likedPosts": FieldValue.arrayUnion([postInfo.id.uuidString])
+            ]) { error in
+                if let error = error {
+                    print("Error adding liked post to UserInfo: \(error.localizedDescription)")
+                    return
+                }
+                
+                postReference.updateData([
+                    "likedBy": FieldValue.arrayUnion([userInfo.id.uuidString])
+                ]) { error in
+                    if let error = error {
+                        print("Error adding user to likedBy in PostInfo: \(error.localizedDescription)")
+                        return
+                    }
+                    
+                    self.updateLikeButtonUI(isLiked: true)
+                }
+            }
+        }
+    }
+    
+    private func updateLikeButtonUI(isLiked: Bool) {
+        let imageName = isLiked ? "heart.fill" : "heart"
+        
+        likeButtonImageView.image = UIImage(systemName: imageName)?.withTintColor(.customLikeButtonColor)
+        likeButtonLabel.textColor = .customLikeButtonColor
+        
+        print("Post \(isLiked ? "liked" : "disliked") by \(userInfo?.userName ?? "Unknown User") on Firebase")
+    }
+    
+    private func sharePost() {
+        guard let postInfo = postInfo else {
+            print("PostInfo is nil. Cannot share.")
+            return
+        }
+        
+        let textToShare = "Check out this post on BookSmart!"
+        let postURL = URL(string: "someURL")
+        let items: [Any] = [textToShare, postURL as Any]
+        
+        let activityViewController = UIActivityViewController(activityItems: items, applicationActivities: nil)
+        
+        activityViewController.excludedActivityTypes = [
+            .addToReadingList,
+            .assignToContact,
+            .saveToCameraRoll
+        ]
+        
+        if let viewController = self.window?.rootViewController {
+            activityViewController.popoverPresentationController?.sourceView = self
+            viewController.present(activityViewController, animated: true, completion: nil)
+        }
+        
     }
 }

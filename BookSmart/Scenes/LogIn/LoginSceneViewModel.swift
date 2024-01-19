@@ -66,10 +66,10 @@ final class LoginSceneViewModel {
                         let bio = data["bio"] as? String ?? ""
                         let image = data["image"] as? String ?? ""
                         let badges = data["badge"] as? [BadgeInfo] ?? []
-                        let posts = data["posts"] as? [PostInfo] ?? []
-                        let comments = data["comments"] as? [CommentInfo] ?? []
-                        let likedPosts = data["likedPosts"] as? [PostInfo] ?? []
-                        let connections = data["connections"] as? [UserInfo] ?? []
+                        let posts = data["posts"] as? [PostInfo.ID] ?? []
+                        let comments = data["comments"] as? [CommentInfo.ID] ?? []
+                        let likedPosts = data["likedPosts"] as? [PostInfo.ID] ?? []
+                        let connections = data["connections"] as? [UserInfo.ID] ?? []
                         let booksFinished = data["booksFinished"] as? [Book] ?? []
                         let quotesUsed = data["quotesUsed"] as? [Quote] ?? []
                         

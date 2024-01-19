@@ -13,5 +13,5 @@ struct CommentInfo: Identifiable {
     let commentTime: String
     var body: String
     var likedBy: [UserInfo.ID]
-    var comments: [CommentInfo]
+    var comments: [CommentInfo.ID]
 }

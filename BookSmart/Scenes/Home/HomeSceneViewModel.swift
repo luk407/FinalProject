@@ -39,7 +39,7 @@ class HomeSceneViewModel {
                     let postingTimeTimestamp = data["postingTime"] as? Timestamp ?? Timestamp(date: Date())
                     let postingTime = postingTimeTimestamp.dateValue()
                     let likedBy = data["likedBy"] as? [UserInfo.ID] ?? []
-                    let comments = data["comments"] as? [CommentInfo] ?? []
+                    let comments = data["comments"] as? [CommentInfo.ID] ?? []
                     let spoilersAllowed = data["spoilersAllowed"] as? Bool ?? false
                     let achievementTypeString = data["achievementType"] as? AchievementType ?? .none
                     

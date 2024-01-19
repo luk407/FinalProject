@@ -17,10 +17,10 @@ struct UserInfo: Identifiable {
     var bio: String
     var image: String
     var badges: [BadgeInfo]
-    var posts: [PostInfo]
-    var comments: [CommentInfo]
-    var likedPosts: [PostInfo]
-    var connections: [UserInfo]
+    var posts: [PostInfo.ID]
+    var comments: [CommentInfo.ID]
+    var likedPosts: [PostInfo.ID]
+    var connections: [UserInfo.ID]
     var booksFinished: [Book]
     var quotesUsed: [Quote]
 }

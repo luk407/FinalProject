@@ -23,7 +23,7 @@ struct PostInfo: Identifiable {
     var body: String
     let postingTime: Date
     var likedBy: [UserInfo.ID]
-    var comments: [CommentInfo]
+    var comments: [CommentInfo.ID]
     var spoilersAllowed: Bool
     var achievementType: AchievementType = .none
 }
