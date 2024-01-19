@@ -38,6 +38,9 @@
 		A10695162B583B90009E5843 /* PasswordStrengthChecklistUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10695152B583B90009E5843 /* PasswordStrengthChecklistUIView.swift */; };
 		A10695182B584525009E5843 /* ChecklistItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10695172B584525009E5843 /* ChecklistItemView.swift */; };
 		A106951A2B590EBE009E5843 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10695192B590EBE009E5843 /* TabBarController.swift */; };
+		A106951F2B5A7995009E5843 /* PostsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A106951E2B5A7995009E5843 /* PostsTableViewCell.swift */; };
+		A10695212B5A7FD9009E5843 /* InteractionStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10695202B5A7FD9009E5843 /* InteractionStackView.swift */; };
+		A10695232B5A848C009E5843 /* UIStackView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10695222B5A848C009E5843 /* UIStackView+Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -71,6 +74,9 @@
 		A10695152B583B90009E5843 /* PasswordStrengthChecklistUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordStrengthChecklistUIView.swift; sourceTree = "<group>"; };
 		A10695172B584525009E5843 /* ChecklistItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChecklistItemView.swift; sourceTree = "<group>"; };
 		A10695192B590EBE009E5843 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
+		A106951E2B5A7995009E5843 /* PostsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsTableViewCell.swift; sourceTree = "<group>"; };
+		A10695202B5A7FD9009E5843 /* InteractionStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractionStackView.swift; sourceTree = "<group>"; };
+		A10695222B5A848C009E5843 /* UIStackView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView+Extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -175,6 +181,7 @@
 		A10694B22B56F219009E5843 /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				A106951B2B5A7905009E5843 /* PostsTableViewCell */,
 				A10694B32B56F236009E5843 /* HomeSceneView.swift */,
 				A10694B52B56F247009E5843 /* HomeSceneViewModel.swift */,
 			);
@@ -221,6 +228,7 @@
 			isa = PBXGroup;
 			children = (
 				A10694CD2B56F787009E5843 /* UIColor+Extension.swift */,
+				A10695222B5A848C009E5843 /* UIStackView+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -239,8 +247,17 @@
 			children = (
 				A10695152B583B90009E5843 /* PasswordStrengthChecklistUIView.swift */,
 				A10695172B584525009E5843 /* ChecklistItemView.swift */,
+				A10695202B5A7FD9009E5843 /* InteractionStackView.swift */,
 			);
 			path = Components;
+			sourceTree = "<group>";
+		};
+		A106951B2B5A7905009E5843 /* PostsTableViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				A106951E2B5A7995009E5843 /* PostsTableViewCell.swift */,
+			);
+			path = PostsTableViewCell;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -332,8 +349,10 @@
 				A10694AF2B56F185009E5843 /* SignupSceneViewModel.swift in Sources */,
 				A10694D52B56FFD8009E5843 /* Quote.swift in Sources */,
 				A106948A2B56EC73009E5843 /* AppDelegate.swift in Sources */,
+				A10695212B5A7FD9009E5843 /* InteractionStackView.swift in Sources */,
 				A106948C2B56EC73009E5843 /* SceneDelegate.swift in Sources */,
 				A10694BE2B56F3BD009E5843 /* CreatePostSceneView.swift in Sources */,
+				A106951F2B5A7995009E5843 /* PostsTableViewCell.swift in Sources */,
 				A10694C52B56F425009E5843 /* LeaderboardSceneView.swift in Sources */,
 				A10694A42B56F069009E5843 /* CommentInfo.swift in Sources */,
 				A10694B92B56F2B9009E5843 /* AnnouncementSceneViewModel.swift in Sources */,
@@ -343,6 +362,7 @@
 				A10694D32B56FE8B009E5843 /* Book.swift in Sources */,
 				A10694B62B56F247009E5843 /* HomeSceneViewModel.swift in Sources */,
 				A10694A62B56F07E009E5843 /* BadgeInfo.swift in Sources */,
+				A10695232B5A848C009E5843 /* UIStackView+Extension.swift in Sources */,
 				A10694CA2B56F497009E5843 /* ProfileSceneViewModel.swift in Sources */,
 				A10694B42B56F236009E5843 /* HomeSceneView.swift in Sources */,
 				A10694BB2B56F300009E5843 /* AnnouncementSceneView.swift in Sources */,

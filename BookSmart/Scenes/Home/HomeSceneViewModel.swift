@@ -6,7 +6,58 @@
 //
 
 import Foundation
+import Firebase
 
 class HomeSceneViewModel {
     
+    // MARK: - Properties
+    var fetchedPostsInfo: [PostInfo] = []
+    var userInfo: UserInfo?
+    
+    // MARK: - Methods
+    func fetchPostInfo() {
+        let database = Firestore.firestore()
+        let reference = database.collection("PostInfo")
+        
+        reference.getDocuments() { [weak self] snapshot, error in
+            
+            guard let self = self else { return }
+            
+            if let snapshot = snapshot {
+                for document in snapshot.documents {
+                    let data = document.data()
+                    
+                    let id = data["id"] as? String ?? ""
+                    let authorID = data["authorID"] as? String ?? ""
+                    let typeString = data["type"] as? String ?? ""
+                    let header = data["header"] as? String ?? ""
+                    let body = data["body"] as? String ?? ""
+                    let postingTime = data["postingTime"] as? Date ?? Date.now
+                    let likedBy = data["likedBy"] as? [UserInfo.ID] ?? []
+                    let comments = data["comments"] as? [CommentInfo] ?? []
+                    let spoilersAllowed = data["spoilersAllowed"] as? Bool ?? false
+                    let achievementTypeString = data["achievementType"] as? AchievementType? ?? nil
+                    
+                    if let type = PostType(rawValue: typeString),
+                       let achievementType = AchievementType(rawValue: achievementTypeString?.rawValue ?? ""),
+                       UUID(uuidString: authorID) != self.userInfo?.id {
+                        
+                        let postInfo = PostInfo(
+                            id: UUID(uuidString: id) ?? UUID(),
+                            authorID: UUID(uuidString: id) ?? UUID(),
+                            type: type,
+                            header: header,
+                            body: body,
+                            postingTime: postingTime,
+                            likedBy: likedBy,
+                            comments: comments,
+                            spoilersAllowed: spoilersAllowed,
+                            achievementType: achievementType)
+                        
+                        self.fetchedPostsInfo.append(postInfo)
+                    }
+                }
+            }
+        }
+    }
 }

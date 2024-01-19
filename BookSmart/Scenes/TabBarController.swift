@@ -32,7 +32,7 @@ class TabBarController: UITabBarController {
         
         navigationItem.titleView = appNameLabel
     
-        let homeViewController =  HomeSceneView()
+        let homeViewController =  HomeSceneView(userInfo: userInfo)
         let announcementsViewController = AnnouncementSceneView()
         let createPostViewController = CreatePostSceneView()
         let leaderboardViewController = LeaderboardSceneView()

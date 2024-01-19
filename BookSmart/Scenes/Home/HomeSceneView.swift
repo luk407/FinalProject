@@ -17,6 +17,21 @@ class HomeSceneView: UIViewController {
     
     private var postsTableView = UITableView()
     
+    private var homeSceneViewModel = HomeSceneViewModel()
+    
+    var userInfo: UserInfo
+    
+    // MARK: - Init
+    init(userInfo: UserInfo) {
+        self.userInfo = userInfo
+        homeSceneViewModel.userInfo = userInfo
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     // MARK: - LifeCycle
     
     override func viewDidLoad() {
@@ -31,6 +46,7 @@ class HomeSceneView: UIViewController {
     
     private func setupSubviews() {
         view.addSubview(mainStackView)
+        mainStackView.addArrangedSubview(postsTableView)
     }
     
     private func setupConstraints() {
@@ -59,5 +75,36 @@ class HomeSceneView: UIViewController {
         mainStackView.alignment = .center
         mainStackView.spacing = 0
         mainStackView.distribution = .fillProportionally
+    }
+    
+    private func setupPostsTableViewUI() {
+        postsTableView.register(PostsTableViewCell.self, forCellReuseIdentifier: "postCell")
+        postsTableView.dataSource = self
+        postsTableView.delegate = self
+    }
+}
+
+// MARK: Extensions
+extension HomeSceneView: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        homeSceneViewModel.fetchedPostsInfo.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell: UITableViewCell
+        let post = homeSceneViewModel.fetchedPostsInfo[indexPath.row]
+        cell = postsTableView.dequeueReusableCell(withIdentifier: "postCell", for: indexPath)
+        
+        if let postCell = cell as? PostsTableViewCell {
+            postCell.configureCell(with: post)
+        }
+        
+        return cell
+    }
+}
+
+extension HomeSceneView: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        #warning("go to post details View")
     }
 }
