@@ -37,6 +37,25 @@ class HomeSceneView: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .customBackgroundColor
+        
+        homeSceneViewModel.fetchPostsInfo() { [weak self] success in
+            
+            guard let self = self else { return }
+            
+            if success {
+                print("Data loaded successfully. Number of posts: \(self.homeSceneViewModel.fetchedPostsInfo.count)")
+                print("Table View Frame: \(postsTableView.frame)")
+
+                DispatchQueue.main.async {
+                    self.postsTableView.reloadData()
+                    print("Table View Frame: \(self.postsTableView.frame)")
+
+                }
+            } else {
+                print("Failed to fetch user information.")
+            }
+        }
+        
         setupSubviews()
         setupConstraints()
         setupUI()
@@ -51,10 +70,12 @@ class HomeSceneView: UIViewController {
     
     private func setupConstraints() {
         setupMainStackViewConstraints()
+        setupPostsTableViewConstraints()
     }
     
     private func setupUI() {
         setupMainStackViewUI()
+        setupPostsTableViewUI()
     }
     
     // MARK: - Constraints
@@ -64,6 +85,15 @@ class HomeSceneView: UIViewController {
             mainStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
             mainStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
             mainStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+        ])
+    }
+    
+    private func setupPostsTableViewConstraints() {
+        NSLayoutConstraint.activate([
+            postsTableView.topAnchor.constraint(equalTo: mainStackView.topAnchor),
+            postsTableView.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor),
+            postsTableView.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor),
+            postsTableView.bottomAnchor.constraint(equalTo: mainStackView.bottomAnchor),
         ])
     }
     
@@ -78,6 +108,10 @@ class HomeSceneView: UIViewController {
     }
     
     private func setupPostsTableViewUI() {
+        postsTableView.translatesAutoresizingMaskIntoConstraints = false
+        postsTableView.backgroundColor = .clear
+        //postsTableView.rowHeight = UITableView.automaticDimension
+        //postsTableView.estimatedRowHeight = 100
         postsTableView.register(PostsTableViewCell.self, forCellReuseIdentifier: "postCell")
         postsTableView.dataSource = self
         postsTableView.delegate = self
@@ -87,10 +121,14 @@ class HomeSceneView: UIViewController {
 // MARK: Extensions
 extension HomeSceneView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        homeSceneViewModel.fetchedPostsInfo.count
+        print(homeSceneViewModel.fetchedPostsInfo.count)
+        print("Table View Frame: \(postsTableView.frame)")
+
+        return homeSceneViewModel.fetchedPostsInfo.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        print("start")
         let cell: UITableViewCell
         let post = homeSceneViewModel.fetchedPostsInfo[indexPath.row]
         cell = postsTableView.dequeueReusableCell(withIdentifier: "postCell", for: indexPath)
@@ -99,12 +137,13 @@ extension HomeSceneView: UITableViewDataSource {
             postCell.configureCell(with: post)
         }
         
+        print("finish")
         return cell
     }
 }
 
 extension HomeSceneView: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        #warning("go to post details View")
-    }
+//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+     #warning("go to post details View")
+//    }
 }

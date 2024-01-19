@@ -45,6 +45,10 @@ final class LoginSceneViewModel {
             
             guard let self = self else { return }
             
+            if error != nil {
+                print(error?.localizedDescription)
+            }
+            
             if let snapshot = snapshot {
                 for document in snapshot.documents {
                     let data = document.data()
@@ -92,10 +96,6 @@ final class LoginSceneViewModel {
                 completion(true)
             } else {
                 completion(false)
-            }
-            
-            if error != nil {
-                print(error)
             }
         }
     }

@@ -12,7 +12,7 @@ enum PostType: String {
 }
 
 enum AchievementType: String {
-    case startedBook, finishedBook
+    case none, startedBook, finishedBook
 }
 
 struct PostInfo: Identifiable {
@@ -25,5 +25,5 @@ struct PostInfo: Identifiable {
     var likedBy: [UserInfo.ID]
     var comments: [CommentInfo]
     var spoilersAllowed: Bool
-    var achievementType: AchievementType?
+    var achievementType: AchievementType = .none
 }

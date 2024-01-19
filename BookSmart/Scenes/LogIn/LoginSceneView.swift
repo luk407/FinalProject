@@ -248,7 +248,10 @@ final class LoginSceneView: UIViewController {
         guard let navigationControllerToPass = self.navigationController else { return }
         
         if emailTextField.text == "" || passwordTextField.text == "" {
-            present(emptyAlert, animated: true, completion: nil)
+            //present(emptyAlert, animated: true, completion: nil)
+            #warning("change after finishing project")
+            emailTextField.text = "luk@gmail.com"
+            passwordTextField.text = "Luka!2345"            
         } else {
             loginSceneViewModel.login(
                 email: emailTextField.text ?? "",

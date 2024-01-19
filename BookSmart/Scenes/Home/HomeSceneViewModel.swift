@@ -15,11 +15,15 @@ class HomeSceneViewModel {
     var userInfo: UserInfo?
     
     // MARK: - Methods
-    func fetchPostInfo() {
+    func fetchPostsInfo(completion: @escaping (Bool) -> Void) {
         let database = Firestore.firestore()
         let reference = database.collection("PostInfo")
         
         reference.getDocuments() { [weak self] snapshot, error in
+            
+            if error != nil {
+                print(error?.localizedDescription)
+            }
             
             guard let self = self else { return }
             
@@ -32,19 +36,20 @@ class HomeSceneViewModel {
                     let typeString = data["type"] as? String ?? ""
                     let header = data["header"] as? String ?? ""
                     let body = data["body"] as? String ?? ""
-                    let postingTime = data["postingTime"] as? Date ?? Date.now
+                    let postingTimeTimestamp = data["postingTime"] as? Timestamp ?? Timestamp(date: Date())
+                    let postingTime = postingTimeTimestamp.dateValue()
                     let likedBy = data["likedBy"] as? [UserInfo.ID] ?? []
                     let comments = data["comments"] as? [CommentInfo] ?? []
                     let spoilersAllowed = data["spoilersAllowed"] as? Bool ?? false
-                    let achievementTypeString = data["achievementType"] as? AchievementType? ?? nil
+                    let achievementTypeString = data["achievementType"] as? AchievementType ?? .none
                     
                     if let type = PostType(rawValue: typeString),
-                       let achievementType = AchievementType(rawValue: achievementTypeString?.rawValue ?? ""),
+                       let achievementType = AchievementType(rawValue: achievementTypeString.rawValue),
                        UUID(uuidString: authorID) != self.userInfo?.id {
                         
                         let postInfo = PostInfo(
                             id: UUID(uuidString: id) ?? UUID(),
-                            authorID: UUID(uuidString: id) ?? UUID(),
+                            authorID: UUID(uuidString: authorID) ?? UUID(),
                             type: type,
                             header: header,
                             body: body,
@@ -53,10 +58,13 @@ class HomeSceneViewModel {
                             comments: comments,
                             spoilersAllowed: spoilersAllowed,
                             achievementType: achievementType)
-                        
+
                         self.fetchedPostsInfo.append(postInfo)
                     }
                 }
+                completion(true)
+            } else {
+                completion(false)
             }
         }
     }
