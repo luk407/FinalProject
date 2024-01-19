@@ -24,34 +24,48 @@ final class PostsTableViewCell: UITableViewCell {
     
     private let usernameLabel = UILabel()
     
+    private let timeLabel = UILabel()
+    
     private let postContentStackView = UIStackView()
     
     private let headerLabel = UILabel()
     
     private let bodyLabel = UILabel()
     
-    private let interactionStackView = UIHostingController(rootView: InteractionStackView())
+    private let interactionStackView = UIStackView()
+    
+    private let likeButton = UIButton()
+    
+    private let commentButton = UIButton()
+    
+    private let shareButton = UIButton()
+    
+    private var userInfo: UserInfo?
+    
+    private var postInfo: PostInfo?
 
     // MARK: - Init
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.backgroundColor = .clear
-        selectionStyle = .none
         setupSubViews()
         setupConstraints()
         setupUI()
     }
 
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: coder)
+        setupSubViews()
+        setupConstraints()
+        setupUI()
     }
-    
+
     override func prepareForReuse() {
         super.prepareForReuse()
         authorImageView.image = nil
         nameLabel.text = nil
         usernameLabel.text = nil
+        timeLabel.text = nil
         headerLabel.text = nil
         bodyLabel.text = nil
     }
@@ -65,16 +79,21 @@ final class PostsTableViewCell: UITableViewCell {
         authorInfoStackView.addArrangedSubview(namesStackView)
         namesStackView.addArrangedSubview(nameLabel)
         namesStackView.addArrangedSubview(usernameLabel)
+        authorInfoStackView.addArrangedSubview(timeLabel)
         mainStackView.addArrangedSubview(postContentStackView)
         postContentStackView.addArrangedSubview(headerLabel)
         postContentStackView.addArrangedSubview(bodyLabel)
-        //mainStackView.addArrangedSubview(interactionStackView.view)
+        mainStackView.addArrangedSubview(interactionStackView)
+        interactionStackView.addArrangedSubview(likeButton)
+        interactionStackView.addArrangedSubview(commentButton)
+        interactionStackView.addArrangedSubview(shareButton)
     }
     
     private func setupConstraints() {
         setupMainStackViewConstraints()
         setupAuthorInfoStackViewConstraints()
         setupAuthorImageViewConstraints()
+        setupTimeLabelConstraints()
         setupPostContentStackViewConstraints()
         setupBodyLabelConstraints()
     }
@@ -86,18 +105,32 @@ final class PostsTableViewCell: UITableViewCell {
         setupNamesStackViewUI()
         setupNameLabelUI()
         setupUsernameLabelUI()
+        setupTimeLabelUI()
         setupPostContentStackViewUI()
         setupHeaderLabelUI()
         setupBodyLabelUI()
+        setupInteractionStackViewUI()
+        setupLikeButtonUI()
+        setupCommentButtonUI()
+        setupShareButtonUI()
     }
     
-    func configureCell(with post: PostInfo) {
+    func configureCell(userInfo: UserInfo, post: PostInfo) {
         #warning("fetch real user image")
-        authorImageView.image = UIImage(systemName: "person.fill")
+        self.userInfo = userInfo
+        self.postInfo = post
+        
+        let timeAgo = timeAgoString(from: post.postingTime)
+        
+        authorImageView.image = UIImage(systemName: "person.fill")?.withTintColor(.customAccentColor)
         nameLabel.text = "placeHolderName"
         usernameLabel.text = "@placeholderUsename"
+        timeLabel.text = timeAgo
         headerLabel.text = post.header
         bodyLabel.text = post.body
+        
+        self.backgroundColor = .clear
+        self.selectionStyle = .none
     }
     
     // MARK: - Constraints
@@ -125,6 +158,13 @@ final class PostsTableViewCell: UITableViewCell {
         ])
     }
     
+    private func setupTimeLabelConstraints() {
+        NSLayoutConstraint.activate([
+            timeLabel.widthAnchor.constraint(equalToConstant: 20),
+            timeLabel.heightAnchor.constraint(equalToConstant: 20)
+        ])
+    }
+    
     private func setupPostContentStackViewConstraints() {
         NSLayoutConstraint.activate([
             postContentStackView.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor, constant: 20),
@@ -148,7 +188,7 @@ final class PostsTableViewCell: UITableViewCell {
         mainStackView.axis = .vertical
         mainStackView.spacing = 16
         mainStackView.alignment = .center
-        mainStackView.customize(backgroundColor: .clear, radiusSize: 8, borderColor: .customAccentColor, borderWidth: 2)
+        mainStackView.customize(backgroundColor: .clear, radiusSize: 8, borderColor: .customAccentColor.withAlphaComponent(0.5), borderWidth: 2)
     }
     
     private func setupAuthorInfoStackViewUI() {
@@ -159,10 +199,15 @@ final class PostsTableViewCell: UITableViewCell {
     }
     
     private func setupAuthorImageViewUI() {
+        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.authorImageTapped))
+        authorImageView.addGestureRecognizer(gestureRecognizer)
+        authorImageView.isUserInteractionEnabled = true
+        
         authorImageView.translatesAutoresizingMaskIntoConstraints = false
-        authorImageView.contentMode = .scaleAspectFit
+        authorImageView.contentMode = .scaleAspectFill
+        authorImageView.clipsToBounds = true
         authorImageView.layer.cornerRadius = 35
-        authorImageView.layer.borderColor = UIColor.customAccentColor.cgColor
+        authorImageView.layer.borderColor = UIColor.customAccentColor.withAlphaComponent(0.5).cgColor
         authorImageView.layer.borderWidth = 2
     }
     
@@ -183,6 +228,11 @@ final class PostsTableViewCell: UITableViewCell {
         usernameLabel.textColor = .systemGray
     }
     
+    private func setupTimeLabelUI() {
+        timeLabel.font = .systemFont(ofSize: 14)
+        timeLabel.textColor = .white
+    }
+    
     private func setupPostContentStackViewUI() {
         postContentStackView.axis = .vertical
         postContentStackView.spacing = 16
@@ -191,15 +241,184 @@ final class PostsTableViewCell: UITableViewCell {
     }
     
     private func setupHeaderLabelUI() {
+        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.postHeaderOrBodyTapped))
+        headerLabel.addGestureRecognizer(gestureRecognizer)
+        headerLabel.isUserInteractionEnabled = true
+        
         headerLabel.font = .boldSystemFont(ofSize: 16)
         headerLabel.textColor = .white
     }
     
     private func setupBodyLabelUI() {
+        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.postHeaderOrBodyTapped))
+        bodyLabel.addGestureRecognizer(gestureRecognizer)
+        bodyLabel.isUserInteractionEnabled = true
+        
         bodyLabel.font = .systemFont(ofSize: 14)
         bodyLabel.textColor = .white
         bodyLabel.numberOfLines = 0
         bodyLabel.lineBreakMode = .byWordWrapping
         bodyLabel.setContentCompressionResistancePriority(.required, for: .vertical)
+    }
+    
+    private func setupInteractionStackViewUI() {
+        interactionStackView.axis = .horizontal
+        interactionStackView.distribution = .fillEqually
+        interactionStackView.alignment = .center
+        interactionStackView.spacing = 16
+    }
+    
+    private func setupLikeButtonUI() {
+        likeButton.addTarget(self, action: #selector(likeButtonTapped), for: .touchUpInside)
+        
+        let imageView = UIImageView(image: UIImage(systemName: "heart.fill"))
+        imageView.contentMode = .scaleAspectFit
+        imageView.tintColor = UIColor.customLikeButtonColor
+        
+        let label = UILabel()
+        label.text = "Like"
+        label.textColor = UIColor.customLikeButtonColor
+        label.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
+        
+        likeButton.addSubview(imageView)
+        likeButton.addSubview(label)
+        
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            imageView.leadingAnchor.constraint(equalTo: likeButton.leadingAnchor, constant: 8),
+            imageView.centerYAnchor.constraint(equalTo: likeButton.centerYAnchor),
+            imageView.widthAnchor.constraint(equalToConstant: 20),
+            imageView.heightAnchor.constraint(equalToConstant: 20),
+        ])
+        
+        label.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            label.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: 4),
+            label.centerYAnchor.constraint(equalTo: likeButton.centerYAnchor),
+        ])
+    }
+    
+    private func setupCommentButtonUI() {
+        commentButton.addTarget(self, action: #selector(commentButtonTapped), for: .touchUpInside)
+        
+        let imageView = UIImageView(image: UIImage(systemName: "text.bubble.fill"))
+        imageView.contentMode = .scaleAspectFit
+        imageView.tintColor = UIColor.customCommentButtonColor
+        
+        let label = UILabel()
+        label.text = "Comment"
+        label.textColor = UIColor.customCommentButtonColor
+        label.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
+        
+        commentButton.addSubview(imageView)
+        commentButton.addSubview(label)
+        
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            imageView.leadingAnchor.constraint(equalTo: commentButton.leadingAnchor, constant: 8),
+            imageView.centerYAnchor.constraint(equalTo: commentButton.centerYAnchor),
+            imageView.widthAnchor.constraint(equalToConstant: 20),
+            imageView.heightAnchor.constraint(equalToConstant: 20),
+        ])
+        
+        label.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            label.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: 4),
+            label.centerYAnchor.constraint(equalTo: commentButton.centerYAnchor),
+        ])
+    }
+    
+    private func setupShareButtonUI() {
+        shareButton.addTarget(self, action: #selector(shareButtonTapped), for: .touchUpInside)
+        
+        let imageView = UIImageView(image: UIImage(systemName: "square.and.arrow.up.fill"))
+        imageView.contentMode = .scaleAspectFit
+        imageView.tintColor = UIColor.customCommentButtonColor
+        
+        let label = UILabel()
+        label.text = "Share"
+        label.textColor = UIColor.customCommentButtonColor
+        label.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
+        
+        shareButton.addSubview(imageView)
+        shareButton.addSubview(label)
+        
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            imageView.leadingAnchor.constraint(equalTo: shareButton.leadingAnchor, constant: 8),
+            imageView.centerYAnchor.constraint(equalTo: shareButton.centerYAnchor),
+            imageView.widthAnchor.constraint(equalToConstant: 20),
+            imageView.heightAnchor.constraint(equalToConstant: 20),
+        ])
+        
+        label.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            label.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: 4),
+            label.centerYAnchor.constraint(equalTo: shareButton.centerYAnchor),
+        ])
+    }
+    
+    // MARK: - Private Methods
+    
+    private func timeAgoString(from date: Date) -> String {
+        let currentDate = Date()
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: date, to: currentDate)
+        
+        if let years = components.year, years > 0 {
+            return "\(years)y"
+        } else if let months = components.month, months > 0 {
+            return "\(months)m"
+        } else if let days = components.day, days > 0 {
+            return "\(days)d"
+        } else if let hours = components.hour, hours > 0 {
+            return "\(hours)h"
+        } else if let minutes = components.minute, minutes > 0 {
+            return "\(minutes)m"
+        } else {
+            return "Now"
+        }
+    }
+
+    @objc private func authorImageTapped(sender: UITapGestureRecognizer) {
+        #warning("changee")
+        if sender.state == .ended {
+            UIView.animate(withDuration: 0.1, animations: {
+                self.authorImageView.alpha = 0.2
+            }) { _ in
+                UIView.animate(withDuration: 0.1) {
+                    self.authorImageView.alpha = 1.0
+                }
+            }
+            print("image tapped, go to profile page")
+        }
+    }
+    
+    @objc private func postHeaderOrBodyTapped(sender: UITapGestureRecognizer) {
+        #warning("changee")
+        if sender.state == .ended {
+            UIView.animate(withDuration: 0.1, animations: {
+                self.headerLabel.alpha = 0.5
+                self.bodyLabel.alpha = 0.5
+            }) { _ in
+                UIView.animate(withDuration: 0.1) {
+                    self.headerLabel.alpha = 1.0
+                    self.bodyLabel.alpha = 1.0
+                }
+            }
+            print("post tapped, go to post details page")
+        }
+    }
+    
+    @objc private func likeButtonTapped() {
+        print("Like")
+    }
+    
+    @objc private func commentButtonTapped() {
+        print("Comment")
+    }
+    
+    @objc private func shareButtonTapped() {
+        print("Share")
     }
 }

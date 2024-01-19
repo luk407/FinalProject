@@ -39,7 +39,6 @@
 		A10695182B584525009E5843 /* ChecklistItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10695172B584525009E5843 /* ChecklistItemView.swift */; };
 		A106951A2B590EBE009E5843 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10695192B590EBE009E5843 /* TabBarController.swift */; };
 		A106951F2B5A7995009E5843 /* PostsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A106951E2B5A7995009E5843 /* PostsTableViewCell.swift */; };
-		A10695212B5A7FD9009E5843 /* InteractionStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10695202B5A7FD9009E5843 /* InteractionStackView.swift */; };
 		A10695232B5A848C009E5843 /* UIStackView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10695222B5A848C009E5843 /* UIStackView+Extension.swift */; };
 /* End PBXBuildFile section */
 
@@ -75,7 +74,6 @@
 		A10695172B584525009E5843 /* ChecklistItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChecklistItemView.swift; sourceTree = "<group>"; };
 		A10695192B590EBE009E5843 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		A106951E2B5A7995009E5843 /* PostsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsTableViewCell.swift; sourceTree = "<group>"; };
-		A10695202B5A7FD9009E5843 /* InteractionStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractionStackView.swift; sourceTree = "<group>"; };
 		A10695222B5A848C009E5843 /* UIStackView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView+Extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -247,7 +245,6 @@
 			children = (
 				A10695152B583B90009E5843 /* PasswordStrengthChecklistUIView.swift */,
 				A10695172B584525009E5843 /* ChecklistItemView.swift */,
-				A10695202B5A7FD9009E5843 /* InteractionStackView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -349,7 +346,6 @@
 				A10694AF2B56F185009E5843 /* SignupSceneViewModel.swift in Sources */,
 				A10694D52B56FFD8009E5843 /* Quote.swift in Sources */,
 				A106948A2B56EC73009E5843 /* AppDelegate.swift in Sources */,
-				A10695212B5A7FD9009E5843 /* InteractionStackView.swift in Sources */,
 				A106948C2B56EC73009E5843 /* SceneDelegate.swift in Sources */,
 				A10694BE2B56F3BD009E5843 /* CreatePostSceneView.swift in Sources */,
 				A106951F2B5A7995009E5843 /* PostsTableViewCell.swift in Sources */,

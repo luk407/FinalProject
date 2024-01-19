@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 class HomeSceneView: UIViewController {
     
@@ -43,13 +44,8 @@ class HomeSceneView: UIViewController {
             guard let self = self else { return }
             
             if success {
-                print("Data loaded successfully. Number of posts: \(self.homeSceneViewModel.fetchedPostsInfo.count)")
-                print("Table View Frame: \(postsTableView.frame)")
-
                 DispatchQueue.main.async {
                     self.postsTableView.reloadData()
-                    print("Table View Frame: \(self.postsTableView.frame)")
-
                 }
             } else {
                 print("Failed to fetch user information.")
@@ -110,8 +106,6 @@ class HomeSceneView: UIViewController {
     private func setupPostsTableViewUI() {
         postsTableView.translatesAutoresizingMaskIntoConstraints = false
         postsTableView.backgroundColor = .clear
-        //postsTableView.rowHeight = UITableView.automaticDimension
-        //postsTableView.estimatedRowHeight = 100
         postsTableView.register(PostsTableViewCell.self, forCellReuseIdentifier: "postCell")
         postsTableView.dataSource = self
         postsTableView.delegate = self
@@ -121,29 +115,23 @@ class HomeSceneView: UIViewController {
 // MARK: Extensions
 extension HomeSceneView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print(homeSceneViewModel.fetchedPostsInfo.count)
-        print("Table View Frame: \(postsTableView.frame)")
-
-        return homeSceneViewModel.fetchedPostsInfo.count
+        homeSceneViewModel.fetchedPostsInfo.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        print("start")
-        let cell: UITableViewCell
         let post = homeSceneViewModel.fetchedPostsInfo[indexPath.row]
-        cell = postsTableView.dequeueReusableCell(withIdentifier: "postCell", for: indexPath)
-        
-        if let postCell = cell as? PostsTableViewCell {
-            postCell.configureCell(with: post)
+        if let cell = postsTableView.dequeueReusableCell(withIdentifier: "postCell", for: indexPath) as? PostsTableViewCell {
+            cell.configureCell(userInfo: userInfo, post: post)
+            cell.contentView.isUserInteractionEnabled = false
+            return cell
+        } else {
+            return UITableViewCell()
         }
-        
-        print("finish")
-        return cell
     }
 }
 
 extension HomeSceneView: UITableViewDelegate {
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
      #warning("go to post details View")
-//    }
+    }
 }
