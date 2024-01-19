@@ -41,12 +41,13 @@ final class LoginSceneViewModel {
         let database = Firestore.firestore()
         let reference = database.collection("UserInfo")
         
-        reference.getDocuments() { [weak self] snapshot, error in
-            
+        reference.getDocuments { [weak self] snapshot, error in
             guard let self = self else { return }
             
-            if error != nil {
-                print(error?.localizedDescription)
+            if let error = error {
+                print("Error fetching user information: \(error.localizedDescription)")
+                completion(false)
+                return
             }
             
             if let snapshot = snapshot {
@@ -57,21 +58,26 @@ final class LoginSceneViewModel {
                     let emailToCheck = data["email"] as? String ?? ""
                     
                     if emailToCheck == email && passwordToCheck == password {
-                        let id = data["id"] as? String ?? ""
-                        let username = data["username"] as? String ?? ""
-                        let email = data["email"] as? String ?? ""
-                        let password = data["password"] as? String ?? ""
-                        let displayName = data["displayName"] as? String ?? ""
-                        let registrationDate = data["registrationDate"] as? Date ?? Date.now
-                        let bio = data["bio"] as? String ?? ""
-                        let image = data["image"] as? String ?? ""
-                        let badges = data["badge"] as? [BadgeInfo] ?? []
-                        let posts = data["posts"] as? [PostInfo.ID] ?? []
-                        let comments = data["comments"] as? [CommentInfo.ID] ?? []
-                        let likedPosts = data["likedPosts"] as? [PostInfo.ID] ?? []
-                        let connections = data["connections"] as? [UserInfo.ID] ?? []
-                        let booksFinished = data["booksFinished"] as? [Book] ?? []
-                        let quotesUsed = data["quotesUsed"] as? [Quote] ?? []
+                        guard
+                            let id = data["id"] as? String,
+                            let username = data["username"] as? String,
+                            let email = data["email"] as? String,
+                            let password = data["password"] as? String,
+                            let displayName = data["displayName"] as? String,
+                            let registrationDateTimestamp = data["registrationDate"] as? Timestamp,
+                            let bio = data["bio"] as? String,
+                            let image = data["image"] as? String,
+                            let badges = data["badges"] as? [BadgeInfo],
+                            let posts = data["posts"] as? [String],
+                            let comments = data["comments"] as? [String],
+                            let likedPosts = data["likedPosts"] as? [String],
+                            let connections = data["connections"] as? [String],
+                            let booksFinished = data["booksFinished"] as? [Book],
+                            let quotesUsed = data["quotesUsed"] as? [Quote]
+                        else {
+                            print("Error parsing user data")
+                            continue
+                        }
                         
                         let userInfo = UserInfo(
                             id: UUID(uuidString: id) ?? UUID(),
@@ -79,16 +85,17 @@ final class LoginSceneViewModel {
                             email: email,
                             password: password,
                             displayName: displayName,
-                            registrationDate: registrationDate,
+                            registrationDate: registrationDateTimestamp.dateValue(),
                             bio: bio,
                             image: image,
                             badges: badges,
-                            posts: posts,
-                            comments: comments,
-                            likedPosts: likedPosts,
-                            connections: connections,
+                            posts: posts.map { UUID(uuidString: $0) ?? UUID() },
+                            comments: comments.map { UUID(uuidString: $0) ?? UUID() },
+                            likedPosts: likedPosts.map { UUID(uuidString: $0) ?? UUID() },
+                            connections: connections.map { UUID(uuidString: $0) ?? UUID() },
                             booksFinished: booksFinished,
-                            quotesUsed: quotesUsed)
+                            quotesUsed: quotesUsed
+                        )
                         
                         self.fetchedUserData = userInfo
                     }

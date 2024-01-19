@@ -31,33 +31,39 @@ class HomeSceneViewModel {
                 for document in snapshot.documents {
                     let data = document.data()
                     
-                    let id = data["id"] as? String ?? ""
-                    let authorID = data["authorID"] as? String ?? ""
-                    let typeString = data["type"] as? String ?? ""
-                    let header = data["header"] as? String ?? ""
-                    let body = data["body"] as? String ?? ""
-                    let postingTimeTimestamp = data["postingTime"] as? Timestamp ?? Timestamp(date: Date())
-                    let postingTime = postingTimeTimestamp.dateValue()
-                    let likedBy = data["likedBy"] as? [UserInfo.ID] ?? []
-                    let comments = data["comments"] as? [CommentInfo.ID] ?? []
-                    let spoilersAllowed = data["spoilersAllowed"] as? Bool ?? false
-                    let achievementTypeString = data["achievementType"] as? AchievementType ?? .none
-                    
+                    guard
+                        let id = data["id"] as? String,
+                        let authorIDString = data["authorID"] as? String,
+                        let authorID = UUID(uuidString: authorIDString),
+                        let typeString = data["type"] as? String,
+                        let header = data["header"] as? String,
+                        let body = data["body"] as? String,
+                        let postingTimeTimestamp = data["postingTime"] as? Timestamp,
+                        let likedBy = data["likedBy"] as? [String],
+                        let comments = data["comments"] as? [String],
+                        let spoilersAllowed = data["spoilersAllowed"] as? Bool,
+                        let achievementTypeString = data["achievementType"] as? String
+                    else {
+                        print("Error parsing post data")
+                        continue
+                    }
+
                     if let type = PostType(rawValue: typeString),
-                       let achievementType = AchievementType(rawValue: achievementTypeString.rawValue),
-                       UUID(uuidString: authorID) != self.userInfo?.id {
+                       let achievementType = AchievementType(rawValue: achievementTypeString),
+                       authorID != self.userInfo?.id {
                         
                         let postInfo = PostInfo(
                             id: UUID(uuidString: id) ?? UUID(),
-                            authorID: UUID(uuidString: authorID) ?? UUID(),
+                            authorID: authorID,
                             type: type,
                             header: header,
                             body: body,
-                            postingTime: postingTime,
-                            likedBy: likedBy,
-                            comments: comments,
+                            postingTime: postingTimeTimestamp.dateValue(),
+                            likedBy: likedBy.map { UUID(uuidString: $0) ?? UUID() },
+                            comments: comments.map { UUID(uuidString: $0) ?? UUID() },
                             spoilersAllowed: spoilersAllowed,
-                            achievementType: achievementType)
+                            achievementType: achievementType
+                        )
 
                         self.fetchedPostsInfo.append(postInfo)
                     }

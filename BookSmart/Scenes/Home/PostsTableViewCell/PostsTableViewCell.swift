@@ -417,7 +417,6 @@ final class PostsTableViewCell: UITableViewCell {
         let userReference = database.collection("UserInfo").document(userInfo.id.uuidString)
         let postReference = database.collection("PostInfo").document(postInfo.id.uuidString)
         
-        
         let isLiked = userInfo.likedPosts.contains(postInfo.id)
         
         if isLiked {
@@ -462,7 +461,7 @@ final class PostsTableViewCell: UITableViewCell {
             }
         }
     }
-    
+
     private func updateLikeButtonUI(isLiked: Bool) {
         let imageName = isLiked ? "heart.fill" : "heart"
         
