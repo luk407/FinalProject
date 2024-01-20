@@ -120,7 +120,7 @@ struct StoryPostView: View {
             likedBy: [],
             comments: [],
             spoilersAllowed: isSpoilersAllowed,
-            achievementType: .none
+            announcementType: .none
         )
         
         addPostToFirebase(post: newPost)
@@ -142,7 +142,7 @@ struct StoryPostView: View {
             "likedBy": post.likedBy.map { $0.uuidString },
             "comments": post.comments.map { $0.uuidString },
             "spoilersAllowed": post.spoilersAllowed,
-            "achievementType": post.achievementType.rawValue
+            "announcementType": post.announcementType.rawValue
         ]
         
         postReference.setData(postData)

@@ -8,10 +8,10 @@
 import Foundation
 
 enum PostType: String {
-    case story, achievement
+    case story, announcement
 }
 
-enum AchievementType: String {
+enum AnnouncementType: String {
     case none, startedBook, finishedBook
 }
 
@@ -25,5 +25,5 @@ struct PostInfo: Identifiable {
     var likedBy: [UserInfo.ID]
     var comments: [CommentInfo.ID]
     var spoilersAllowed: Bool
-    var achievementType: AchievementType = .none
+    var announcementType: AnnouncementType
 }

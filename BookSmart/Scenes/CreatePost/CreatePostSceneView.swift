@@ -23,9 +23,9 @@ struct CreatePostSceneView: View {
                     }
                     .tag(0)
                 
-                AchievementPostView()
+                AnnouncementPostView(viewModel: AnnouncementPostViewModel(userInfo: userInfo))
                     .tabItem {
-                        Label("Achievement", systemImage: "megaphone.fill")
+                        Label("Announcement", systemImage: "megaphone.fill")
                     }
                     .tag(1)
             }
