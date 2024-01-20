@@ -11,6 +11,7 @@ class TabBarController: UITabBarController {
     // MARK: - Properties
     var userInfo: UserInfo
     
+    private var appNameLabel = UILabel()
     // MARK: - Init
     init(userInfo: UserInfo) {
         self.userInfo = userInfo
@@ -27,7 +28,11 @@ class TabBarController: UITabBarController {
         
         navigationItem.hidesBackButton = true
         
-        let homeViewController =  HomeSceneView()
+        setupAppNameLabelUI()
+        
+        navigationItem.titleView = appNameLabel
+    
+        let homeViewController =  HomeSceneView(userInfo: userInfo)
         let announcementsViewController = AnnouncementSceneView()
         let createPostViewController = CreatePostSceneView()
         let leaderboardViewController = LeaderboardSceneView()
@@ -43,6 +48,13 @@ class TabBarController: UITabBarController {
         UITabBar.appearance().unselectedItemTintColor = UIColor.white
         
         viewControllers = [homeViewController, announcementsViewController, createPostViewController, leaderboardViewController, profileViewController]
+    }
+    
+    private func setupAppNameLabelUI() {
+        appNameLabel.text = "placeHolderName"
+        appNameLabel.font = .systemFont(ofSize: 20)
+        appNameLabel.textColor = .customAccentColor
+        appNameLabel.sizeToFit()
     }
 }
 
