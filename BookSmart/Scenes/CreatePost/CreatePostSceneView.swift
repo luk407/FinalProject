@@ -2,15 +2,34 @@
 //  CreatePostSceneView.swift
 //  BookSmart
 //
-//  Created by Luka Gazdeliani on 16.01.24.
+//  Created by Luka Gazdeliani on 20.01.24.
 //
 
-import UIKit
+import SwiftUI
 
-class CreatePostSceneView: UIViewController {
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .customBackgroundColor
+struct CreatePostSceneView: View {
+    
+    // MARK: - Properties
+    @State private var selectedTab: Int = 0
+    var userInfo: UserInfo
+    
+    // MARK: - Body
+    var body: some View {
+        VStack {
+            TabView(selection: $selectedTab) {
+                StoryPostView(userInfo: userInfo)
+                    .tabItem {
+                        Label("Story", systemImage: "book.pages.fill")
+                    }
+                    .tag(0)
+                
+                AchievementPostView()
+                    .tabItem {
+                        Label("Achievement", systemImage: "megaphone.fill")
+                    }
+                    .tag(1)
+            }
+            .accentColor(Color(uiColor: .customAccentColor))
+        }
     }
 }
