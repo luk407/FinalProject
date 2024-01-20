@@ -7,11 +7,15 @@
 
 import Foundation
 import Firebase
+import GenericNetworkLayer
+import Combine
  
 final class AnnouncementPostViewModel: ObservableObject {
     
     // MARK: - Properties
     
+    private var disposeBag = Set<AnyCancellable>()
+
     @Published var searchText: String = ""
     @Published var isSpoilersAllowed: Bool = false
     @Published var selectedAnnouncementType: AnnouncementType = .startedBook
@@ -19,7 +23,7 @@ final class AnnouncementPostViewModel: ObservableObject {
     
     var userInfo: UserInfo
     
-    var booksArray: [Book] = [Book(title: "sometitle", authorName: ["author"]), Book(title: "secondBook", authorName: ["someone"])]
+    var booksArray: [Book] = []
     
     var searchResults: [Book] {
         if searchText.isEmpty {
@@ -50,10 +54,22 @@ final class AnnouncementPostViewModel: ObservableObject {
     
     init(userInfo: UserInfo) {
         self.userInfo = userInfo
+        debounceTextChanges()
     }
     
     // MARK: - Methods
     
+    private func debounceTextChanges() {
+        $searchText
+            .debounce(for: 2, scheduler: RunLoop.main)
+        
+            .sink {
+                print("new text value: \($0)")
+                self.fetchBooksData(with: $0)
+            }
+            .store(in: &disposeBag)
+    }
+
     func addPost() {
         if selectedAnnouncementType == .finishedBook {
             let newPost = PostInfo(
@@ -123,4 +139,16 @@ final class AnnouncementPostViewModel: ObservableObject {
         }
     }
 
+    func fetchBooksData(with titleString: String) {
+        guard let url = URL(string: "https://openlibrary.org/search.json?title=\(titleString)#") else { return }
+        
+        NetworkManager().request(with: url) { [ weak self ] (result: Result<BooksData, Error>) in
+            switch result {
+            case .success(let books):
+                self?.booksArray = books.docs
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
 }
