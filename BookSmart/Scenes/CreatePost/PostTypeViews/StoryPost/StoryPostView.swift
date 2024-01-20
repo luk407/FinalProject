@@ -13,6 +13,7 @@ struct StoryPostView: View {
     
     @Environment(\.dismiss) var dismiss
     @ObservedObject var viewModel: StoryPostViewModel
+    @State private var selectedQuote: Quote?
     
     // MARK: - Body
     
@@ -38,7 +39,7 @@ struct StoryPostView: View {
         }
         .navigationViewStyle(StackNavigationViewStyle())
         .sheet(isPresented: $viewModel.isAddPostSheetPresented) {
-            Text("New Page Content")
+            AddQuoteView(viewModel: AddQuoteViewModel(), selectedQuote: $selectedQuote)
         }
     }
     
@@ -69,6 +70,12 @@ struct StoryPostView: View {
                     .fill(Color(uiColor: .customAccentColor.withAlphaComponent(0.5)))
             )
             .foregroundColor(.black)
+            .onChange(of: selectedQuote) { newQuote in
+                if let quote = newQuote {
+                    viewModel.bodyText += "\(quote.text) - \(quote.author)."
+                    selectedQuote = nil
+                }
+            }
     }
     
     private var spoilersToggle: some View {

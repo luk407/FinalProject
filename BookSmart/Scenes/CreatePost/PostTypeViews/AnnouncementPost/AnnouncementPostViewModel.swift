@@ -61,10 +61,9 @@ final class AnnouncementPostViewModel: ObservableObject {
     
     private func debounceTextChanges() {
         $searchText
-            .debounce(for: 2, scheduler: RunLoop.main)
+            .debounce(for: 4, scheduler: RunLoop.main)
         
             .sink {
-                print("new text value: \($0)")
                 self.fetchBooksData(with: $0)
             }
             .store(in: &disposeBag)

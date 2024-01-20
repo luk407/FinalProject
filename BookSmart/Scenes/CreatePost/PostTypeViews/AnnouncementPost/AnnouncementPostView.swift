@@ -42,6 +42,7 @@ struct AnnouncementPostView: View {
     }
     
     // MARK: - Views
+    
     private var searchList: some View {
         List {
             ForEach(viewModel.searchResults, id: \.self) { result in
