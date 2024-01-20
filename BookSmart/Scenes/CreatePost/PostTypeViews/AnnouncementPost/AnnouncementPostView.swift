@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import Firebase
 
 struct AnnouncementPostView: View {
     
@@ -32,13 +31,14 @@ struct AnnouncementPostView: View {
                 announcementPicker
                 
                 addPostButton
+                    .padding()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color(uiColor: .customBackgroundColor))
         }
         .searchable(text: $viewModel.searchText, prompt: "Enter book name")
         .textInputAutocapitalization(.never)
-        .foregroundStyle(.white)
+        .foregroundStyle(Color(uiColor: .customAccentColor))
     }
     
     // MARK: - Views

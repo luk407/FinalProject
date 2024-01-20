@@ -10,14 +10,19 @@ import SwiftUI
 struct CreatePostSceneView: View {
     
     // MARK: - Properties
+    
     @State private var selectedTab: Int = 0
     var userInfo: UserInfo
     
     // MARK: - Body
+    
     var body: some View {
+        
         VStack {
+            
             TabView(selection: $selectedTab) {
-                StoryPostView(userInfo: userInfo)
+                
+                StoryPostView(viewModel: StoryPostViewModel(userInfo: userInfo))
                     .tabItem {
                         Label("Story", systemImage: "book.pages.fill")
                     }

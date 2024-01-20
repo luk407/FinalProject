@@ -11,6 +11,7 @@ import Firebase
 final class AnnouncementPostViewModel: ObservableObject {
     
     // MARK: - Properties
+    
     @Published var searchText: String = ""
     @Published var isSpoilersAllowed: Bool = false
     @Published var selectedAnnouncementType: AnnouncementType = .startedBook
@@ -44,6 +45,8 @@ final class AnnouncementPostViewModel: ObservableObject {
     var bodyText: String {
         "The book is written by \(formattedAuthorNames)"
     }
+    
+    // MARK: - Init
     
     init(userInfo: UserInfo) {
         self.userInfo = userInfo
