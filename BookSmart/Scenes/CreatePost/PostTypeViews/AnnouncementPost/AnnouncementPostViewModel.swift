@@ -130,8 +130,25 @@ final class AnnouncementPostViewModel: ObservableObject {
     private func updateUserDataOnFirebase(postID: UUID) {
         let database = Firestore.firestore()
         let userReference = database.collection("UserInfo").document(userInfo.id.uuidString)
+
+        let updatedPosts = FieldValue.arrayUnion([postID.uuidString])
         
-        userReference.updateData(["posts": FieldValue.arrayUnion([postID.uuidString])]) { error in
+        var updatedFinishedBooks = userInfo.booksFinished
+        if selectedAnnouncementType == .finishedBook, let selectedBook = selectedBook {
+            updatedFinishedBooks.append(selectedBook)
+        }
+
+        let userData: [String: Any] = [
+            "posts": updatedPosts,
+            "booksFinished": updatedFinishedBooks.map { book in
+                [
+                    "title": book.title,
+                    "authorName": book.authorName ?? []
+                ]
+            }
+        ]
+
+        userReference.updateData(userData) { error in
             if let error = error {
                 print("Error updating user data on Firebase: \(error.localizedDescription)")
             }

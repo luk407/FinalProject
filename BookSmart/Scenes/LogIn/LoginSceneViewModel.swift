@@ -72,7 +72,7 @@ final class LoginSceneViewModel {
                             let comments = data["comments"] as? [String],
                             let likedPosts = data["likedPosts"] as? [String],
                             let connections = data["connections"] as? [String],
-                            let booksFinished = data["booksFinished"] as? [BooksData],
+                            let booksFinished = data["booksFinished"] as? [Book],
                             let quotesUsed = data["quotesUsed"] as? [Quote]
                         else {
                             print("Error parsing user data")

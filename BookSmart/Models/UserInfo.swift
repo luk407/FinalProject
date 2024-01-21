@@ -21,6 +21,6 @@ struct UserInfo: Identifiable {
     var comments: [CommentInfo.ID]
     var likedPosts: [PostInfo.ID]
     var connections: [UserInfo.ID]
-    var booksFinished: [BooksData]
+    var booksFinished: [Book]
     var quotesUsed: [Quote]
 }
