@@ -146,9 +146,9 @@ final class PostsTableViewCell: UITableViewCell {
     private func setupMainStackViewConstraints() {
         NSLayoutConstraint.activate([
             mainStackView.topAnchor.constraint(equalTo: self.topAnchor),
-            mainStackView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            mainStackView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            mainStackView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+            mainStackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
+            mainStackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
+            mainStackView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -20),
         ])
     }
     
@@ -196,7 +196,7 @@ final class PostsTableViewCell: UITableViewCell {
         mainStackView.axis = .vertical
         mainStackView.spacing = 16
         mainStackView.alignment = .center
-        mainStackView.customize(backgroundColor: .clear, radiusSize: 8, borderColor: .customAccentColor.withAlphaComponent(0.5), borderWidth: 2)
+        mainStackView.customize(backgroundColor: .customAccentColor.withAlphaComponent(0.1), radiusSize: 8, borderColor: .clear, borderWidth: 1)
     }
     
     private func setupAuthorInfoStackViewUI() {

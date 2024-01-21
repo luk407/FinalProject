@@ -152,7 +152,7 @@ final class LoginSceneView: UIViewController {
     }
     
     private func setupAppNameLabelUI() {
-        appNameLabel.text = "placeHolderName"
+        appNameLabel.text = "BookSmart"
         appNameLabel.font = .systemFont(ofSize: 30)
         appNameLabel.textColor = .customAccentColor
     }

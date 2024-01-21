@@ -54,7 +54,7 @@ class TabBarController: UITabBarController {
     }
     
     private func setupAppNameLabelUI() {
-        appNameLabel.text = "placeHolderName"
+        appNameLabel.text = "BookSmart"
         appNameLabel.font = .systemFont(ofSize: 20)
         appNameLabel.textColor = .customAccentColor
         appNameLabel.sizeToFit()
