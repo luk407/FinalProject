@@ -72,7 +72,7 @@ final class LoginSceneViewModel {
                             let comments = data["comments"] as? [String],
                             let likedPosts = data["likedPosts"] as? [String],
                             let connections = data["connections"] as? [String],
-                            let booksFinished = data["booksFinished"] as? [Book],
+                            let booksFinishedArray = data["booksFinished"] as? [[String: Any]],
                             let quotesUsed = data["quotesUsed"] as? [Quote]
                         else {
                             print("Error parsing user data")
@@ -93,7 +93,7 @@ final class LoginSceneViewModel {
                             comments: comments.map { UUID(uuidString: $0) ?? UUID() },
                             likedPosts: likedPosts.map { UUID(uuidString: $0) ?? UUID() },
                             connections: connections.map { UUID(uuidString: $0) ?? UUID() },
-                            booksFinished: booksFinished,
+                            booksFinished: self.parseBooksFinishedArray(booksFinishedArray),
                             quotesUsed: quotesUsed
                         )
                         
@@ -105,5 +105,19 @@ final class LoginSceneViewModel {
                 completion(false)
             }
         }
+    }
+
+    private func parseBooksFinishedArray(_ booksFinishedArray: [[String: Any]]) -> [Book] {
+        var booksFinished: [Book] = []
+
+        for bookInfo in booksFinishedArray {
+            if let title = bookInfo["title"] as? String,
+               let authorName = bookInfo["author"] as? [String] {
+                let book = Book(title: title, authorName: authorName)
+                booksFinished.append(book)
+            }
+        }
+
+        return booksFinished
     }
 }
