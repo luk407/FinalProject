@@ -12,8 +12,6 @@ final class LoginSceneView: UIViewController {
     // MARK: - Properties
     private var mainStackView = UIStackView()
     
-    private var appNameLabel = UILabel()
-    
     private var inputInfoStackView = UIStackView()
     
     private var emailStackView = UIStackView()
@@ -43,7 +41,7 @@ final class LoginSceneView: UIViewController {
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .customBackgroundColor
+        assignBackground()
         setupSubviews()
         setupConstraints()
         setupUI()
@@ -52,7 +50,6 @@ final class LoginSceneView: UIViewController {
     // MARK: - Setup Subviews, Constraints, UI
     private func setupSubviews() {
         view.addSubview(mainStackView)
-        mainStackView.addArrangedSubview(appNameLabel)
         mainStackView.addArrangedSubview(inputInfoStackView)
         inputInfoStackView.addArrangedSubview(emailStackView)
         emailStackView.addArrangedSubview(emailLabel)
@@ -73,11 +70,11 @@ final class LoginSceneView: UIViewController {
         setupPasswordStackViewConstraints()
         setupPasswordTextFieldConstraints()
         setupLoginButtonConstraints()
+        setupDontHaveAccountStackViewConstraints()
     }
     
     private func setupUI() {
         setupMainStackViewUI()
-        setupAppNameLabelUI()
         setupInputInfoStackViewUI()
         setupEmailStackViewUI()
         setupEmailLabelUI()
@@ -95,10 +92,10 @@ final class LoginSceneView: UIViewController {
     // MARK: - Constraints
     private func setupMainStackViewConstraints() {
         NSLayoutConstraint.activate([
-            mainStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
+            mainStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 150),
             mainStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
             mainStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
-            mainStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -200),
+            mainStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -150),
         ])
     }
     
@@ -142,6 +139,12 @@ final class LoginSceneView: UIViewController {
         ])
     }
     
+    private func setupDontHaveAccountStackViewConstraints() {
+        NSLayoutConstraint.activate([
+            dontHaveAccountStackView.heightAnchor.constraint(equalToConstant: 50)
+        ])
+    }
+    
     // MARK: - UI
     private func setupMainStackViewUI() {
         mainStackView.translatesAutoresizingMaskIntoConstraints = false
@@ -149,12 +152,6 @@ final class LoginSceneView: UIViewController {
         mainStackView.alignment = .center
         mainStackView.spacing = 50
         mainStackView.distribution = .fillProportionally
-    }
-    
-    private func setupAppNameLabelUI() {
-        appNameLabel.text = "BookSmart"
-        appNameLabel.font = .systemFont(ofSize: 30)
-        appNameLabel.textColor = .customAccentColor
     }
     
     private func setupInputInfoStackViewUI() {
@@ -210,18 +207,21 @@ final class LoginSceneView: UIViewController {
     }
     
     private func setupDontHaveAccountStackViewUI() {
+        dontHaveAccountStackView.isLayoutMarginsRelativeArrangement = true
         dontHaveAccountStackView.spacing = 10
+        dontHaveAccountStackView.customize(backgroundColor: .customAccentColor.withAlphaComponent(0.5), radiusSize: 8, borderWidth: 1)
+        dontHaveAccountStackView.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
     }
     
     private func setupDontHaveAccountLabelUI() {
         dontHaveAccountLabel.text = "Don't have an account?"
-        dontHaveAccountLabel.font = .systemFont(ofSize: 14)
-        dontHaveAccountLabel.textColor = .white
+        dontHaveAccountLabel.font = .systemFont(ofSize: 20)
+        dontHaveAccountLabel.textColor = .black
     }
     
     private func setupSignUpButtonUI() {
         signUpButton.setTitle("Sign Up", for: .normal)
-        signUpButton.titleLabel?.font = .systemFont(ofSize: 14)
+        signUpButton.titleLabel?.font = .systemFont(ofSize: 20)
         signUpButton.setTitleColor(.systemBlue, for: .normal)
         signUpButton.addTarget(self, action: #selector(signupButtonPressed), for: .touchUpInside)
     }
@@ -269,4 +269,17 @@ final class LoginSceneView: UIViewController {
                 }
         }
     }
+    
+    private func assignBackground(){
+            let background = UIImage(named: "backgroundWithLogo")
+
+            var imageView = UIImageView()
+            imageView = UIImageView(frame: view.bounds)
+            imageView.contentMode =  UIView.ContentMode.scaleAspectFill
+            imageView.clipsToBounds = true
+            imageView.image = background
+            imageView.center = view.center
+            view.addSubview(imageView)
+            self.view.sendSubviewToBack(imageView)
+        }
 }

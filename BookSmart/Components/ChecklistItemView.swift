@@ -58,9 +58,9 @@ final class ChecklistItemView: UIView {
     func update(title: String, isMet: Bool) {
         titleLabel.text = title
         if isMet {
-            titleLabel.textColor = .systemGreen
+            titleLabel.textColor = .customIsMetColor
         } else {
-            titleLabel.textColor = .systemGray
+            titleLabel.textColor = .black
         }
     }
 }

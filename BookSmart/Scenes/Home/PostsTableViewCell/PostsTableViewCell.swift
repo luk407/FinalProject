@@ -347,7 +347,6 @@ final class PostsTableViewCell: UITableViewCell {
     }
     
     @objc private func postHeaderOrBodyTapped(sender: UITapGestureRecognizer) {
-#warning("changee")
         if sender.state == .ended {
             UIView.animate(withDuration: 0.1, animations: {
                 self.headerLabel.alpha = 0.5

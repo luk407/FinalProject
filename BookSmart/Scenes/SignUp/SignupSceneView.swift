@@ -12,8 +12,6 @@ class SignupSceneView: UIViewController {
     // MARK: - Properties
     private var mainStackView = UIStackView()
     
-    private var appNameLabel = UILabel()
-    
     private var inputInfoStackView = UIStackView()
     
     private var usernameStackView = UIStackView()
@@ -49,7 +47,7 @@ class SignupSceneView: UIViewController {
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .customBackgroundColor
+        assignBackground()
         setupSubviews()
         setupConstraints()
         setupUI()
@@ -58,7 +56,6 @@ class SignupSceneView: UIViewController {
     // MARK: - Setup Subviews, Constraints, UI
     private func setupSubviews() {
         view.addSubview(mainStackView)
-        mainStackView.addArrangedSubview(appNameLabel)
         mainStackView.addArrangedSubview(inputInfoStackView)
         inputInfoStackView.addArrangedSubview(usernameStackView)
         usernameStackView.addArrangedSubview(usernameLabel)
@@ -87,7 +84,6 @@ class SignupSceneView: UIViewController {
     
     private func setupUI() {
         setupMainStackViewUI()
-        setupAppNameLabelUI()
         setupInputInfoStackViewUI()
         setupNicknameStackViewUI()
         setupNicknameLabelUI()
@@ -105,10 +101,10 @@ class SignupSceneView: UIViewController {
     // MARK: - Constraints
     private func setupMainStackViewConstraints() {
         NSLayoutConstraint.activate([
-            mainStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            mainStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 150),
             mainStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
             mainStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
-            mainStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -100),
+            mainStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
         ])
     }
     
@@ -174,10 +170,17 @@ class SignupSceneView: UIViewController {
         mainStackView.distribution = .fillProportionally
     }
     
-    private func setupAppNameLabelUI() {
-        appNameLabel.text = "BookSmart"
-        appNameLabel.font = .systemFont(ofSize: 30)
-        appNameLabel.textColor = .customAccentColor
+    private func assignBackground(){
+        let background = UIImage(named: "backgroundWithLogo")
+        
+        var imageView = UIImageView()
+        imageView = UIImageView(frame: view.bounds)
+        imageView.contentMode =  UIView.ContentMode.scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.image = background
+        imageView.center = view.center
+        view.addSubview(imageView)
+        self.view.sendSubviewToBack(imageView)
     }
     
     private func setupInputInfoStackViewUI() {

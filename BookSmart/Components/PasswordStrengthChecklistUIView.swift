@@ -38,10 +38,10 @@ final class PasswordStrengthChecklistView: UIView {
 
     // MARK: - Init
     init(isMinLengthMet: Bool, isCapitalLetterMet: Bool, isNumberMet: Bool, isUniqueCharacterMet: Bool) {
-          self.isMinLengthMet = isMinLengthMet
-          self.isCapitalLetterMet = isCapitalLetterMet
-          self.isNumberMet = isNumberMet
-          self.isUniqueCharacterMet = isUniqueCharacterMet
+        self.isMinLengthMet = isMinLengthMet
+        self.isCapitalLetterMet = isCapitalLetterMet
+        self.isNumberMet = isNumberMet
+        self.isUniqueCharacterMet = isUniqueCharacterMet
         
         super.init(frame: .zero)
         setupSubviews()
@@ -82,14 +82,17 @@ final class PasswordStrengthChecklistView: UIView {
     
     private func setupMainStackViewUI() {
         mainStackView.translatesAutoresizingMaskIntoConstraints = false
+        mainStackView.isLayoutMarginsRelativeArrangement = true
         mainStackView.axis = .vertical
-        mainStackView.spacing = 8
+        mainStackView.spacing = 4
         mainStackView.alignment = .leading
         mainStackView.distribution = .fillProportionally
+        mainStackView.customize(backgroundColor: .customAccentColor.withAlphaComponent(0.5), radiusSize: 8, borderWidth: 1)
+        mainStackView.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
     }
     
     private func setupRequiredLabelUI() {
-        requiredLabel.textColor = .customAccentColor
+        requiredLabel.textColor = .black
         requiredLabel.text = "Your password should have:"
         requiredLabel.font = .systemFont(ofSize: 15)
     }
