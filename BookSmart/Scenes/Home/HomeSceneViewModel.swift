@@ -42,14 +42,14 @@ class HomeSceneViewModel {
                         let likedBy = data["likedBy"] as? [String],
                         let comments = data["comments"] as? [String],
                         let spoilersAllowed = data["spoilersAllowed"] as? Bool,
-                        let achievementTypeString = data["achievementType"] as? String
+                        let announcementTypeString = data["announcementType"] as? String
                     else {
                         print("Error parsing post data")
                         continue
                     }
 
                     if let type = PostType(rawValue: typeString),
-                       let achievementType = AchievementType(rawValue: achievementTypeString),
+                       let announcementType = AnnouncementType(rawValue: announcementTypeString),
                        authorID != self.userInfo?.id {
                         
                         let postInfo = PostInfo(
@@ -62,7 +62,7 @@ class HomeSceneViewModel {
                             likedBy: likedBy.map { UUID(uuidString: $0) ?? UUID() },
                             comments: comments.map { UUID(uuidString: $0) ?? UUID() },
                             spoilersAllowed: spoilersAllowed,
-                            achievementType: achievementType
+                            announcementType: announcementType
                         )
 
                         self.fetchedPostsInfo.append(postInfo)

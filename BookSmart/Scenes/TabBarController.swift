@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 class TabBarController: UITabBarController {
     // MARK: - Properties
@@ -26,6 +27,8 @@ class TabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.delegate = self
+        
         navigationItem.hidesBackButton = true
         
         setupAppNameLabelUI()
@@ -34,7 +37,7 @@ class TabBarController: UITabBarController {
     
         let homeViewController =  HomeSceneView(userInfo: userInfo)
         let announcementsViewController = AnnouncementSceneView()
-        let createPostViewController = CreatePostSceneView()
+        let createPostViewController = UIHostingController(rootView: CreatePostSceneView(userInfo: userInfo))
         let leaderboardViewController = LeaderboardSceneView()
         let profileViewController = ProfileSceneView()
         
@@ -56,5 +59,17 @@ class TabBarController: UITabBarController {
         appNameLabel.textColor = .customAccentColor
         appNameLabel.sizeToFit()
     }
+}
+
+extension TabBarController: UITabBarControllerDelegate {
+    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+        if viewController is UIHostingController<CreatePostSceneView> {
+            let createPostViewController = UIHostingController(rootView: CreatePostSceneView(userInfo: userInfo))
+            present(createPostViewController, animated: true, completion: nil)
+            return false
+        }
+        return true
+    }
+    
 }
 

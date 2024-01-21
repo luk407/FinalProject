@@ -7,12 +7,12 @@
 
 import Foundation
 
-struct Book: Decodable {
-    let docs: [Doc]
+struct BooksData: Decodable {
+    let docs: [Book]
 }
 
 // MARK: - Doc
-struct Doc: Decodable {
+struct Book: Decodable, Hashable {
     let title: String
     let authorName: [String]?
     
