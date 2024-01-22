@@ -12,8 +12,6 @@ class HomeSceneView: UIViewController {
     
     // MARK: - Properties
     
-    private var appNameLabel = UILabel()
-    
     private var mainStackView = UIStackView()
     
     private var postsTableView = UITableView()
@@ -106,6 +104,8 @@ class HomeSceneView: UIViewController {
     private func setupPostsTableViewUI() {
         postsTableView.translatesAutoresizingMaskIntoConstraints = false
         postsTableView.backgroundColor = .clear
+        postsTableView.estimatedRowHeight = 150
+        postsTableView.rowHeight = UITableView.automaticDimension
         postsTableView.register(PostsTableViewCell.self, forCellReuseIdentifier: "postCell")
         postsTableView.dataSource = self
         postsTableView.delegate = self
@@ -131,7 +131,8 @@ extension HomeSceneView: UITableViewDataSource {
 }
 
 extension HomeSceneView: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-     #warning("go to post details View")
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        UITableView.automaticDimension
     }
 }

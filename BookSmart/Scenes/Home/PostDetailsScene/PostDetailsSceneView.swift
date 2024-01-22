@@ -1,23 +1,26 @@
 //
-//  TableViewCell.swift
+//  PostDetailsSceneView.swift
 //  BookSmart
 //
-//  Created by Luka Gazdeliani on 19.01.24.
+//  Created by Luka Gazdeliani on 22.01.24.
 //
 
 import UIKit
-import SwiftUI
 import Firebase
 
-final class PostsTableViewCell: UITableViewCell {
+class PostDetailsSceneView: UIViewController {
     
     // MARK: - Properties
     
-    private let mainStackView = UIStackView()
+    private var mainScrollView = UIScrollView()
+    
+    private var mainStackView = UIStackView()
+    
+    private var postDetailsView = UIView()
     
     private let authorInfoStackView = UIStackView()
     
-    private let authorImageView = UIImageView()
+    private var authorImageView = UIImageView()
     
     private let namesStackView = UIStackView()
     private let nameLabel = UILabel()
@@ -27,7 +30,7 @@ final class PostsTableViewCell: UITableViewCell {
     
     private let postContentStackView = UIStackView()
     private let headerLabel = UILabel()
-    private let bodyLabel = UILabel()
+    private let bodyTextField = UITextField()
     
     private let likeCommentShareStackView = UIStackView()
     
@@ -43,41 +46,39 @@ final class PostsTableViewCell: UITableViewCell {
     private let shareButtonImageView = UIImageView()
     private let shareButtonLabel = UILabel()
     
-    private var userInfo: UserInfo?
+    private var commentsTableView = UITableView()
     
-    private var postInfo: PostInfo?
+    var userInfo: UserInfo
+    
+    var postInfo: PostInfo
     
     // MARK: - Init
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        setupSubViews()
-        setupConstraints()
-        setupUI()
+    init(userInfo: UserInfo, postInfo: PostInfo) {
+        self.userInfo = userInfo
+        self.postInfo = postInfo
+        super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setupSubViews()
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: - LifeCycle
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .customBackgroundColor
+        setupSubviews()
         setupConstraints()
         setupUI()
-    }
-    
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        authorImageView.image = nil
-        nameLabel.text = nil
-        usernameLabel.text = nil
-        timeLabel.text = nil
-        headerLabel.text = nil
-        bodyLabel.text = nil
-        likeButtonImageView.image = nil
     }
     
     // MARK: - Setup Subviews, Constraints, UI
     
-    private func setupSubViews() {
-        addSubview(mainStackView)
+    private func setupSubviews() {
+        view.addSubview(mainScrollView)
+        mainScrollView.addSubview(mainStackView)
         mainStackView.addArrangedSubview(authorInfoStackView)
         authorInfoStackView.addArrangedSubview(authorImageView)
         authorInfoStackView.addArrangedSubview(namesStackView)
@@ -86,7 +87,7 @@ final class PostsTableViewCell: UITableViewCell {
         authorInfoStackView.addArrangedSubview(timeLabel)
         mainStackView.addArrangedSubview(postContentStackView)
         postContentStackView.addArrangedSubview(headerLabel)
-        postContentStackView.addArrangedSubview(bodyLabel)
+        postContentStackView.addArrangedSubview(bodyTextField)
         mainStackView.addArrangedSubview(likeCommentShareStackView)
         likeCommentShareStackView.addArrangedSubview(likeStackView)
         likeCommentShareStackView.addArrangedSubview(commentStackView)
@@ -94,15 +95,17 @@ final class PostsTableViewCell: UITableViewCell {
     }
     
     private func setupConstraints() {
+        setupMainScrollViewConstraints()
         setupMainStackViewConstraints()
         setupAuthorInfoStackViewConstraints()
         setupAuthorImageViewConstraints()
         setupTimeLabelConstraints()
         setupPostContentStackViewConstraints()
-        setupBodyLabelConstraints()
+        setupBodyTextFieldConstraints()
     }
     
     private func setupUI() {
+        setupMainScrollViewUI()
         setupMainStackViewUI()
         setupAuthorInfoStackViewUI()
         setupAuthorImageViewUI()
@@ -112,43 +115,31 @@ final class PostsTableViewCell: UITableViewCell {
         setupTimeLabelUI()
         setupPostContentStackViewUI()
         setupHeaderLabelUI()
-        setupBodyLabelUI()
+        setupBodyTextFieldUI()
         setupLikeCommentShareStackViewUI()
         setupLikeStackViewUI()
         setupCommentStackViewUI()
         setupShareStackViewUI()
     }
     
-    func configureCell(userInfo: UserInfo, post: PostInfo) {
-#warning("fetch real user image")
-        let timeAgo = timeAgoString(from: post.postingTime)
-        let isLiked = userInfo.likedPosts.contains(post.id)
-        
-        authorImageView.image = UIImage(systemName: "person.fill")
-        nameLabel.text = "\(userInfo.displayName)"
-        usernameLabel.text = "\(userInfo.userName)"
-        timeLabel.text = timeAgo
-        headerLabel.text = post.header
-        bodyLabel.text = post.body
-        
-        self.userInfo = userInfo
-        self.postInfo = post
-        self.backgroundColor = .clear
-        self.selectionStyle = .none
-        
-        DispatchQueue.main.async {
-            self.updateLikeButtonUI(isLiked: isLiked)
-        }
-    }
-    
     // MARK: - Constraints
+    
+    private func setupMainScrollViewConstraints() {
+        NSLayoutConstraint.activate([
+            mainScrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            mainScrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            mainScrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            mainScrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+        ])
+    }
     
     private func setupMainStackViewConstraints() {
         NSLayoutConstraint.activate([
-            mainStackView.topAnchor.constraint(equalTo: self.topAnchor),
-            mainStackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
-            mainStackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
-            mainStackView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -20),
+            mainStackView.topAnchor.constraint(equalTo: mainScrollView.topAnchor, constant: 20),
+            mainStackView.leadingAnchor.constraint(equalTo: mainScrollView.leadingAnchor, constant: 20),
+            mainStackView.trailingAnchor.constraint(equalTo: mainScrollView.trailingAnchor, constant: -20),
+            mainStackView.bottomAnchor.constraint(equalTo: mainScrollView.bottomAnchor, constant: -20),
+            mainStackView.widthAnchor.constraint(equalTo: mainScrollView.widthAnchor),
         ])
     }
     
@@ -180,14 +171,23 @@ final class PostsTableViewCell: UITableViewCell {
         ])
     }
     
-    private func setupBodyLabelConstraints() {
+    private func setupBodyTextFieldConstraints() {
         NSLayoutConstraint.activate([
-            bodyLabel.leadingAnchor.constraint(equalTo: postContentStackView.leadingAnchor),
-            bodyLabel.trailingAnchor.constraint(equalTo: postContentStackView.trailingAnchor),
+            bodyTextField.leadingAnchor.constraint(equalTo: postContentStackView.leadingAnchor),
+            bodyTextField.trailingAnchor.constraint(equalTo: postContentStackView.trailingAnchor),
+            bodyTextField.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 20),
+            bodyTextField.bottomAnchor.constraint(equalTo: postContentStackView.bottomAnchor)
         ])
     }
     
     // MARK: - UI
+    
+    private func setupMainScrollViewUI() {
+        mainScrollView.translatesAutoresizingMaskIntoConstraints = false
+        mainScrollView.showsVerticalScrollIndicator = true
+        mainScrollView.showsHorizontalScrollIndicator = false
+        mainScrollView.isDirectionalLockEnabled = true
+    }
     
     private func setupMainStackViewUI() {
         mainStackView.translatesAutoresizingMaskIntoConstraints = false
@@ -217,6 +217,7 @@ final class PostsTableViewCell: UITableViewCell {
         
         authorImageView.translatesAutoresizingMaskIntoConstraints = false
         authorImageView.contentMode = .scaleAspectFill
+        authorImageView.image = UIImage(systemName: "person.fill")
         authorImageView.clipsToBounds = true
         authorImageView.layer.cornerRadius = 25
         authorImageView.layer.borderColor = UIColor.customAccentColor.withAlphaComponent(0.5).cgColor
@@ -231,21 +232,25 @@ final class PostsTableViewCell: UITableViewCell {
     }
     
     private func setupNameLabelUI() {
+        nameLabel.text = userInfo.displayName
         nameLabel.font = .boldSystemFont(ofSize: 16)
         nameLabel.textColor = .white
     }
     
     private func setupUsernameLabelUI() {
+        usernameLabel.text = userInfo.userName
         usernameLabel.font = .systemFont(ofSize: 14)
         usernameLabel.textColor = .systemGray
     }
     
     private func setupTimeLabelUI() {
+        timeLabel.text = timeAgoString(from: postInfo.postingTime)
         timeLabel.font = .systemFont(ofSize: 14)
         timeLabel.textColor = .white
     }
     
     private func setupPostContentStackViewUI() {
+        postContentStackView.clipsToBounds = false
         postContentStackView.axis = .vertical
         postContentStackView.spacing = 16
         postContentStackView.alignment = .leading
@@ -253,26 +258,19 @@ final class PostsTableViewCell: UITableViewCell {
     }
     
     private func setupHeaderLabelUI() {
-        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.postHeaderOrBodyTapped))
-        headerLabel.addGestureRecognizer(gestureRecognizer)
-        headerLabel.isUserInteractionEnabled = true
-        
+        headerLabel.text = postInfo.header
         headerLabel.font = .boldSystemFont(ofSize: 16)
         headerLabel.textColor = .white
     }
     
-    private func setupBodyLabelUI() {
-        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.postHeaderOrBodyTapped))
-        bodyLabel.addGestureRecognizer(gestureRecognizer)
-        bodyLabel.isUserInteractionEnabled = true
-        
-        bodyLabel.font = .systemFont(ofSize: 14)
-        bodyLabel.textColor = .white
-        bodyLabel.numberOfLines = 0
-        bodyLabel.lineBreakMode = .byWordWrapping
-        bodyLabel.setContentCompressionResistancePriority(.required, for: .vertical)
+    private func setupBodyTextFieldUI() {
+        bodyTextField.text = postInfo.body
+        bodyTextField.font = .systemFont(ofSize: 14)
+        bodyTextField.isEnabled = false
+        bodyTextField.backgroundColor = .clear
+        bodyTextField.textColor = .white
     }
-    
+
     private func setupLikeCommentShareStackViewUI() {
         likeCommentShareStackView.axis = .horizontal
         likeCommentShareStackView.distribution = .fillProportionally
@@ -305,10 +303,10 @@ final class PostsTableViewCell: UITableViewCell {
     private func setupShareStackViewUI() {
         shareButtonImageView.image = UIImage(systemName: "square.and.arrow.up")
         setupLikeCommentShareStackViewUI(
-            shareStackView, 
+            shareStackView,
             imageView: shareButtonImageView,
             label: shareButtonLabel,
-            labelText: "Share", 
+            labelText: "Share",
             buttonColor: .customShareButtonColor,
             action: #selector(shareButtonTapped))
     }
@@ -372,17 +370,11 @@ final class PostsTableViewCell: UITableViewCell {
         if sender.state == .ended {
             UIView.animate(withDuration: 0.1, animations: {
                 self.headerLabel.alpha = 0.5
-                self.bodyLabel.alpha = 0.5
+                self.bodyTextField.alpha = 0.5
             }) { _ in
-                UIView.animate(withDuration: 0.1) { [self] in
+                UIView.animate(withDuration: 0.1) {
                     self.headerLabel.alpha = 1.0
-                    self.bodyLabel.alpha = 1.0
-                    
-                    if let navigationController = self.window?.rootViewController as? UINavigationController {
-                        #warning("fix force unwrapping, dont change optional types.")
-                        let commentDetailsViewController = PostDetailsSceneView(userInfo: userInfo!, postInfo: postInfo!)
-                        navigationController.pushViewController(commentDetailsViewController, animated: true)
-                    }
+                    self.bodyTextField.alpha = 1.0
                 }
             }
             print("post tapped, go to post details page")
@@ -410,15 +402,9 @@ final class PostsTableViewCell: UITableViewCell {
                 self.commentButtonImageView.alpha = 0.2
                 self.commentButtonLabel.alpha = 0.2
             }) { _ in
-                UIView.animate(withDuration: 0.1) { [self] in
+                UIView.animate(withDuration: 0.1) {
                     self.commentButtonImageView.alpha = 1.0
                     self.commentButtonLabel.alpha = 1.0
-                    
-                    if let navigationController = self.window?.rootViewController as? UINavigationController {
-                        #warning("fix force unwrapping, dont change optional types.")
-                        let commentDetailsViewController = PostDetailsSceneView(userInfo: userInfo!, postInfo: postInfo!)
-                        navigationController.pushViewController(commentDetailsViewController, animated: true)
-                    }
                 }
             }
         }
@@ -440,10 +426,7 @@ final class PostsTableViewCell: UITableViewCell {
     }
     
     private func toggleLikePost() {
-        guard let postInfo = postInfo, let userInfo = userInfo else {
-            print("PostInfo or UserInfo is nil. Cannot toggle like status on Firebase.")
-            return
-        }
+
         
         let database = Firestore.firestore()
         
@@ -455,7 +438,7 @@ final class PostsTableViewCell: UITableViewCell {
         if isLiked {
             userReference.updateData([
                 "likedPosts": FieldValue.arrayRemove([postInfo.id.uuidString])
-            ]) { error in
+            ]) { [self] error in
                 if let error = error {
                     print("Error removing liked post from UserInfo: \(error.localizedDescription)")
                     return
@@ -463,26 +446,26 @@ final class PostsTableViewCell: UITableViewCell {
                 
                 postReference.updateData([
                     "likedBy": FieldValue.arrayRemove([userInfo.id.uuidString])
-                ]) { error in
+                ]) { [self] error in
                     if let error = error {
                         print("Error removing user from likedBy in PostInfo: \(error.localizedDescription)")
                         return
                     }
                     
                     if let index = userInfo.likedPosts.firstIndex(of: postInfo.id) {
-                        self.userInfo?.likedPosts.remove(at: index)
+                        userInfo.likedPosts.remove(at: index)
                     }
                     if let index = postInfo.likedBy.firstIndex(of: userInfo.id) {
-                        self.postInfo?.likedBy.remove(at: index)
+                        postInfo.likedBy.remove(at: index)
                     }
                     
-                    self.updateLikeButtonUI(isLiked: false)
+                    updateLikeButtonUI(isLiked: false)
                 }
             }
         } else {
             userReference.updateData([
                 "likedPosts": FieldValue.arrayUnion([postInfo.id.uuidString])
-            ]) { error in
+            ]) { [self] error in
                 if let error = error {
                     print("Error adding liked post to UserInfo: \(error.localizedDescription)")
                     return
@@ -490,16 +473,16 @@ final class PostsTableViewCell: UITableViewCell {
                 
                 postReference.updateData([
                     "likedBy": FieldValue.arrayUnion([userInfo.id.uuidString])
-                ]) { error in
+                ]) { [self] error in
                     if let error = error {
                         print("Error adding user to likedBy in PostInfo: \(error.localizedDescription)")
                         return
                     }
                     
-                    self.userInfo?.likedPosts.append(postInfo.id)
-                    self.postInfo?.likedBy.append(userInfo.id)
+                    userInfo.likedPosts.append(postInfo.id)
+                    postInfo.likedBy.append(userInfo.id)
                     
-                    self.updateLikeButtonUI(isLiked: true)
+                    updateLikeButtonUI(isLiked: true)
                 }
             }
         }
@@ -512,15 +495,11 @@ final class PostsTableViewCell: UITableViewCell {
             self.likeButtonImageView.image = UIImage(systemName: imageName)?.withTintColor(.customLikeButtonColor)
             self.likeButtonLabel.textColor = .customLikeButtonColor
             
-            print("Post \(isLiked ? "liked" : "disliked") by \(self.userInfo?.userName ?? "Unknown User") on Firebase")
+            print("Post \(isLiked ? "liked" : "disliked") by \(self.userInfo.userName) on Firebase")
         }
     }
     
     private func sharePost() {
-        guard let postInfo = postInfo else {
-            print("PostInfo is nil. Cannot share.")
-            return
-        }
         
         let textToShare = "Check out this post on BookSmart!"
         let postURL = URL(string: "someURL")
@@ -534,9 +513,30 @@ final class PostsTableViewCell: UITableViewCell {
             .saveToCameraRoll
         ]
         
-        if let viewController = self.window?.rootViewController {
-            activityViewController.popoverPresentationController?.sourceView = self
+        if let viewController = self.presentingViewController {
+            activityViewController.popoverPresentationController?.sourceView = self.view
             viewController.present(activityViewController, animated: true, completion: nil)
+        } else {
+            print("Unable to get presenting view controller.")
         }
     }
 }
+
+// MARK: Extensions
+extension PostDetailsSceneView: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        1
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = CommentTableViewCell()
+        
+        return cell
+    }
+}
+
+extension PostDetailsSceneView: UITableViewDelegate {
+    // Implement delegate methods as needed
+    // ...
+}
+
