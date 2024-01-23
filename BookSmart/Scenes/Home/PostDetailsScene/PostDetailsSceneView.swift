@@ -14,9 +14,11 @@ class PostDetailsSceneView: UIViewController {
     
     private var mainScrollView = UIScrollView()
     
-    private var mainStackView = UIStackView()
+    private var contentStackView = UIStackView()
     
-    private var postDetailsView = UIView()
+    private var postStackView = UIStackView()
+    
+    private var commentsListStackView = UIStackView()
     
     private let authorInfoStackView = UIStackView()
     
@@ -48,6 +50,12 @@ class PostDetailsSceneView: UIViewController {
     
     private var commentsTableView = UITableView()
     
+    private var temporaryText = UILabel()
+    
+    private var typeCommentStackView = UIStackView()
+    private var typeCommentTextView = UITextView()
+    private var submitCommentButton = UIButton()
+    
     var userInfo: UserInfo
     
     var postInfo: PostInfo
@@ -78,35 +86,45 @@ class PostDetailsSceneView: UIViewController {
     
     private func setupSubviews() {
         view.addSubview(mainScrollView)
-        mainScrollView.addSubview(mainStackView)
-        mainStackView.addArrangedSubview(authorInfoStackView)
+        mainScrollView.addSubview(contentStackView)
+        contentStackView.addArrangedSubview(postStackView)
+        contentStackView.addArrangedSubview(commentsListStackView)
+        postStackView.addArrangedSubview(authorInfoStackView)
         authorInfoStackView.addArrangedSubview(authorImageView)
         authorInfoStackView.addArrangedSubview(namesStackView)
         namesStackView.addArrangedSubview(nameLabel)
         namesStackView.addArrangedSubview(usernameLabel)
         authorInfoStackView.addArrangedSubview(timeLabel)
-        mainStackView.addArrangedSubview(postContentStackView)
+        postStackView.addArrangedSubview(postContentStackView)
         postContentStackView.addArrangedSubview(headerLabel)
         postContentStackView.addArrangedSubview(bodyTextField)
-        mainStackView.addArrangedSubview(likeCommentShareStackView)
+        postStackView.addArrangedSubview(likeCommentShareStackView)
         likeCommentShareStackView.addArrangedSubview(likeStackView)
         likeCommentShareStackView.addArrangedSubview(commentStackView)
         likeCommentShareStackView.addArrangedSubview(shareStackView)
+        commentsListStackView.addArrangedSubview(temporaryText)
+        view.addSubview(typeCommentStackView)
+        typeCommentStackView.addArrangedSubview(typeCommentTextView)
+        typeCommentStackView.addArrangedSubview(submitCommentButton)
     }
     
     private func setupConstraints() {
         setupMainScrollViewConstraints()
-        setupMainStackViewConstraints()
+        setupContentStackViewConstraints()
         setupAuthorInfoStackViewConstraints()
         setupAuthorImageViewConstraints()
         setupTimeLabelConstraints()
         setupPostContentStackViewConstraints()
         setupBodyTextFieldConstraints()
+        setupTypeCommentStackViewConstraints()
+        setupTypeCommentTextViewConstraint()
+        setupSubmitCommentButtonConstraints()
     }
     
     private func setupUI() {
         setupMainScrollViewUI()
-        setupMainStackViewUI()
+        setupContentStackViewUI()
+        setupPostStackViewUI()
         setupAuthorInfoStackViewUI()
         setupAuthorImageViewUI()
         setupNamesStackViewUI()
@@ -120,6 +138,11 @@ class PostDetailsSceneView: UIViewController {
         setupLikeStackViewUI()
         setupCommentStackViewUI()
         setupShareStackViewUI()
+        setupCommentsListStackViewUI()
+        setupTemporaryComments()
+        setupTypeCommentStackViewUI()
+        setupTypeCommentTextViewUI()
+        setupSubmitCommentButtonUI()
     }
     
     // MARK: - Constraints
@@ -129,24 +152,24 @@ class PostDetailsSceneView: UIViewController {
             mainScrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             mainScrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             mainScrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            mainScrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            mainScrollView.bottomAnchor.constraint(equalTo: typeCommentStackView.topAnchor, constant: -20),
         ])
     }
     
-    private func setupMainStackViewConstraints() {
+    private func setupContentStackViewConstraints() {
         NSLayoutConstraint.activate([
-            mainStackView.topAnchor.constraint(equalTo: mainScrollView.topAnchor, constant: 20),
-            mainStackView.leadingAnchor.constraint(equalTo: mainScrollView.leadingAnchor, constant: 20),
-            mainStackView.trailingAnchor.constraint(equalTo: mainScrollView.trailingAnchor, constant: -20),
-            mainStackView.bottomAnchor.constraint(equalTo: mainScrollView.bottomAnchor, constant: -20),
-            mainStackView.widthAnchor.constraint(equalTo: mainScrollView.widthAnchor),
+            contentStackView.topAnchor.constraint(equalTo: mainScrollView.topAnchor),
+            contentStackView.leadingAnchor.constraint(equalTo: mainScrollView.leadingAnchor),
+            contentStackView.trailingAnchor.constraint(equalTo: mainScrollView.trailingAnchor),
+            contentStackView.bottomAnchor.constraint(equalTo: mainScrollView.bottomAnchor),
+            contentStackView.widthAnchor.constraint(equalTo: mainScrollView.widthAnchor),
         ])
     }
     
     private func setupAuthorInfoStackViewConstraints() {
         NSLayoutConstraint.activate([
-            authorInfoStackView.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor, constant: 20),
-            authorInfoStackView.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor, constant: -20),
+            authorInfoStackView.leadingAnchor.constraint(equalTo: postStackView.leadingAnchor, constant: 20),
+            authorInfoStackView.trailingAnchor.constraint(equalTo: postStackView.trailingAnchor, constant: -20),
         ])
     }
     
@@ -166,8 +189,8 @@ class PostDetailsSceneView: UIViewController {
     
     private func setupPostContentStackViewConstraints() {
         NSLayoutConstraint.activate([
-            postContentStackView.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor, constant: 20),
-            postContentStackView.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor, constant: -20),
+            postContentStackView.leadingAnchor.constraint(equalTo: postStackView.leadingAnchor, constant: 20),
+            postContentStackView.trailingAnchor.constraint(equalTo: postStackView.trailingAnchor, constant: -20),
         ])
     }
     
@@ -180,23 +203,52 @@ class PostDetailsSceneView: UIViewController {
         ])
     }
     
+    private func setupTypeCommentStackViewConstraints() {
+        NSLayoutConstraint.activate([
+            typeCommentStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            typeCommentStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+            typeCommentStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
+        ])
+    }
+    
+    private func setupTypeCommentTextViewConstraint() {
+        NSLayoutConstraint.activate([
+            typeCommentTextView.heightAnchor.constraint(equalToConstant: 50),
+            typeCommentTextView.widthAnchor.constraint(greaterThanOrEqualToConstant: 100)
+        ])
+    }
+    
+    private func setupSubmitCommentButtonConstraints() {
+        NSLayoutConstraint.activate([
+            submitCommentButton.heightAnchor.constraint(equalToConstant: 50),
+            submitCommentButton.widthAnchor.constraint(equalToConstant: 50)
+        ])
+    }
+    
     // MARK: - UI
     
     private func setupMainScrollViewUI() {
         mainScrollView.translatesAutoresizingMaskIntoConstraints = false
-        mainScrollView.showsVerticalScrollIndicator = true
-        mainScrollView.showsHorizontalScrollIndicator = false
-        mainScrollView.isDirectionalLockEnabled = true
+        mainScrollView.showsVerticalScrollIndicator = false
+        mainScrollView.contentSize = CGSize(width: view.frame.width, height: view.frame.height)
     }
     
-    private func setupMainStackViewUI() {
-        mainStackView.translatesAutoresizingMaskIntoConstraints = false
-        mainStackView.isLayoutMarginsRelativeArrangement = true
-        mainStackView.layoutMargins = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
-        mainStackView.axis = .vertical
-        mainStackView.spacing = 16
-        mainStackView.alignment = .center
-        mainStackView.customize(
+    private func setupContentStackViewUI() {
+        contentStackView.axis = .vertical
+        contentStackView.spacing = 0
+        contentStackView.alignment = .center
+        contentStackView.distribution = .fillProportionally
+        contentStackView.translatesAutoresizingMaskIntoConstraints = false
+    }
+    
+    private func setupPostStackViewUI() {
+        postStackView.translatesAutoresizingMaskIntoConstraints = false
+        postStackView.isLayoutMarginsRelativeArrangement = true
+        postStackView.layoutMargins = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
+        postStackView.axis = .vertical
+        postStackView.spacing = 16
+        postStackView.alignment = .center
+        postStackView.customize(
             backgroundColor: .customAccentColor.withAlphaComponent(0.1),
             radiusSize: 8,
             borderColor: .clear,
@@ -330,6 +382,43 @@ class PostDetailsSceneView: UIViewController {
         stackView.addArrangedSubview(label)
     }
     
+    private func setupCommentsListStackViewUI() {
+        commentsListStackView.translatesAutoresizingMaskIntoConstraints = false
+        commentsListStackView.isLayoutMarginsRelativeArrangement = true
+        commentsListStackView.layoutMargins = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
+        commentsListStackView.axis = .vertical
+        commentsListStackView.spacing = 8
+        commentsListStackView.alignment = .center
+        commentsListStackView.distribution = .fillProportionally
+    }
+    
+    private func setupTemporaryComments() {
+        temporaryText.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam pretium vehicula lacinia. Sed justo sapien, commodo ut molestie eget, vestibulum eget turpis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Integer volutpat ligula nunc, porta consectetur erat volutpat in. Pellentesque aliquet risus porta ligula feugiat, sit amet sollicitudin felis varius. Suspendisse a felis a purus placerat blandit. Integer porta est sit amet mi gravida pharetra. Fusce ultricies nisl eu nunc dapibus, tempor feugiat purus aliquam. Fusce tempus ipsum odio. Nam porttitor iaculis justo, vel fringilla metus placerat eu.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam pretium vehicula lacinia. Sed justo sapien, commodo ut molestie eget, vestibulum eget turpis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Integer volutpat ligula nunc, porta consectetur erat volutpat in. Pellentesque aliquet risus porta ligula feugiat, sit amet sollicitudin felis varius. Suspendisse a felis a purus placerat blandit. Integer porta est sit amet mi gravida pharetra. Fusce ultricies nisl eu nunc dapibus, tempor feugiat purus aliquam. Fusce tempus ipsum odio. Nam porttitor iaculis justo, vel fringilla metus placerat eu.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam pretium vehicula lacinia. Sed justo sapien, commodo ut molestie eget, vestibulum eget turpis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Integer volutpat ligula nunc, porta consectetur erat volutpat in. Pellentesque aliquet risus porta ligula feugiat, sit amet sollicitudin felis varius. Suspendisse a felis a purus placerat blandit. Integer porta est sit amet mi gravida pharetra. Fusce ultricies nisl eu nunc dapibus, tempor feugiat purus aliquam. Fusce tempus ipsum odio. Nam porttitor iaculis justo, vel fringilla metus placerat eu.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam pretium vehicula lacinia. Sed justo sapien, commodo ut molestie eget, vestibulum eget turpis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Integer volutpat ligula nunc, porta consectetur erat volutpat in. Pellentesque aliquet risus porta ligula feugiat, sit amet sollicitudin felis varius. Suspendisse a felis a purus placerat blandit. Integer porta est sit amet mi gravida pharetra. Fusce ultricies nisl eu nunc dapibus, tempor feugiat purus aliquam. Fusce tempus ipsum odio. Nam porttitor iaculis justo, vel fringilla metus placerat eu.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam pretium vehicula lacinia. Sed justo sapien, commodo ut molestie eget, vestibulum eget turpis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Integer volutpat ligula nunc, porta consectetur erat volutpat in. Pellentesque aliquet risus porta ligula feugiat, sit amet sollicitudin felis varius. Suspendisse a felis a purus placerat blandit. Integer porta est sit amet mi gravida pharetra. Fusce ultricies nisl eu nunc dapibus, tempor feugiat purus aliquam. Fusce tempus ipsum odio. Nam porttitor iaculis justo, vel fringilla metus placerat eu."
+        temporaryText.numberOfLines = 0
+        temporaryText.textColor = .white
+    }
+    
+    
+    private func setupTypeCommentStackViewUI() {
+        typeCommentStackView.translatesAutoresizingMaskIntoConstraints = false
+        typeCommentStackView.axis = .horizontal
+        typeCommentStackView.spacing = 8
+        typeCommentStackView.alignment = .center
+        typeCommentStackView.distribution = .fillProportionally
+    }
+    
+    private func setupTypeCommentTextViewUI() {
+        typeCommentTextView.font = .systemFont(ofSize: 16)
+        typeCommentTextView.backgroundColor = .customAccentColor.withAlphaComponent(0.5)
+        typeCommentTextView.layer.cornerRadius = 8
+        typeCommentTextView.tintColor = .black
+    }
+    
+    private func setupSubmitCommentButtonUI() {
+        submitCommentButton.setImage(UIImage(systemName: "paperplane.fill"), for: .normal)
+        submitCommentButton.tintColor = .customAccentColor
+    }
+    
     // MARK: - Private Methods
     
     private func timeAgoString(from date: Date) -> String {
@@ -363,21 +452,6 @@ class PostDetailsSceneView: UIViewController {
                 }
             }
             print("image tapped, go to profile page")
-        }
-    }
-    
-    @objc private func postHeaderOrBodyTapped(sender: UITapGestureRecognizer) {
-        if sender.state == .ended {
-            UIView.animate(withDuration: 0.1, animations: {
-                self.headerLabel.alpha = 0.5
-                self.bodyTextField.alpha = 0.5
-            }) { _ in
-                UIView.animate(withDuration: 0.1) {
-                    self.headerLabel.alpha = 1.0
-                    self.bodyTextField.alpha = 1.0
-                }
-            }
-            print("post tapped, go to post details page")
         }
     }
     
@@ -427,7 +501,6 @@ class PostDetailsSceneView: UIViewController {
     
     private func toggleLikePost() {
 
-        
         let database = Firestore.firestore()
         
         let userReference = database.collection("UserInfo").document(userInfo.id.uuidString)
