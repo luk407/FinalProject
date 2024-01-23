@@ -417,6 +417,7 @@ class PostDetailsSceneView: UIViewController {
     private func setupSubmitCommentButtonUI() {
         submitCommentButton.setImage(UIImage(systemName: "paperplane.fill"), for: .normal)
         submitCommentButton.tintColor = .customAccentColor
+        submitCommentButton.addTarget(self, action: #selector(submitCommentButtonTapped), for: .touchUpInside)
     }
     
     // MARK: - Private Methods
@@ -591,6 +592,114 @@ class PostDetailsSceneView: UIViewController {
             viewController.present(activityViewController, animated: true, completion: nil)
         } else {
             print("Unable to get presenting view controller.")
+        }
+    }
+    
+    @objc private func submitCommentButtonTapped() {
+        guard let commentText = typeCommentTextView.text, !commentText.isEmpty else { return }
+
+        let database = Firestore.firestore()
+        let postReference = database.collection("PostInfo").document(postInfo.id.uuidString)
+
+        let newComment = CommentInfo(
+            id: UUID(),
+            authorID: userInfo.id,
+            commentTime: Date(),
+            body: typeCommentTextView.text,
+            likedBy: [],
+            comments: [])
+
+        postReference.updateData([
+            "comments": FieldValue.arrayUnion([newComment.id.uuidString])
+        ]) { [weak self] error in
+            guard let self = self else { return }
+
+            if let error = error {
+                print("Error adding comment to PostInfo: \(error.localizedDescription)")
+                return
+            }
+
+            print("Comment added to Firebase successfully")
+
+            self.fetchPostsInfo()
+        }
+        
+        let commentReference = database.collection("CommentInfo").document(newComment.id.uuidString)
+
+            let commentData: [String: Any] = [
+                "id": newComment.id.uuidString,
+                "authorID": newComment.authorID.uuidString,
+                "commentTime": newComment.commentTime,
+                "body": newComment.body,
+                "likedBy": [],
+                "comments": []
+            ]
+
+            commentReference.setData(commentData)
+    }
+
+    func fetchPostsInfo() {
+        let database = Firestore.firestore()
+        let reference = database.collection("PostInfo")
+
+        reference.getDocuments() { [weak self] snapshot, error in
+            if let error = error {
+                print("Error fetching posts: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let self = self else { return }
+            
+            if let snapshot = snapshot {
+                for document in snapshot.documents {
+                    let data = document.data()
+                    
+                    guard
+                        let id = data["id"] as? String,
+                        let authorIDString = data["authorID"] as? String,
+                        let authorID = UUID(uuidString: authorIDString),
+                        let typeString = data["type"] as? String,
+                        let header = data["header"] as? String,
+                        let body = data["body"] as? String,
+                        let postingTimeTimestamp = data["postingTime"] as? Timestamp,
+                        let likedBy = data["likedBy"] as? [String],
+                        let comments = data["comments"] as? [String],
+                        let spoilersAllowed = data["spoilersAllowed"] as? Bool,
+                        let announcementTypeString = data["announcementType"] as? String
+                    else {
+                        print("Error parsing post data")
+                        continue
+                    }
+                    
+                    if let type = PostType(rawValue: typeString),
+                       let announcementType = AnnouncementType(rawValue: announcementTypeString) {
+                        
+                        let postInfo = PostInfo(
+                            id: UUID(uuidString: id) ?? UUID(),
+                            authorID: authorID,
+                            type: type,
+                            header: header,
+                            body: body,
+                            postingTime: postingTimeTimestamp.dateValue(),
+                            likedBy: likedBy.map { UUID(uuidString: $0) ?? UUID() },
+                            comments: comments.map { UUID(uuidString: $0) ?? UUID() },
+                            spoilersAllowed: spoilersAllowed,
+                            announcementType: announcementType
+                        )
+                        
+                        self.postInfo = postInfo
+                        updateUI()
+                    }
+                }
+            }
+        }
+    }
+
+
+    private func updateUI() {
+        DispatchQueue.main.async {
+            #warning("do this later after cell is ready")
+            //self.commentButtonLabel.text = "Comment (\(self.postInfo.comments.count))"
         }
     }
 }
