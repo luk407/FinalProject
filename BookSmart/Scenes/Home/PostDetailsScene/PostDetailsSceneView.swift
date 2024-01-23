@@ -56,26 +56,25 @@ class PostDetailsSceneView: UIViewController {
     private var typeCommentTextView = UITextView()
     private var submitCommentButton = UIButton()
     
-    var userInfo: UserInfo
-    
-    var postInfo: PostInfo
+    var viewModel: PostDetailsSceneViewModel
     
     // MARK: - Init
     
-    init(userInfo: UserInfo, postInfo: PostInfo) {
-        self.userInfo = userInfo
-        self.postInfo = postInfo
+    init(viewModel: PostDetailsSceneViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     // MARK: - LifeCycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        viewModel.delegate = self
+        viewModel.configureUI()
         view.backgroundColor = .customBackgroundColor
         setupSubviews()
         setupConstraints()
@@ -284,19 +283,16 @@ class PostDetailsSceneView: UIViewController {
     }
     
     private func setupNameLabelUI() {
-        nameLabel.text = userInfo.displayName
         nameLabel.font = .boldSystemFont(ofSize: 16)
         nameLabel.textColor = .white
     }
     
     private func setupUsernameLabelUI() {
-        usernameLabel.text = userInfo.userName
         usernameLabel.font = .systemFont(ofSize: 14)
         usernameLabel.textColor = .systemGray
     }
     
     private func setupTimeLabelUI() {
-        timeLabel.text = timeAgoString(from: postInfo.postingTime)
         timeLabel.font = .systemFont(ofSize: 14)
         timeLabel.textColor = .white
     }
@@ -310,13 +306,11 @@ class PostDetailsSceneView: UIViewController {
     }
     
     private func setupHeaderLabelUI() {
-        headerLabel.text = postInfo.header
         headerLabel.font = .boldSystemFont(ofSize: 16)
         headerLabel.textColor = .white
     }
     
     private func setupBodyTextFieldUI() {
-        bodyTextField.text = postInfo.body
         bodyTextField.font = .systemFont(ofSize: 14)
         bodyTextField.isEnabled = false
         bodyTextField.backgroundColor = .clear
@@ -422,28 +416,12 @@ class PostDetailsSceneView: UIViewController {
     
     // MARK: - Private Methods
     
-    private func timeAgoString(from date: Date) -> String {
-        let currentDate = Date()
-        let calendar = Calendar.current
-        let components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: date, to: currentDate)
-        
-        if let years = components.year, years > 0 {
-            return "\(years)y"
-        } else if let months = components.month, months > 0 {
-            return "\(months)m"
-        } else if let days = components.day, days > 0 {
-            return "\(days)d"
-        } else if let hours = components.hour, hours > 0 {
-            return "\(hours)h"
-        } else if let minutes = components.minute, minutes > 0 {
-            return "\(minutes)m"
-        } else {
-            return "Now"
-        }
-    }
+    // MARK: - Animations
     
     @objc private func authorImageTapped(sender: UITapGestureRecognizer) {
+        
 #warning("changee")
+        
         if sender.state == .ended {
             UIView.animate(withDuration: 0.1, animations: {
                 self.authorImageView.alpha = 0.2
@@ -452,12 +430,13 @@ class PostDetailsSceneView: UIViewController {
                     self.authorImageView.alpha = 1.0
                 }
             }
-            print("image tapped, go to profile page")
         }
     }
     
     @objc private func likeButtonTapped(sender: UITapGestureRecognizer) {
-        toggleLikePost()
+        
+        viewModel.toggleLikePost()
+        
         if sender.state == .ended {
             UIView.animate(withDuration: 0.1, animations: {
                 self.likeButtonImageView.alpha = 0.2
@@ -486,7 +465,9 @@ class PostDetailsSceneView: UIViewController {
     }
     
     @objc private func shareButtonTapped(sender: UITapGestureRecognizer) {
+        
         sharePost()
+        
         if sender.state == .ended {
             UIView.animate(withDuration: 0.1, animations: {
                 self.shareButtonImageView.alpha = 0.2
@@ -497,79 +478,6 @@ class PostDetailsSceneView: UIViewController {
                     self.shareButtonLabel.alpha = 1.0
                 }
             }
-        }
-    }
-    
-    private func toggleLikePost() {
-
-        let database = Firestore.firestore()
-        
-        let userReference = database.collection("UserInfo").document(userInfo.id.uuidString)
-        let postReference = database.collection("PostInfo").document(postInfo.id.uuidString)
-        
-        let isLiked = userInfo.likedPosts.contains(postInfo.id)
-        
-        if isLiked {
-            userReference.updateData([
-                "likedPosts": FieldValue.arrayRemove([postInfo.id.uuidString])
-            ]) { [self] error in
-                if let error = error {
-                    print("Error removing liked post from UserInfo: \(error.localizedDescription)")
-                    return
-                }
-                
-                postReference.updateData([
-                    "likedBy": FieldValue.arrayRemove([userInfo.id.uuidString])
-                ]) { [self] error in
-                    if let error = error {
-                        print("Error removing user from likedBy in PostInfo: \(error.localizedDescription)")
-                        return
-                    }
-                    
-                    if let index = userInfo.likedPosts.firstIndex(of: postInfo.id) {
-                        userInfo.likedPosts.remove(at: index)
-                    }
-                    if let index = postInfo.likedBy.firstIndex(of: userInfo.id) {
-                        postInfo.likedBy.remove(at: index)
-                    }
-                    
-                    updateLikeButtonUI(isLiked: false)
-                }
-            }
-        } else {
-            userReference.updateData([
-                "likedPosts": FieldValue.arrayUnion([postInfo.id.uuidString])
-            ]) { [self] error in
-                if let error = error {
-                    print("Error adding liked post to UserInfo: \(error.localizedDescription)")
-                    return
-                }
-                
-                postReference.updateData([
-                    "likedBy": FieldValue.arrayUnion([userInfo.id.uuidString])
-                ]) { [self] error in
-                    if let error = error {
-                        print("Error adding user to likedBy in PostInfo: \(error.localizedDescription)")
-                        return
-                    }
-                    
-                    userInfo.likedPosts.append(postInfo.id)
-                    postInfo.likedBy.append(userInfo.id)
-                    
-                    updateLikeButtonUI(isLiked: true)
-                }
-            }
-        }
-    }
-
-    private func updateLikeButtonUI(isLiked: Bool) {
-        DispatchQueue.main.async {
-            let imageName = isLiked ? "heart.fill" : "heart"
-            
-            self.likeButtonImageView.image = UIImage(systemName: imageName)?.withTintColor(.customLikeButtonColor)
-            self.likeButtonLabel.textColor = .customLikeButtonColor
-            
-            print("Post \(isLiked ? "liked" : "disliked") by \(self.userInfo.userName) on Firebase")
         }
     }
     
@@ -591,121 +499,50 @@ class PostDetailsSceneView: UIViewController {
             activityViewController.popoverPresentationController?.sourceView = self.view
             viewController.present(activityViewController, animated: true, completion: nil)
         } else {
-            print("Unable to get presenting view controller.")
+            
         }
     }
     
     @objc private func submitCommentButtonTapped() {
-        guard let commentText = typeCommentTextView.text, !commentText.isEmpty else { return }
-
-        let database = Firestore.firestore()
-        let postReference = database.collection("PostInfo").document(postInfo.id.uuidString)
-
-        let newComment = CommentInfo(
-            id: UUID(),
-            authorID: userInfo.id,
-            commentTime: Date(),
-            body: typeCommentTextView.text,
-            likedBy: [],
-            comments: [])
-
-        postReference.updateData([
-            "comments": FieldValue.arrayUnion([newComment.id.uuidString])
-        ]) { [weak self] error in
-            guard let self = self else { return }
-
-            if let error = error {
-                print("Error adding comment to PostInfo: \(error.localizedDescription)")
-                return
-            }
-
-            print("Comment added to Firebase successfully")
-
-            self.fetchPostsInfo()
-        }
         
-        let commentReference = database.collection("CommentInfo").document(newComment.id.uuidString)
-
-            let commentData: [String: Any] = [
-                "id": newComment.id.uuidString,
-                "authorID": newComment.authorID.uuidString,
-                "commentTime": newComment.commentTime,
-                "body": newComment.body,
-                "likedBy": [],
-                "comments": []
-            ]
-
-            commentReference.setData(commentData)
+        viewModel.submitCommentButtonTapped(commentText: typeCommentTextView.text)
+        typeCommentTextView.text = ""
+        typeCommentTextView.resignFirstResponder()
     }
+}
 
-    func fetchPostsInfo() {
-        let database = Firestore.firestore()
-        let reference = database.collection("PostInfo")
-
-        reference.getDocuments() { [weak self] snapshot, error in
-            if let error = error {
-                print("Error fetching posts: \(error.localizedDescription)")
-                return
-            }
+// MARK: - Extensions
+extension PostDetailsSceneView: PostDetailsSceneViewDelegate {
+    
+    internal func updateLikeButtonUI(isLiked: Bool) {
+        
+        DispatchQueue.main.async {
+            let imageName = isLiked ? "heart.fill" : "heart"
             
-            guard let self = self else { return }
-            
-            if let snapshot = snapshot {
-                for document in snapshot.documents {
-                    let data = document.data()
-                    
-                    guard
-                        let id = data["id"] as? String,
-                        let authorIDString = data["authorID"] as? String,
-                        let authorID = UUID(uuidString: authorIDString),
-                        let typeString = data["type"] as? String,
-                        let header = data["header"] as? String,
-                        let body = data["body"] as? String,
-                        let postingTimeTimestamp = data["postingTime"] as? Timestamp,
-                        let likedBy = data["likedBy"] as? [String],
-                        let comments = data["comments"] as? [String],
-                        let spoilersAllowed = data["spoilersAllowed"] as? Bool,
-                        let announcementTypeString = data["announcementType"] as? String
-                    else {
-                        print("Error parsing post data")
-                        continue
-                    }
-                    
-                    if let type = PostType(rawValue: typeString),
-                       let announcementType = AnnouncementType(rawValue: announcementTypeString) {
-                        
-                        let postInfo = PostInfo(
-                            id: UUID(uuidString: id) ?? UUID(),
-                            authorID: authorID,
-                            type: type,
-                            header: header,
-                            body: body,
-                            postingTime: postingTimeTimestamp.dateValue(),
-                            likedBy: likedBy.map { UUID(uuidString: $0) ?? UUID() },
-                            comments: comments.map { UUID(uuidString: $0) ?? UUID() },
-                            spoilersAllowed: spoilersAllowed,
-                            announcementType: announcementType
-                        )
-                        
-                        self.postInfo = postInfo
-                        updateUI()
-                    }
-                }
-            }
+            self.likeButtonImageView.image = UIImage(systemName: imageName)?.withTintColor(.customLikeButtonColor)
+            self.likeButtonLabel.textColor = .customLikeButtonColor
         }
     }
 
-
-    private func updateUI() {
+    func updateUI() {
+        
         DispatchQueue.main.async {
             #warning("do this later after cell is ready")
             //self.commentButtonLabel.text = "Comment (\(self.postInfo.comments.count))"
         }
     }
+    
+    func configureUI(name: String, userName: String, time: String, header: String, body: String) {
+        nameLabel.text = name
+        usernameLabel.text = userName
+        timeLabel.text = time
+        headerLabel.text = header
+        bodyTextField.text = body
+    }    
 }
 
-// MARK: Extensions
 extension PostDetailsSceneView: UITableViewDataSource {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         1
     }
@@ -718,7 +555,6 @@ extension PostDetailsSceneView: UITableViewDataSource {
 }
 
 extension PostDetailsSceneView: UITableViewDelegate {
-    // Implement delegate methods as needed
-    // ...
+    
 }
 

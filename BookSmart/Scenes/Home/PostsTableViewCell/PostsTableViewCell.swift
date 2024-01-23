@@ -380,7 +380,10 @@ final class PostsTableViewCell: UITableViewCell {
                     
                     if let navigationController = self.window?.rootViewController as? UINavigationController {
                         #warning("fix force unwrapping, dont change optional types.")
-                        let commentDetailsViewController = PostDetailsSceneView(userInfo: userInfo!, postInfo: postInfo!)
+                        let commentDetailsViewController = PostDetailsSceneView(
+                            viewModel: PostDetailsSceneViewModel(
+                                userInfo: userInfo!,
+                                postInfo: postInfo!))
                         navigationController.pushViewController(commentDetailsViewController, animated: true)
                     }
                 }
@@ -416,7 +419,10 @@ final class PostsTableViewCell: UITableViewCell {
                     
                     if let navigationController = self.window?.rootViewController as? UINavigationController {
                         #warning("fix force unwrapping, dont change optional types.")
-                        let commentDetailsViewController = PostDetailsSceneView(userInfo: userInfo!, postInfo: postInfo!)
+                        let commentDetailsViewController = PostDetailsSceneView(
+                            viewModel: PostDetailsSceneViewModel(
+                                userInfo: userInfo!,
+                                postInfo: postInfo!))
                         navigationController.pushViewController(commentDetailsViewController, animated: true)
                     }
                 }

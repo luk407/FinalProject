@@ -9,11 +9,15 @@ import UIKit
 import SwiftUI
 
 class TabBarController: UITabBarController {
+    
     // MARK: - Properties
+    
     var userInfo: UserInfo
     
     private var appNameLabel = UILabel()
+    
     // MARK: - Init
+    
     init(userInfo: UserInfo) {
         self.userInfo = userInfo
         super.init(nibName: nil, bundle: nil)
@@ -24,7 +28,9 @@ class TabBarController: UITabBarController {
     }
     
     // MARK: - LifeCycle
+    
     override func viewDidLoad() {
+        
         super.viewDidLoad()
         
         self.delegate = self
@@ -54,6 +60,7 @@ class TabBarController: UITabBarController {
     }
     
     private func setupAppNameLabelUI() {
+        
         appNameLabel.text = "BookSmart"
         appNameLabel.font = .systemFont(ofSize: 20)
         appNameLabel.textColor = .customAccentColor
@@ -62,6 +69,7 @@ class TabBarController: UITabBarController {
 }
 
 extension TabBarController: UITabBarControllerDelegate {
+    
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
         if viewController is UIHostingController<CreatePostSceneView> {
             let createPostViewController = UIHostingController(rootView: CreatePostSceneView(userInfo: userInfo))
