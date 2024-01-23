@@ -48,6 +48,7 @@
 		A106953A2B5E938B009E5843 /* PostDetailsSceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10695392B5E938B009E5843 /* PostDetailsSceneView.swift */; };
 		A106953C2B5E939E009E5843 /* PostDetailsSceneViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A106953B2B5E939E009E5843 /* PostDetailsSceneViewModel.swift */; };
 		A106953E2B5E9941009E5843 /* CommentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A106953D2B5E9941009E5843 /* CommentTableViewCell.swift */; };
+		A10695412B601886009E5843 /* PostTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10695402B601886009E5843 /* PostTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -91,6 +92,7 @@
 		A10695392B5E938B009E5843 /* PostDetailsSceneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailsSceneView.swift; sourceTree = "<group>"; };
 		A106953B2B5E939E009E5843 /* PostDetailsSceneViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailsSceneViewModel.swift; sourceTree = "<group>"; };
 		A106953D2B5E9941009E5843 /* CommentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentTableViewCell.swift; sourceTree = "<group>"; };
+		A10695402B601886009E5843 /* PostTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -314,6 +316,7 @@
 		A10695382B5E9356009E5843 /* PostDetailsScene */ = {
 			isa = PBXGroup;
 			children = (
+				A10695422B60188D009E5843 /* PostTableViewCell */,
 				A106953F2B5E9948009E5843 /* CommentTableViewCell */,
 				A10695392B5E938B009E5843 /* PostDetailsSceneView.swift */,
 				A106953B2B5E939E009E5843 /* PostDetailsSceneViewModel.swift */,
@@ -327,6 +330,14 @@
 				A106953D2B5E9941009E5843 /* CommentTableViewCell.swift */,
 			);
 			path = CommentTableViewCell;
+			sourceTree = "<group>";
+		};
+		A10695422B60188D009E5843 /* PostTableViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				A10695402B601886009E5843 /* PostTableViewCell.swift */,
+			);
+			path = PostTableViewCell;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -412,6 +423,7 @@
 				A106953C2B5E939E009E5843 /* PostDetailsSceneViewModel.swift in Sources */,
 				A10695182B584525009E5843 /* ChecklistItemView.swift in Sources */,
 				A106951A2B590EBE009E5843 /* TabBarController.swift in Sources */,
+				A10695412B601886009E5843 /* PostTableViewCell.swift in Sources */,
 				A10694AC2B56F129009E5843 /* LoginSceneViewModel.swift in Sources */,
 				A10694CE2B56F787009E5843 /* UIColor+Extension.swift in Sources */,
 				A10694A22B56F052009E5843 /* PostInfo.swift in Sources */,

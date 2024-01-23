@@ -10,8 +10,6 @@ import Firebase
 
 protocol PostDetailsSceneViewDelegate: AnyObject {
     func updateLikeButtonUI(isLiked: Bool)
-    func updateUI()
-    func configureUI(name: String, userName: String, time: String, header: String, body: String)
 }
 
 final class PostDetailsSceneViewModel {
@@ -32,15 +30,6 @@ final class PostDetailsSceneViewModel {
     }
     
     // MARK: - Methods
-    
-    func configureUI() {
-        delegate?.configureUI(
-            name: userInfo.displayName,
-            userName: userInfo.userName,
-            time: timeAgoString(from: postInfo.postingTime),
-            header: postInfo.header,
-            body: postInfo.body)
-    }
     
     func timeAgoString(from date: Date) -> String {
         let currentDate = Date()
@@ -216,15 +205,9 @@ final class PostDetailsSceneViewModel {
                         )
                         
                         self.postInfo = postInfo
-                        updateUI()
                     }
                 }
             }
         }
-    }
-
-
-    private func updateUI() {
-        delegate?.updateUI()
     }
 }

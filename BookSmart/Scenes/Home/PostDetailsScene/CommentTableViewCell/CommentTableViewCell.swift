@@ -21,7 +21,7 @@ class CommentTableViewCell: UITableViewCell {
     private let timeLabel = UILabel()
     
     private let commentContentStackView = UIStackView()
-    private let bodyTextField = UITextField()
+    private let bodyTextView = UITextView()
     
     private let likeCommentStackView = UIStackView()
     
@@ -41,6 +41,7 @@ class CommentTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        selectionStyle = .none
         setupSubViews()
         setupConstraints()
         setupUI()
@@ -55,7 +56,10 @@ class CommentTableViewCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-
+        authorImageView.image = nil
+        nameLabel.text = nil
+        timeLabel.text = nil
+        bodyTextView.text = nil
     }
     
     // MARK: - Setup Subviews, Constraints, UI
@@ -67,7 +71,7 @@ class CommentTableViewCell: UITableViewCell {
         authorInfoStackView.addArrangedSubview(nameLabel)
         authorInfoStackView.addArrangedSubview(timeLabel)
         mainStackView.addArrangedSubview(commentContentStackView)
-        commentContentStackView.addArrangedSubview(bodyTextField)
+        commentContentStackView.addArrangedSubview(bodyTextView)
         mainStackView.addArrangedSubview(likeCommentStackView)
         likeCommentStackView.addArrangedSubview(likeStackView)
         likeCommentStackView.addArrangedSubview(commentStackView)
@@ -95,6 +99,14 @@ class CommentTableViewCell: UITableViewCell {
         setupCommentStackViewUI()
     }
     
+    func configureCell(commentInfo: CommentInfo.ID) {
+        #warning("change")
+        authorImageView.image = UIImage(systemName: "person.fill")
+        nameLabel.text = "commentInfo.authorID.uuidString"
+        timeLabel.text = "timeAgoString(from: commentInfo.commentTime)"
+        bodyTextView.text = "commentInfo.body"
+    }
+    
     // MARK: - Constraints
     
     private func setupMainStackViewConstraints() {
@@ -115,8 +127,8 @@ class CommentTableViewCell: UITableViewCell {
     
     private func setupAuthorImageViewConstraints() {
         NSLayoutConstraint.activate([
-            authorImageView.widthAnchor.constraint(equalToConstant: 50),
-            authorImageView.heightAnchor.constraint(equalToConstant: 50)
+            authorImageView.widthAnchor.constraint(equalToConstant: 40),
+            authorImageView.heightAnchor.constraint(equalToConstant: 40)
         ])
     }
     
@@ -129,6 +141,7 @@ class CommentTableViewCell: UITableViewCell {
     
     private func setupCommentContentStackViewConstraints() {
         NSLayoutConstraint.activate([
+            commentContentStackView.heightAnchor.constraint(greaterThanOrEqualToConstant: 33),
             commentContentStackView.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor, constant: 20),
             commentContentStackView.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor, constant: -20),
         ])
@@ -136,8 +149,9 @@ class CommentTableViewCell: UITableViewCell {
     
     private func setupBodyLabelConstraints() {
         NSLayoutConstraint.activate([
-            bodyTextField.leadingAnchor.constraint(equalTo: commentContentStackView.leadingAnchor),
-            bodyTextField.trailingAnchor.constraint(equalTo: commentContentStackView.trailingAnchor),
+            bodyTextView.heightAnchor.constraint(greaterThanOrEqualToConstant: 33),
+            bodyTextView.leadingAnchor.constraint(equalTo: commentContentStackView.leadingAnchor),
+            bodyTextView.trailingAnchor.constraint(equalTo: commentContentStackView.trailingAnchor),
         ])
     }
     
@@ -147,8 +161,9 @@ class CommentTableViewCell: UITableViewCell {
         mainStackView.translatesAutoresizingMaskIntoConstraints = false
         mainStackView.isLayoutMarginsRelativeArrangement = true
         mainStackView.layoutMargins = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
+        mainStackView.backgroundColor = .customBackgroundColor
         mainStackView.axis = .vertical
-        mainStackView.spacing = 16
+        mainStackView.spacing = 8
         mainStackView.alignment = .center
         mainStackView.customize(
             backgroundColor: .customAccentColor.withAlphaComponent(0.1),
@@ -161,7 +176,7 @@ class CommentTableViewCell: UITableViewCell {
         authorInfoStackView.axis = .horizontal
         authorInfoStackView.distribution = .fillProportionally
         authorInfoStackView.alignment = .center
-        authorInfoStackView.spacing = 16
+        authorInfoStackView.spacing = 8
     }
     
     private func setupAuthorImageViewUI() {
@@ -172,7 +187,7 @@ class CommentTableViewCell: UITableViewCell {
         authorImageView.translatesAutoresizingMaskIntoConstraints = false
         authorImageView.contentMode = .scaleAspectFill
         authorImageView.clipsToBounds = true
-        authorImageView.layer.cornerRadius = 25
+        authorImageView.layer.cornerRadius = 20
         authorImageView.layer.borderColor = UIColor.customAccentColor.withAlphaComponent(0.5).cgColor
         authorImageView.layer.borderWidth = 2
     }
@@ -195,9 +210,10 @@ class CommentTableViewCell: UITableViewCell {
     }
     
     private func setupBodyLabelUI() {
-        bodyTextField.font = .systemFont(ofSize: 14)
-        bodyTextField.textColor = .white
-        bodyTextField.setContentCompressionResistancePriority(.required, for: .vertical)
+        bodyTextView.font = .systemFont(ofSize: 14)
+        bodyTextView.textColor = .white
+        bodyTextView.backgroundColor = .clear
+        bodyTextView.isEditable = false
     }
     
     private func setupLikeCommentStackViewUI() {
