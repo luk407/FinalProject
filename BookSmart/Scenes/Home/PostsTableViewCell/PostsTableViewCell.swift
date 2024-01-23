@@ -446,10 +446,7 @@ final class PostsTableViewCell: UITableViewCell {
     }
     
     private func toggleLikePost() {
-        guard let postInfo = postInfo, let userInfo = userInfo else {
-            print("PostInfo or UserInfo is nil. Cannot toggle like status on Firebase.")
-            return
-        }
+        guard let postInfo = postInfo, let userInfo = userInfo else { return }
         
         let database = Firestore.firestore()
         
@@ -463,7 +460,7 @@ final class PostsTableViewCell: UITableViewCell {
                 "likedPosts": FieldValue.arrayRemove([postInfo.id.uuidString])
             ]) { error in
                 if let error = error {
-                    print("Error removing liked post from UserInfo: \(error.localizedDescription)")
+                    
                     return
                 }
                 
@@ -471,7 +468,7 @@ final class PostsTableViewCell: UITableViewCell {
                     "likedBy": FieldValue.arrayRemove([userInfo.id.uuidString])
                 ]) { error in
                     if let error = error {
-                        print("Error removing user from likedBy in PostInfo: \(error.localizedDescription)")
+                        
                         return
                     }
                     
@@ -490,7 +487,7 @@ final class PostsTableViewCell: UITableViewCell {
                 "likedPosts": FieldValue.arrayUnion([postInfo.id.uuidString])
             ]) { error in
                 if let error = error {
-                    print("Error adding liked post to UserInfo: \(error.localizedDescription)")
+                    
                     return
                 }
                 
@@ -498,7 +495,7 @@ final class PostsTableViewCell: UITableViewCell {
                     "likedBy": FieldValue.arrayUnion([userInfo.id.uuidString])
                 ]) { error in
                     if let error = error {
-                        print("Error adding user to likedBy in PostInfo: \(error.localizedDescription)")
+                        
                         return
                     }
                     
@@ -517,8 +514,6 @@ final class PostsTableViewCell: UITableViewCell {
             
             self.likeButtonImageView.image = UIImage(systemName: imageName)?.withTintColor(.customLikeButtonColor)
             self.likeButtonLabel.textColor = .customLikeButtonColor
-            
-            print("Post \(isLiked ? "liked" : "disliked") by \(self.userInfo?.userName ?? "Unknown User") on Firebase")
         }
     }
     

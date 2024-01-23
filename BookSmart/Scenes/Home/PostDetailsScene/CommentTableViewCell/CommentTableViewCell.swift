@@ -6,18 +6,384 @@
 //
 
 import UIKit
+import Firebase
 
 class CommentTableViewCell: UITableViewCell {
+    
+    // MARK: - Properties
+    
+    private let mainStackView = UIStackView()
+    
+    private let authorInfoStackView = UIStackView()
+    private let authorImageView = UIImageView()    
+    private let nameLabel = UILabel()
+    
+    private let timeLabel = UILabel()
+    
+    private let commentContentStackView = UIStackView()
+    private let bodyTextField = UITextField()
+    
+    private let likeCommentStackView = UIStackView()
+    
+    private let likeStackView = UIStackView()
+    private let likeButtonImageView = UIImageView()
+    private let likeButtonLabel = UILabel()
+    
+    private let commentStackView = UIStackView()
+    private let commentButtonImageView = UIImageView()
+    private let commentButtonLabel = UILabel()
 
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
+    var userInfo: UserInfo?
+    
+    var commentInfo: CommentInfo?
+    
+    // MARK: - Init
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        setupSubViews()
+        setupConstraints()
+        setupUI()
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupSubViews()
+        setupConstraints()
+        setupUI()
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+
+    }
+    
+    // MARK: - Setup Subviews, Constraints, UI
+    
+    private func setupSubViews() {
+        addSubview(mainStackView)
+        mainStackView.addArrangedSubview(authorInfoStackView)
+        authorInfoStackView.addArrangedSubview(authorImageView)
+        authorInfoStackView.addArrangedSubview(nameLabel)
+        authorInfoStackView.addArrangedSubview(timeLabel)
+        mainStackView.addArrangedSubview(commentContentStackView)
+        commentContentStackView.addArrangedSubview(bodyTextField)
+        mainStackView.addArrangedSubview(likeCommentStackView)
+        likeCommentStackView.addArrangedSubview(likeStackView)
+        likeCommentStackView.addArrangedSubview(commentStackView)
+    }
+    
+    private func setupConstraints() {
+        setupMainStackViewConstraints()
+        setupAuthorInfoStackViewConstraints()
+        setupAuthorImageViewConstraints()
+        setupTimeLabelConstraints()
+        setupCommentContentStackViewConstraints()
+        setupBodyLabelConstraints()
+    }
+    
+    private func setupUI() {
+        setupMainStackViewUI()
+        setupAuthorInfoStackViewUI()
+        setupAuthorImageViewUI()
+        setupNameLabelUI()
+        setupTimeLabelUI()
+        setupCommentContentStackViewUI()
+        setupBodyLabelUI()
+        setupLikeCommentStackViewUI()
+        setupLikeStackViewUI()
+        setupCommentStackViewUI()
+    }
+    
+    // MARK: - Constraints
+    
+    private func setupMainStackViewConstraints() {
+        NSLayoutConstraint.activate([
+            mainStackView.topAnchor.constraint(equalTo: self.topAnchor),
+            mainStackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
+            mainStackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
+            mainStackView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -20),
+        ])
+    }
+    
+    private func setupAuthorInfoStackViewConstraints() {
+        NSLayoutConstraint.activate([
+            authorInfoStackView.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor, constant: 20),
+            authorInfoStackView.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor, constant: -20),
+        ])
+    }
+    
+    private func setupAuthorImageViewConstraints() {
+        NSLayoutConstraint.activate([
+            authorImageView.widthAnchor.constraint(equalToConstant: 50),
+            authorImageView.heightAnchor.constraint(equalToConstant: 50)
+        ])
+    }
+    
+    private func setupTimeLabelConstraints() {
+        NSLayoutConstraint.activate([
+            timeLabel.widthAnchor.constraint(equalToConstant: 30),
+            timeLabel.heightAnchor.constraint(equalToConstant: 30)
+        ])
+    }
+    
+    private func setupCommentContentStackViewConstraints() {
+        NSLayoutConstraint.activate([
+            commentContentStackView.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor, constant: 20),
+            commentContentStackView.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor, constant: -20),
+        ])
+    }
+    
+    private func setupBodyLabelConstraints() {
+        NSLayoutConstraint.activate([
+            bodyTextField.leadingAnchor.constraint(equalTo: commentContentStackView.leadingAnchor),
+            bodyTextField.trailingAnchor.constraint(equalTo: commentContentStackView.trailingAnchor),
+        ])
+    }
+    
+    // MARK: - UI
+    
+    private func setupMainStackViewUI() {
+        mainStackView.translatesAutoresizingMaskIntoConstraints = false
+        mainStackView.isLayoutMarginsRelativeArrangement = true
+        mainStackView.layoutMargins = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
+        mainStackView.axis = .vertical
+        mainStackView.spacing = 16
+        mainStackView.alignment = .center
+        mainStackView.customize(
+            backgroundColor: .customAccentColor.withAlphaComponent(0.1),
+            radiusSize: 8,
+            borderColor: .clear,
+            borderWidth: 1)
+    }
+    
+    private func setupAuthorInfoStackViewUI() {
+        authorInfoStackView.axis = .horizontal
+        authorInfoStackView.distribution = .fillProportionally
+        authorInfoStackView.alignment = .center
+        authorInfoStackView.spacing = 16
+    }
+    
+    private func setupAuthorImageViewUI() {
+        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.authorImageOrNameTapped))
+        authorImageView.addGestureRecognizer(gestureRecognizer)
+        authorImageView.isUserInteractionEnabled = true
+        
+        authorImageView.translatesAutoresizingMaskIntoConstraints = false
+        authorImageView.contentMode = .scaleAspectFill
+        authorImageView.clipsToBounds = true
+        authorImageView.layer.cornerRadius = 25
+        authorImageView.layer.borderColor = UIColor.customAccentColor.withAlphaComponent(0.5).cgColor
+        authorImageView.layer.borderWidth = 2
+    }
+    
+    private func setupNameLabelUI() {
+        nameLabel.font = .boldSystemFont(ofSize: 16)
+        nameLabel.textColor = .white
+    }
+    
+    private func setupTimeLabelUI() {
+        timeLabel.font = .systemFont(ofSize: 14)
+        timeLabel.textColor = .white
+    }
+    
+    private func setupCommentContentStackViewUI() {
+        commentContentStackView.axis = .vertical
+        commentContentStackView.spacing = 0
+        commentContentStackView.alignment = .leading
+        commentContentStackView.distribution = .fillProportionally
+    }
+    
+    private func setupBodyLabelUI() {
+        bodyTextField.font = .systemFont(ofSize: 14)
+        bodyTextField.textColor = .white
+        bodyTextField.setContentCompressionResistancePriority(.required, for: .vertical)
+    }
+    
+    private func setupLikeCommentStackViewUI() {
+        likeCommentStackView.axis = .horizontal
+        likeCommentStackView.distribution = .fillProportionally
+        likeCommentStackView.alignment = .center
+        likeCommentStackView.spacing = 32
+    }
+    
+    private func setupLikeStackViewUI() {
+        likeButtonImageView.image = UIImage(systemName: "heart")
+        setupLikeCommentStackViewUI(
+            likeStackView,
+            imageView: likeButtonImageView,
+            label: likeButtonLabel,
+            labelText: "Like",
+            buttonColor: .customLikeButtonColor,
+            action: #selector(likeButtonTapped))
+    }
+    
+    private func setupCommentStackViewUI() {
+        commentButtonImageView.image = UIImage(systemName: "text.bubble")
+        setupLikeCommentStackViewUI(
+            commentStackView,
+            imageView: commentButtonImageView,
+            label: commentButtonLabel,
+            labelText: "Comment",
+            buttonColor: .customCommentButtonColor,
+            action: #selector(commentButtonTapped))
+    }
+    
+    private func setupLikeCommentStackViewUI(_ stackView: UIStackView, imageView: UIImageView, label: UILabel, labelText: String, buttonColor: UIColor, action: Selector) {
+        stackView.axis = .horizontal
+        stackView.alignment = .center
+        stackView.spacing = 8
+        
+        imageView.contentMode = .scaleAspectFit
+        imageView.tintColor = buttonColor
+        
+        label.font = .systemFont(ofSize: 14, weight: .semibold)
+        label.textColor = .customAccentColor
+        label.text = labelText
+        
+        let gestureRecognizer = UITapGestureRecognizer(target: self, action: action)
+        stackView.addGestureRecognizer(gestureRecognizer)
+        
+        stackView.addArrangedSubview(imageView)
+        stackView.addArrangedSubview(label)
+    }
+    
+    // MARK: - Private Methods
+    
+    private func timeAgoString(from date: Date) -> String {
+        let currentDate = Date()
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: date, to: currentDate)
+        
+        if let years = components.year, years > 0 {
+            return "\(years)y"
+        } else if let months = components.month, months > 0 {
+            return "\(months)m"
+        } else if let days = components.day, days > 0 {
+            return "\(days)d"
+        } else if let hours = components.hour, hours > 0 {
+            return "\(hours)h"
+        } else if let minutes = components.minute, minutes > 0 {
+            return "\(minutes)m"
+        } else {
+            return "Now"
+        }
+    }
+    
+    // MARK: - Animations
+    @objc private func authorImageOrNameTapped(sender: UITapGestureRecognizer) {
+        
+#warning("changee")
+        if sender.state == .ended {
+            UIView.animate(withDuration: 0.1, animations: {
+                self.authorImageView.alpha = 0.2
+                self.nameLabel.alpha = 0.2
+            }) { _ in
+                UIView.animate(withDuration: 0.1) {
+                    self.authorImageView.alpha = 1.0
+                    self.nameLabel.alpha = 1.0
+                }
+            }
+            print("image tapped, go to profile page")
+        }
+    }
+    
+    @objc private func likeButtonTapped(sender: UITapGestureRecognizer) {
+        
+        toggleLikeComment()
+        
+        if sender.state == .ended {
+            UIView.animate(withDuration: 0.1, animations: {
+                self.likeButtonImageView.alpha = 0.2
+                self.likeButtonLabel.alpha = 0.2
+            }) { _ in
+                UIView.animate(withDuration: 0.1) {
+                    self.likeButtonImageView.alpha = 1.0
+                    self.likeButtonLabel.alpha = 1.0
+                }
+            }
+        }
+    }
+    
+    @objc private func commentButtonTapped(sender: UITapGestureRecognizer) {
+        if sender.state == .ended {
+            UIView.animate(withDuration: 0.1, animations: {
+                self.commentButtonImageView.alpha = 0.2
+                self.commentButtonLabel.alpha = 0.2
+            }) { _ in
+                UIView.animate(withDuration: 0.1) { [self] in
+                    self.commentButtonImageView.alpha = 1.0
+                    self.commentButtonLabel.alpha = 1.0
+                }
+            }
+        }
+    }
+    
+    private func toggleLikeComment() {
+        guard let commentInfo = commentInfo, let userInfo = userInfo else { return }
+
+        let database = Firestore.firestore()
+
+        let userReference = database.collection("UserInfo").document(userInfo.id.uuidString)
+        let commentReference = database.collection("CommentInfo").document(commentInfo.id.uuidString)
+
+        let isLiked = commentInfo.likedBy.contains(userInfo.id)
+
+        if isLiked {
+            userReference.updateData([
+                "likedComments": FieldValue.arrayRemove([commentInfo.id.uuidString])
+            ]) { error in
+                if let error = error {
+                    print("Error removing liked comment from user: \(error.localizedDescription)")
+                    return
+                }
+
+                commentReference.updateData([
+                    "likedBy": FieldValue.arrayRemove([userInfo.id.uuidString])
+                ]) { error in
+                    if let error = error {
+                        print("Error removing user from likedBy in comment: \(error.localizedDescription)")
+                        return
+                    }
+
+                    if let index = commentInfo.likedBy.firstIndex(of: userInfo.id) {
+                        self.commentInfo?.likedBy.remove(at: index)
+                    }
+
+                    self.updateLikeButtonUI(isLiked: false)
+                }
+            }
+        } else {
+            userReference.updateData([
+                "likedComments": FieldValue.arrayUnion([commentInfo.id.uuidString])
+            ]) { error in
+                if let error = error {
+                    print("Error adding liked comment to user: \(error.localizedDescription)")
+                    return
+                }
+
+                commentReference.updateData([
+                    "likedBy": FieldValue.arrayUnion([userInfo.id.uuidString])
+                ]) { error in
+                    if let error = error {
+                        print("Error adding user to likedBy in comment: \(error.localizedDescription)")
+                        return
+                    }
+
+                    self.commentInfo?.likedBy.append(userInfo.id)
+
+                    self.updateLikeButtonUI(isLiked: true)
+                }
+            }
+        }
     }
 
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+    private func updateLikeButtonUI(isLiked: Bool) {
+        DispatchQueue.main.async {
+            let imageName = isLiked ? "heart.fill" : "heart"
+            
+            self.likeButtonImageView.image = UIImage(systemName: imageName)?.withTintColor(.customLikeButtonColor)
+            self.likeButtonLabel.textColor = .customLikeButtonColor
+        }
     }
-
 }
