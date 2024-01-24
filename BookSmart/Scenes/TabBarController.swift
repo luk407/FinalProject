@@ -41,7 +41,7 @@ class TabBarController: UITabBarController {
         
         navigationItem.titleView = appNameLabel
     
-        let homeViewController =  HomeSceneView(userInfo: userInfo)
+        let homeViewController =  HomeSceneView(homeSceneViewModel: HomeSceneViewModel(userInfo: userInfo))
         let announcementsViewController = AnnouncementSceneView()
         let createPostViewController = UIHostingController(rootView: CreatePostSceneView(userInfo: userInfo))
         let leaderboardViewController = LeaderboardSceneView()

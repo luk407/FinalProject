@@ -16,14 +16,11 @@ class HomeSceneView: UIViewController {
     
     private var postsTableView = UITableView()
     
-    private var homeSceneViewModel = HomeSceneViewModel()
-    
-    var userInfo: UserInfo
+    var homeSceneViewModel: HomeSceneViewModel
     
     // MARK: - Init
-    init(userInfo: UserInfo) {
-        self.userInfo = userInfo
-        homeSceneViewModel.userInfo = userInfo
+    init(homeSceneViewModel: HomeSceneViewModel) {
+        self.homeSceneViewModel = homeSceneViewModel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -35,21 +32,9 @@ class HomeSceneView: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        homeSceneViewModel.delegate = self
+        homeSceneViewModel.homeSceneViewDidLoad()
         view.backgroundColor = .customBackgroundColor
-        
-        homeSceneViewModel.fetchPostsInfo() { [weak self] success in
-            
-            guard let self = self else { return }
-            
-            if success {
-                DispatchQueue.main.async {
-                    self.postsTableView.reloadData()
-                }
-            } else {
-                print("Failed to fetch user information.")
-            }
-        }
-        
         setupSubviews()
         setupConstraints()
         setupUI()
@@ -119,9 +104,9 @@ extension HomeSceneView: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let post = homeSceneViewModel.fetchedPostsInfo[indexPath.row]
+        let postInfo = homeSceneViewModel.fetchedPostsInfo[indexPath.row]
         if let cell = postsTableView.dequeueReusableCell(withIdentifier: "postCell", for: indexPath) as? PostsTableViewCell {
-            cell.configureCell(userInfo: userInfo, post: post)
+            cell.configureCell(viewModel: homeSceneViewModel, postInfo: postInfo)
             cell.contentView.isUserInteractionEnabled = false
             return cell
         } else {
@@ -134,5 +119,13 @@ extension HomeSceneView: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         UITableView.automaticDimension
+    }
+}
+
+extension HomeSceneView: HomeSceneViewDelegate {
+    func reloadTableView() {
+        DispatchQueue.main.async {
+            self.postsTableView.reloadData()
+        }
     }
 }

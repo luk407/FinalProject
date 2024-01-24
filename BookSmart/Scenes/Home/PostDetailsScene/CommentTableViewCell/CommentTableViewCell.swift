@@ -33,10 +33,10 @@ class CommentTableViewCell: UITableViewCell {
     private let commentButtonImageView = UIImageView()
     private let commentButtonLabel = UILabel()
 
-    var userInfo: UserInfo?
+    var viewModel: PostDetailsSceneViewModel?
     
     var commentInfo: CommentInfo?
-    
+
     // MARK: - Init
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -49,9 +49,6 @@ class CommentTableViewCell: UITableViewCell {
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        setupSubViews()
-        setupConstraints()
-        setupUI()
     }
     
     override func prepareForReuse() {
@@ -99,12 +96,13 @@ class CommentTableViewCell: UITableViewCell {
         setupCommentStackViewUI()
     }
     
-    func configureCell(commentInfo: CommentInfo.ID) {
-        #warning("change")
-        authorImageView.image = UIImage(systemName: "person.fill")
-        nameLabel.text = "commentInfo.authorID.uuidString"
-        timeLabel.text = "timeAgoString(from: commentInfo.commentTime)"
-        bodyTextView.text = "commentInfo.body"
+    func configureCell(viewModel: PostDetailsSceneViewModel, commentInfo: CommentInfo.ID) {
+        #warning("fix force unwrap")
+        self.commentInfo = self.viewModel?.getCommentInfo(for: commentInfo)
+        self.viewModel = viewModel
+        self.viewModel?.commentInfoListener()
+        
+        updateCellUI(with: (self.viewModel?.getCommentInfo(for: commentInfo)))
     }
     
     // MARK: - Constraints
@@ -266,26 +264,6 @@ class CommentTableViewCell: UITableViewCell {
     
     // MARK: - Private Methods
     
-    private func timeAgoString(from date: Date) -> String {
-        let currentDate = Date()
-        let calendar = Calendar.current
-        let components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: date, to: currentDate)
-        
-        if let years = components.year, years > 0 {
-            return "\(years)y"
-        } else if let months = components.month, months > 0 {
-            return "\(months)m"
-        } else if let days = components.day, days > 0 {
-            return "\(days)d"
-        } else if let hours = components.hour, hours > 0 {
-            return "\(hours)h"
-        } else if let minutes = components.minute, minutes > 0 {
-            return "\(minutes)m"
-        } else {
-            return "Now"
-        }
-    }
-    
     // MARK: - Animations
     @objc private func authorImageOrNameTapped(sender: UITapGestureRecognizer) {
         
@@ -306,7 +284,7 @@ class CommentTableViewCell: UITableViewCell {
     
     @objc private func likeButtonTapped(sender: UITapGestureRecognizer) {
         
-        toggleLikeComment()
+        viewModel?.toggleLikeComment(commentInfo: commentInfo)
         
         if sender.state == .ended {
             UIView.animate(withDuration: 0.1, animations: {
@@ -335,62 +313,12 @@ class CommentTableViewCell: UITableViewCell {
         }
     }
     
-    private func toggleLikeComment() {
-        guard let commentInfo = commentInfo, let userInfo = userInfo else { return }
-
-        let database = Firestore.firestore()
-
-        let userReference = database.collection("UserInfo").document(userInfo.id.uuidString)
-        let commentReference = database.collection("CommentInfo").document(commentInfo.id.uuidString)
-
-        let isLiked = commentInfo.likedBy.contains(userInfo.id)
-
-        if isLiked {
-            userReference.updateData([
-                "likedComments": FieldValue.arrayRemove([commentInfo.id.uuidString])
-            ]) { error in
-                if let error = error {
-                    print("Error removing liked comment from user: \(error.localizedDescription)")
-                    return
-                }
-
-                commentReference.updateData([
-                    "likedBy": FieldValue.arrayRemove([userInfo.id.uuidString])
-                ]) { error in
-                    if let error = error {
-                        print("Error removing user from likedBy in comment: \(error.localizedDescription)")
-                        return
-                    }
-
-                    if let index = commentInfo.likedBy.firstIndex(of: userInfo.id) {
-                        self.commentInfo?.likedBy.remove(at: index)
-                    }
-
-                    self.updateLikeButtonUI(isLiked: false)
-                }
-            }
-        } else {
-            userReference.updateData([
-                "likedComments": FieldValue.arrayUnion([commentInfo.id.uuidString])
-            ]) { error in
-                if let error = error {
-                    print("Error adding liked comment to user: \(error.localizedDescription)")
-                    return
-                }
-
-                commentReference.updateData([
-                    "likedBy": FieldValue.arrayUnion([userInfo.id.uuidString])
-                ]) { error in
-                    if let error = error {
-                        print("Error adding user to likedBy in comment: \(error.localizedDescription)")
-                        return
-                    }
-
-                    self.commentInfo?.likedBy.append(userInfo.id)
-
-                    self.updateLikeButtonUI(isLiked: true)
-                }
-            }
+    private func updateCellUI(with commentInfo: CommentInfo?) {
+        DispatchQueue.main.async { [self] in
+            authorImageView.image = UIImage(systemName: "person.fill")
+            nameLabel.text = commentInfo?.authorID.uuidString
+            timeLabel.text = viewModel?.timeAgoString(from: commentInfo?.commentTime ?? Date())
+            bodyTextView.text = commentInfo?.body
         }
     }
 

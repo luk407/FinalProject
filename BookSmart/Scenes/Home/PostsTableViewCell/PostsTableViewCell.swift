@@ -43,7 +43,7 @@ final class PostsTableViewCell: UITableViewCell {
     private let shareButtonImageView = UIImageView()
     private let shareButtonLabel = UILabel()
     
-    private var userInfo: UserInfo?
+    private var viewModel: HomeSceneViewModel?
     
     private var postInfo: PostInfo?
     
@@ -58,9 +58,6 @@ final class PostsTableViewCell: UITableViewCell {
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        setupSubViews()
-        setupConstraints()
-        setupUI()
     }
     
     override func prepareForReuse() {
@@ -119,20 +116,21 @@ final class PostsTableViewCell: UITableViewCell {
         setupShareStackViewUI()
     }
     
-    func configureCell(userInfo: UserInfo, post: PostInfo) {
+    func configureCell(viewModel: HomeSceneViewModel, postInfo: PostInfo) {
 #warning("fetch real user image")
-        let timeAgo = timeAgoString(from: post.postingTime)
-        let isLiked = userInfo.likedPosts.contains(post.id)
+        self.viewModel = viewModel
+        self.postInfo = postInfo
+        
+        let timeAgo = timeAgoString(from: postInfo.postingTime)
+        let isLiked = viewModel.userInfo.likedPosts.contains(postInfo.id)
         
         authorImageView.image = UIImage(systemName: "person.fill")
-        nameLabel.text = "\(userInfo.displayName)"
-        usernameLabel.text = "\(userInfo.userName)"
+        nameLabel.text = "\(viewModel.userInfo.displayName)"
+        usernameLabel.text = "\(viewModel.userInfo.userName)"
         timeLabel.text = timeAgo
-        headerLabel.text = post.header
-        bodyLabel.text = post.body
+        headerLabel.text = postInfo.header
+        bodyLabel.text = postInfo.body
         
-        self.userInfo = userInfo
-        self.postInfo = post
         self.backgroundColor = .clear
         self.selectionStyle = .none
         
@@ -369,6 +367,9 @@ final class PostsTableViewCell: UITableViewCell {
     }
     
     @objc private func postHeaderOrBodyTapped(sender: UITapGestureRecognizer) {
+        
+        guard let postInfo else { return }
+        
         if sender.state == .ended {
             UIView.animate(withDuration: 0.1, animations: {
                 self.headerLabel.alpha = 0.5
@@ -382,8 +383,8 @@ final class PostsTableViewCell: UITableViewCell {
                         #warning("fix force unwrapping, dont change optional types.")
                         let commentDetailsViewController = PostDetailsSceneView(
                             viewModel: PostDetailsSceneViewModel(
-                                userInfo: userInfo!,
-                                postInfo: postInfo!))
+                                userInfo: viewModel!.userInfo,
+                                postInfo: postInfo))
                         navigationController.pushViewController(commentDetailsViewController, animated: true)
                     }
                 }
@@ -393,7 +394,9 @@ final class PostsTableViewCell: UITableViewCell {
     }
     
     @objc private func likeButtonTapped(sender: UITapGestureRecognizer) {
+        
         toggleLikePost()
+        
         if sender.state == .ended {
             UIView.animate(withDuration: 0.1, animations: {
                 self.likeButtonImageView.alpha = 0.2
@@ -408,6 +411,9 @@ final class PostsTableViewCell: UITableViewCell {
     }
     
     @objc private func commentButtonTapped(sender: UITapGestureRecognizer) {
+        
+        guard let postInfo else { return }
+        
         if sender.state == .ended {
             UIView.animate(withDuration: 0.1, animations: {
                 self.commentButtonImageView.alpha = 0.2
@@ -421,8 +427,8 @@ final class PostsTableViewCell: UITableViewCell {
                         #warning("fix force unwrapping, dont change optional types.")
                         let commentDetailsViewController = PostDetailsSceneView(
                             viewModel: PostDetailsSceneViewModel(
-                                userInfo: userInfo!,
-                                postInfo: postInfo!))
+                                userInfo: viewModel!.userInfo,
+                                postInfo: postInfo))
                         navigationController.pushViewController(commentDetailsViewController, animated: true)
                     }
                 }
@@ -431,7 +437,9 @@ final class PostsTableViewCell: UITableViewCell {
     }
     
     @objc private func shareButtonTapped(sender: UITapGestureRecognizer) {
+        
         sharePost()
+        
         if sender.state == .ended {
             UIView.animate(withDuration: 0.1, animations: {
                 self.shareButtonImageView.alpha = 0.2
@@ -446,63 +454,46 @@ final class PostsTableViewCell: UITableViewCell {
     }
     
     private func toggleLikePost() {
-        guard let postInfo = postInfo, let userInfo = userInfo else { return }
         
+        guard let postInfo else { return }
+ 
         let database = Firestore.firestore()
         
-        let userReference = database.collection("UserInfo").document(userInfo.id.uuidString)
+        let userReference = database.collection("UserInfo").document(viewModel!.userInfo.id.uuidString)
         let postReference = database.collection("PostInfo").document(postInfo.id.uuidString)
         
-        let isLiked = userInfo.likedPosts.contains(postInfo.id)
+        let isLiked = viewModel!.userInfo.likedPosts.contains(postInfo.id)
         
         if isLiked {
             userReference.updateData([
                 "likedPosts": FieldValue.arrayRemove([postInfo.id.uuidString])
-            ]) { error in
+            ]) { [self] error in
                 if let error = error {
-                    
                     return
                 }
                 
                 postReference.updateData([
-                    "likedBy": FieldValue.arrayRemove([userInfo.id.uuidString])
-                ]) { error in
+                    "likedBy": FieldValue.arrayRemove([viewModel!.userInfo.id.uuidString])
+                ]) { [self] error in
                     if let error = error {
-                        
                         return
                     }
-                    
-                    if let index = userInfo.likedPosts.firstIndex(of: postInfo.id) {
-                        self.userInfo?.likedPosts.remove(at: index)
-                    }
-                    if let index = postInfo.likedBy.firstIndex(of: userInfo.id) {
-                        self.postInfo?.likedBy.remove(at: index)
-                    }
-                    
-                    self.updateLikeButtonUI(isLiked: false)
                 }
             }
         } else {
             userReference.updateData([
                 "likedPosts": FieldValue.arrayUnion([postInfo.id.uuidString])
-            ]) { error in
+            ]) { [self] error in
                 if let error = error {
-                    
                     return
                 }
                 
                 postReference.updateData([
-                    "likedBy": FieldValue.arrayUnion([userInfo.id.uuidString])
-                ]) { error in
+                    "likedBy": FieldValue.arrayUnion([viewModel!.userInfo.id.uuidString])
+                ]) { [self] error in
                     if let error = error {
-                        
                         return
                     }
-                    
-                    self.userInfo?.likedPosts.append(postInfo.id)
-                    self.postInfo?.likedBy.append(userInfo.id)
-                    
-                    self.updateLikeButtonUI(isLiked: true)
                 }
             }
         }
@@ -512,16 +503,12 @@ final class PostsTableViewCell: UITableViewCell {
         DispatchQueue.main.async {
             let imageName = isLiked ? "heart.fill" : "heart"
             
-            self.likeButtonImageView.image = UIImage(systemName: imageName)?.withTintColor(.customLikeButtonColor)
+            self.likeButtonImageView.image = UIImage(systemName: imageName)
             self.likeButtonLabel.textColor = .customLikeButtonColor
         }
     }
     
     private func sharePost() {
-        guard let postInfo = postInfo else {
-            print("PostInfo is nil. Cannot share.")
-            return
-        }
         
         let textToShare = "Check out this post on BookSmart!"
         let postURL = URL(string: "someURL")

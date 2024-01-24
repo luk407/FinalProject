@@ -37,6 +37,7 @@ final class PostDetailsSceneView: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        viewModel.delegate = self
         view.backgroundColor = .customBackgroundColor
         setupSubviews()
         setupConstraints()
@@ -173,24 +174,38 @@ extension PostDetailsSceneView: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.row == 0 {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "postCell", for: indexPath) as! PostTableViewCell
-            cell.configureCell(viewModel: viewModel, userInfo: viewModel.userInfo, postInfo: viewModel.postInfo)
-            cell.backgroundColor = .customBackgroundColor
-            cell.contentView.isUserInteractionEnabled = false
-            return cell
+            if let cell = tableView.dequeueReusableCell(withIdentifier: "postCell", for: indexPath) as? PostTableViewCell {
+                cell.configureCell(viewModel: viewModel, userInfo: viewModel.userInfo, postInfo: viewModel.postInfo)
+                cell.backgroundColor = .customBackgroundColor
+                cell.contentView.isUserInteractionEnabled = false
+                return cell
+            } else {
+                return UITableViewCell()
+            }
         } else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "commentCell", for: indexPath) as! CommentTableViewCell
-            let comment = viewModel.postInfo.comments[indexPath.row - 1]
-            cell.configureCell(commentInfo: comment)
-            cell.backgroundColor = .customBackgroundColor
-            cell.contentView.isUserInteractionEnabled = false
-            return cell
+            if let cell = tableView.dequeueReusableCell(withIdentifier: "commentCell", for: indexPath) as? CommentTableViewCell {
+                let comment = viewModel.postInfo.comments[indexPath.row - 1]
+                cell.configureCell(viewModel: viewModel, commentInfo: comment)
+                cell.backgroundColor = .customBackgroundColor
+                cell.contentView.isUserInteractionEnabled = false
+                return cell
+            } else {
+                return UITableViewCell()
+            }
         }
     }
 }
 
 extension PostDetailsSceneView: UITableViewDelegate {
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         UITableView.automaticDimension
+    }
+}
+
+extension PostDetailsSceneView: PostDetailsSceneViewDelegate {
+    
+    func postUpdated() {
+        tableView.reloadData()
     }
 }

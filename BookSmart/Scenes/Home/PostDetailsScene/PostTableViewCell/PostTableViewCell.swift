@@ -114,7 +114,10 @@ class PostTableViewCell: UITableViewCell {
     
     func configureCell(viewModel: PostDetailsSceneViewModel, userInfo: UserInfo, postInfo: PostInfo) {
         
-        viewModel.delegate = self
+        let isLiked = viewModel.userInfo.likedPosts.contains(postInfo.id)
+
+        self.viewModel = viewModel
+        viewModel.postCellDelegate = self
         
         authorImageView.image = UIImage(systemName: "person.fill")
         nameLabel.text = userInfo.userName
@@ -122,6 +125,8 @@ class PostTableViewCell: UITableViewCell {
         timeLabel.text = viewModel.timeAgoString(from: postInfo.postingTime)
         headerLabel.text = postInfo.header
         bodyTextField.text = postInfo.body
+        
+        self.updateLikeButtonUI(isLiked: isLiked)
     }
     
     // MARK: - Constraints
@@ -375,7 +380,7 @@ class PostTableViewCell: UITableViewCell {
 }
 
 // MARK: - Extensions
-extension PostTableViewCell: PostDetailsSceneViewDelegate {
+extension PostTableViewCell: PostDetailsSceneViewDelegateForPostCell {
     
     func updateLikeButtonUI(isLiked: Bool) {
         DispatchQueue.main.async {
