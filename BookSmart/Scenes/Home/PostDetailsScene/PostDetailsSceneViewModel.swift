@@ -195,8 +195,6 @@ final class PostDetailsSceneViewModel {
             .addSnapshotListener(includeMetadataChanges: true) { [weak self] (querySnapshot, error) in
                 guard let self = self else { return }
                 
-                print(querySnapshot?.metadata.isFromCache)
-                
                 if let error = error {
                     print("Error fetching comments info: \(error.localizedDescription)")
                     return
@@ -243,7 +241,7 @@ final class PostDetailsSceneViewModel {
     }
     
     func toggleLikeComment(commentInfo: CommentInfo?) {
-#warning("fix force unwrap")
+
         guard let commentInfo else { return }
         
         let database = Firestore.firestore()
@@ -264,7 +262,7 @@ final class PostDetailsSceneViewModel {
                 
                 commentReference.updateData([
                     "likedBy": FieldValue.arrayRemove([userInfo.id.uuidString])
-                ]) { [self] error in
+                ]) { error in
                     if let error = error {
                         print("Error removing user from likedBy in comment: \(error.localizedDescription)")
                         return
@@ -287,7 +285,7 @@ final class PostDetailsSceneViewModel {
                 
                 commentReference.updateData([
                     "likedBy": FieldValue.arrayUnion([userInfo.id.uuidString])
-                ]) { [self] error in
+                ]) { error in
                     if let error = error {
                         print("Error adding user to likedBy in comment: \(error.localizedDescription)")
                         return
@@ -314,7 +312,7 @@ final class PostDetailsSceneViewModel {
         postReference.updateData([
             "comments": FieldValue.arrayUnion([newComment.id.uuidString])
         ]) { [weak self] error in
-            guard let self = self else { return }
+            guard self != nil else { return }
             
             if let error = error {
                 print("Error adding comment to PostInfo: \(error.localizedDescription)")

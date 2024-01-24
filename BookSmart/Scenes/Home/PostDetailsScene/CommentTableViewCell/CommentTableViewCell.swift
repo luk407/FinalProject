@@ -97,7 +97,7 @@ class CommentTableViewCell: UITableViewCell {
     }
     
     func configureCell(viewModel: PostDetailsSceneViewModel, commentInfo: CommentInfo.ID) {
-        #warning("fix force unwrap")
+        
         self.commentInfo = self.viewModel?.getCommentInfo(for: commentInfo)
         self.viewModel = viewModel
         self.viewModel?.commentInfoListener()
@@ -267,7 +267,7 @@ class CommentTableViewCell: UITableViewCell {
     // MARK: - Animations
     @objc private func authorImageOrNameTapped(sender: UITapGestureRecognizer) {
         
-#warning("changee")
+        #warning("go to profile")
         if sender.state == .ended {
             UIView.animate(withDuration: 0.1, animations: {
                 self.authorImageView.alpha = 0.2

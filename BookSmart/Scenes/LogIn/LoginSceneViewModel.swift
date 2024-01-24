@@ -9,54 +9,64 @@ import Foundation
 import Firebase
 
 final class LoginSceneViewModel {
+    
     // MARK: - Properties
+    
     var fetchedUserData: UserInfo?
     
     // MARK: - Init
+    
     init() {
         FirebaseApp.configure()
     }
     
     // MARK: - Methods
+    
     func login(email: String, password: String) {
+        
         Auth.auth().signIn(withEmail: email, password: password) { result, error in
             if error != nil {
-                print(error?.localizedDescription)
+                print(error?.localizedDescription as Any)
             }
         }
     }
     
     func navigateToTabBarController(navigationController: UINavigationController) {
+        
         guard let fetchedUserData else { return }
         let tabbarController = TabBarController(userInfo: fetchedUserData)
         navigationController.pushViewController(tabbarController, animated: true)
     }
     
     func signupButtonPressed(navigationController: UINavigationController) {
+        
         let signupScene = SignupSceneView()
         navigationController.pushViewController(signupScene, animated: true)
     }
     
-    func fetchUserInfoAndLogin(email: String, password: String, completion: @escaping (Bool) -> Void) {
+    // MARK: - Firebase Methods
+    
+    func userInfoListener(email: String, password: String, completion: @escaping (Bool) -> Void) {
+        
         let database = Firestore.firestore()
         let reference = database.collection("UserInfo")
-        
-        reference.getDocuments { [weak self] snapshot, error in
+
+        reference.addSnapshotListener(includeMetadataChanges: true) { [weak self] snapshot, error in
             guard let self = self else { return }
-            
+
             if let error = error {
                 print("Error fetching user information: \(error.localizedDescription)")
                 completion(false)
                 return
             }
-            
+
             if let snapshot = snapshot {
                 for document in snapshot.documents {
                     let data = document.data()
-                    
+
                     let passwordToCheck = data["password"] as? String ?? ""
                     let emailToCheck = data["email"] as? String ?? ""
-                    
+
                     if emailToCheck == email && passwordToCheck == password {
                         guard
                             let id = data["id"] as? String,
@@ -108,6 +118,7 @@ final class LoginSceneViewModel {
     }
 
     private func parseBooksFinishedArray(_ booksFinishedArray: [[String: Any]]) -> [Book] {
+        
         var booksFinished: [Book] = []
 
         for bookInfo in booksFinishedArray {

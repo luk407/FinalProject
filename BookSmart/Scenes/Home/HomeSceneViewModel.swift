@@ -33,13 +33,13 @@ class HomeSceneViewModel {
     func homeSceneViewDidLoad() {
         if !viewDidLoad {
             
-            userInfoListener() { [ weak self ] _ in
+            //userInfoListener() { [ weak self ] _ in
                 
-                self?.postsInfoListener() { _ in
+                postsInfoListener() { [ weak self ]_ in
                     
                     self?.delegate?.reloadTableView()
                 }
-            }
+           // }
             viewDidLoad = true
         }
     }
@@ -52,8 +52,6 @@ class HomeSceneViewModel {
         
         let database = Firestore.firestore()
         let reference = database.collection("PostInfo")
-        
-        database.clearPersistence()
         
         reference.addSnapshotListener(includeMetadataChanges: true) { [weak self] snapshot, error in
             if let error = error {
@@ -116,8 +114,8 @@ class HomeSceneViewModel {
         database.clearPersistence()
 
         reference.addSnapshotListener(includeMetadataChanges: true) { [weak self] snapshot, error in
+            
             guard let self = self else { return }
-            print(snapshot?.metadata.isFromCache)
             
             if let error = error {
                 print("Error fetching user information: \(error.localizedDescription)")
@@ -169,7 +167,6 @@ class HomeSceneViewModel {
                     booksFinished: self.parseBooksFinishedArray(booksFinishedArray),
                     quotesUsed: quotesUsed
                 )
-                
                 self.userInfo = userInfo
             }
         }

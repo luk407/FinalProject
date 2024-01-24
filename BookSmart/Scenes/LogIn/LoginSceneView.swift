@@ -257,7 +257,7 @@ final class LoginSceneView: UIViewController {
                 email: emailTextField.text ?? "",
                 password: passwordTextField.text ?? "")
             
-            loginSceneViewModel.fetchUserInfoAndLogin(
+            loginSceneViewModel.userInfoListener(
                 email: emailTextField.text ?? "",
                 password: passwordTextField.text ?? "") { [weak self] success in
                     guard let self = self else { return }
@@ -271,15 +271,15 @@ final class LoginSceneView: UIViewController {
     }
     
     private func assignBackground(){
-            let background = UIImage(named: "backgroundWithLogo")
-
-            var imageView = UIImageView()
-            imageView = UIImageView(frame: view.bounds)
-            imageView.contentMode =  UIView.ContentMode.scaleAspectFill
-            imageView.clipsToBounds = true
-            imageView.image = background
-            imageView.center = view.center
-            view.addSubview(imageView)
-            self.view.sendSubviewToBack(imageView)
-        }
+        let background = UIImage(named: "backgroundWithLogo")
+        
+        var imageView = UIImageView()
+        imageView = UIImageView(frame: view.bounds)
+        imageView.contentMode =  UIView.ContentMode.scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.image = background
+        imageView.center = view.center
+        view.addSubview(imageView)
+        self.view.sendSubviewToBack(imageView)
+    }
 }

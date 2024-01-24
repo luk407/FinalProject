@@ -187,7 +187,7 @@ extension PostDetailsSceneView: UITableViewDataSource {
                 let comment = viewModel.postInfo.comments[indexPath.row - 1]
                 cell.configureCell(viewModel: viewModel, commentInfo: comment)
                 cell.backgroundColor = .customBackgroundColor
-                cell.contentView.isUserInteractionEnabled = false
+                //cell.contentView.isUserInteractionEnabled = false
                 return cell
             } else {
                 return UITableViewCell()

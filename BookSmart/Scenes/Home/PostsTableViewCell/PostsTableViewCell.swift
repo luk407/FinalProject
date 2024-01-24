@@ -117,7 +117,7 @@ final class PostsTableViewCell: UITableViewCell {
     }
     
     func configureCell(viewModel: HomeSceneViewModel, postInfo: PostInfo) {
-#warning("fetch real user image")
+    #warning("fetch real user image")
         self.viewModel = viewModel
         self.postInfo = postInfo
         
@@ -353,7 +353,7 @@ final class PostsTableViewCell: UITableViewCell {
     }
     
     @objc private func authorImageTapped(sender: UITapGestureRecognizer) {
-#warning("changee")
+    #warning("go to profile page")
         if sender.state == .ended {
             UIView.animate(withDuration: 0.1, animations: {
                 self.authorImageView.alpha = 0.2
@@ -459,7 +459,7 @@ final class PostsTableViewCell: UITableViewCell {
  
         let database = Firestore.firestore()
         
-        let userReference = database.collection("UserInfo").document(viewModel!.userInfo.id.uuidString)
+        let userReference = database.collection("UserInfo").document(viewModel?.userInfo.id.uuidString ?? "")
         let postReference = database.collection("PostInfo").document(postInfo.id.uuidString)
         
         let isLiked = viewModel!.userInfo.likedPosts.contains(postInfo.id)
@@ -469,13 +469,15 @@ final class PostsTableViewCell: UITableViewCell {
                 "likedPosts": FieldValue.arrayRemove([postInfo.id.uuidString])
             ]) { [self] error in
                 if let error = error {
+                    print(error.localizedDescription)
                     return
                 }
                 
                 postReference.updateData([
                     "likedBy": FieldValue.arrayRemove([viewModel!.userInfo.id.uuidString])
-                ]) { [self] error in
+                ]) { error in
                     if let error = error {
+                        print(error.localizedDescription)
                         return
                     }
                 }
@@ -485,13 +487,15 @@ final class PostsTableViewCell: UITableViewCell {
                 "likedPosts": FieldValue.arrayUnion([postInfo.id.uuidString])
             ]) { [self] error in
                 if let error = error {
+                    print(error.localizedDescription)
                     return
                 }
                 
                 postReference.updateData([
                     "likedBy": FieldValue.arrayUnion([viewModel!.userInfo.id.uuidString])
-                ]) { [self] error in
+                ]) {  error in
                     if let error = error {
+                        print(error.localizedDescription)
                         return
                     }
                 }

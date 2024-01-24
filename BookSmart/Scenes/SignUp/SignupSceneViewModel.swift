@@ -23,7 +23,7 @@ final class SignupSceneViewModel {
         if isSignUpEnabled {
             Auth.auth().createUser(withEmail: emailText, password: passwordText) { result, error in
                 if error != nil {
-                    print(error?.localizedDescription)
+                    print(error?.localizedDescription as Any)
                 }
             }
         }
@@ -80,7 +80,7 @@ final class SignupSceneViewModel {
             "quotesUsed": createdUserInfo.quotesUsed
         ]) { error in
             if error != nil {
-                print(error?.localizedDescription)
+                print(error?.localizedDescription as Any)
             }
         }
     }
