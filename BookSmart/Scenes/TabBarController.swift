@@ -45,7 +45,7 @@ class TabBarController: UITabBarController {
         let announcementsViewController = AnnouncementSceneView()
         let createPostViewController = UIHostingController(rootView: CreatePostSceneView(userInfo: userInfo))
         let leaderboardViewController = LeaderboardSceneView()
-        let profileViewController = ProfileSceneView()
+        let profileViewController = UIHostingController(rootView: ProfileSceneView())
         
         homeViewController.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house.fill"), selectedImage: nil)
         announcementsViewController.tabBarItem = UITabBarItem(title: "Announcements", image: UIImage(systemName: "megaphone.fill"), selectedImage: nil)
