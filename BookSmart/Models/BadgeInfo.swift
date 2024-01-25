@@ -7,15 +7,15 @@
 
 import Foundation
 
-enum BadgeCategory {
+enum BadgeCategory: String {
     case booksCount, commentsCount, likesCount, connectionsCount, quotesCount, oneYearClub, fiveYearClub
 }
 
-enum BadgeType {
+enum BadgeType: String {
     case bronze, silver, gold, diamond
 }
 
-struct BadgeInfo {
+struct BadgeInfo: Hashable {
     let category: BadgeCategory
     let type: BadgeType
 }

@@ -41,11 +41,23 @@ class TabBarController: UITabBarController {
         
         navigationItem.titleView = appNameLabel
     
-        let homeViewController =  HomeSceneView(homeSceneViewModel: HomeSceneViewModel(userInfo: userInfo))
+        let homeViewController =  HomeSceneView(
+            homeSceneViewModel: HomeSceneViewModel(
+                userInfo: userInfo))
+        
         let announcementsViewController = AnnouncementSceneView()
-        let createPostViewController = UIHostingController(rootView: CreatePostSceneView(userInfo: userInfo))
+        
+        let createPostViewController = UIHostingController(
+            rootView: CreatePostSceneView(
+                userInfo: userInfo))
+        
         let leaderboardViewController = LeaderboardSceneView()
-        let profileViewController = UIHostingController(rootView: ProfileSceneView())
+        
+        let profileViewController = UIHostingController(
+            rootView: ProfileSceneView(
+                profileSceneViewModel: ProfileSceneViewModel(
+                    userInfo: userInfo,
+                    loggedInUserInfo: userInfo)).background(Color(uiColor: .customBackgroundColor)))
         
         homeViewController.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house.fill"), selectedImage: nil)
         announcementsViewController.tabBarItem = UITabBarItem(title: "Announcements", image: UIImage(systemName: "megaphone.fill"), selectedImage: nil)
