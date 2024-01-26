@@ -18,35 +18,38 @@ class HomeSceneViewModel {
     
     var fetchedPostsInfo: [PostInfo] = []
     var userInfo: UserInfo
-    private var viewDidLoad = false
+    //private var viewDidLoad = false
+    private let dispatchGroup = DispatchGroup()
     
     weak var delegate: HomeSceneViewDelegate?
     
     // MARK: - Init
     
     init(userInfo: UserInfo) {
-        self.userInfo = userInfo
+        self.userInfo = userInfo        
     }
     
     // MARK: - Methods
     
     func homeSceneViewDidLoad() {
-        if !viewDidLoad {
+        //if !viewDidLoad {
             
-            //userInfoListener() { [ weak self ] _ in
-                
-                postsInfoListener() { [ weak self ]_ in
-                    
-                    self?.delegate?.reloadTableView()
-                }
-           // }
-            viewDidLoad = true
-        }
+            dispatchGroup.enter()
+            userInfoListener()
+            
+            dispatchGroup.enter()
+            postsInfoListener()
+            
+            dispatchGroup.notify(queue: .main) { [weak self] in
+                self?.delegate?.reloadTableView()
+                //self?.viewDidLoad = true
+            }
+        //}
     }
     
     // MARK: - Firebase Methods
     
-    private func postsInfoListener(completion: @escaping (Bool) -> Void) {
+    private func postsInfoListener() {
         
         fetchedPostsInfo = []
         
@@ -56,13 +59,11 @@ class HomeSceneViewModel {
         reference.addSnapshotListener(includeMetadataChanges: true) { [weak self] snapshot, error in
             if let error = error {
                 print("Error fetching posts: \(error.localizedDescription)")
-                completion(false)
                 return
             }
             
             guard let self = self, let snapshot = snapshot else {
                 print("fdfdf")
-                completion(false)
                 return
             }
             
@@ -104,14 +105,13 @@ class HomeSceneViewModel {
                     self.fetchedPostsInfo.append(postInfo)
                 }
             }
-            completion(true)
         }
+        dispatchGroup.leave()
     }
     
-    private func userInfoListener(completion: @escaping (Bool) -> Void) {
+    private func userInfoListener() {
         let database = Firestore.firestore()
         let reference = database.collection("UserInfo")
-        database.clearPersistence()
 
         reference.addSnapshotListener(includeMetadataChanges: true) { [weak self] snapshot, error in
             
@@ -170,7 +170,7 @@ class HomeSceneViewModel {
                 self.userInfo = userInfo
             }
         }
-        completion(true)
+        dispatchGroup.leave()
     }
     
     private func parseBooksFinishedArray(_ booksFinishedArray: [[String: Any]]) -> [Book] {

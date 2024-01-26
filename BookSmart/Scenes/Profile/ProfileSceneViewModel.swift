@@ -254,17 +254,18 @@ class ProfileSceneViewModel: ObservableObject {
                 connectionGroup.enter()
                 self.fetchUserInfo(with: connectionID) { (userInfo, error) in
                     
-                    self.fetchGroup.enter()
+//                    self.fetchGroup.enter()
                     if let userInfo = userInfo {
                         fetchedConnections.append(userInfo)
                     } else if let error = error {
                         print("Error fetching connection info: \(error.localizedDescription)")
                     }
                     
-                    self.fetchGroup.notify(queue: .main) {
-                        self.connectionGroup.leave()
-                    }
+//                    self.fetchGroup.notify(queue: .main) {
+//                        self.connectionGroup.leave()
+//                    }
                 }
+                connectionGroup.leave()
             }
      
             connectionGroup.notify(queue: .main) {
@@ -294,7 +295,7 @@ class ProfileSceneViewModel: ObservableObject {
                 completion(nil, NSError(domain: "User Document Not Found", code: 0, userInfo: nil))
             }
             
-            self.fetchGroup.leave()
+            //self.fetchGroup.leave()
         }
     }
 

@@ -186,10 +186,11 @@ final class PostDetailsSceneViewModel {
     func commentInfoListener() {
         let commentsIDs = postInfo.comments
         
+        guard !commentsIDs.isEmpty else { return }
+
         let database = Firestore.firestore()
         let commentCollection = database.collection("CommentInfo")
-        database.clearPersistence()
-
+        
         commentCollection
             .whereField("id", in: commentsIDs.map { $0.uuidString })
             .addSnapshotListener(includeMetadataChanges: true) { [weak self] (querySnapshot, error) in

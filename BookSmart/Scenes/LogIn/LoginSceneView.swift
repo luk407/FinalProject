@@ -41,6 +41,7 @@ final class LoginSceneView: UIViewController {
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        loginSceneViewModel.delegate = self
         assignBackground()
         setupSubviews()
         setupConstraints()
@@ -239,13 +240,13 @@ final class LoginSceneView: UIViewController {
     }
     
     // MARK: - Private Methods
+    
     @objc private func signupButtonPressed() {
-        guard let navigationControllerToPass = self.navigationController else { return }
-        loginSceneViewModel.signupButtonPressed(navigationController: navigationControllerToPass)
+        let signupScene = SignupSceneView()
+        navigationController?.pushViewController(signupScene, animated: true)
     }
     
     @objc private func loginButtonPressed() {
-        guard let navigationControllerToPass = self.navigationController else { return }
         
         if emailTextField.text == "" || passwordTextField.text == "" {
             //present(emptyAlert, animated: true, completion: nil)
@@ -253,20 +254,13 @@ final class LoginSceneView: UIViewController {
             emailTextField.text = "luk@gmail.com"
             passwordTextField.text = "Luka!2345"            
         } else {
-            loginSceneViewModel.login(
+//            loginSceneViewModel.loginToFirebase(
+//                email: emailTextField.text ?? "",
+//                password: passwordTextField.text ?? "")
+            
+            loginSceneViewModel.loginAndNavigate(
                 email: emailTextField.text ?? "",
                 password: passwordTextField.text ?? "")
-            
-            loginSceneViewModel.userInfoListener(
-                email: emailTextField.text ?? "",
-                password: passwordTextField.text ?? "") { [weak self] success in
-                    guard let self = self else { return }
-                    if success {
-                        self.loginSceneViewModel.navigateToTabBarController(navigationController: navigationControllerToPass)
-                    } else {
-                        print("Failed to fetch user information.")
-                    }
-                }
         }
     }
     
@@ -281,5 +275,16 @@ final class LoginSceneView: UIViewController {
         imageView.center = view.center
         view.addSubview(imageView)
         self.view.sendSubviewToBack(imageView)
+    }
+}
+
+// MARK: - Extensions
+
+extension LoginSceneView: LoginSceneViewDelegate {
+    func navigateToTabBarController() {
+        guard let fetchedUserData = loginSceneViewModel.fetchedUserData else { return }
+        
+        let tabbarController = TabBarController(userInfo: fetchedUserData)
+        navigationController?.pushViewController(tabbarController, animated: true)
     }
 }
