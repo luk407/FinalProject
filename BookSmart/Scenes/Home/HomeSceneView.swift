@@ -40,6 +40,11 @@ class HomeSceneView: UIViewController {
         setupUI()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        postsTableView.reloadData()
+    }
+    
     // MARK: - Setup Subviews, Constraints, UI
     
     private func setupSubviews() {
@@ -107,7 +112,9 @@ extension HomeSceneView: UITableViewDataSource {
         let postInfo = homeSceneViewModel.fetchedPostsInfo[indexPath.row]
         if let cell = postsTableView.dequeueReusableCell(withIdentifier: "postCell", for: indexPath) as? PostsTableViewCell {
             cell.navigationController = navigationController
-            cell.configureCell(viewModel: homeSceneViewModel, postInfo: postInfo)
+            cell.viewModel = homeSceneViewModel
+            cell.postInfo = postInfo
+            cell.configureCell()
             cell.contentView.isUserInteractionEnabled = false
             return cell
         } else {

@@ -43,9 +43,9 @@ final class PostsTableViewCell: UITableViewCell {
     private let shareButtonImageView = UIImageView()
     private let shareButtonLabel = UILabel()
     
-    private var viewModel: HomeSceneViewModel?
+    var viewModel: HomeSceneViewModel?
     
-    private var postInfo: PostInfo?
+    var postInfo: PostInfo?
     
     weak var navigationController: UINavigationController?
     
@@ -118,27 +118,25 @@ final class PostsTableViewCell: UITableViewCell {
         setupShareStackViewUI()
     }
     
-    func configureCell(viewModel: HomeSceneViewModel, postInfo: PostInfo) {
+    func configureCell() {
     //real image needed
-        self.viewModel = viewModel
-        self.postInfo = postInfo
-        
-        let timeAgo = timeAgoString(from: postInfo.postingTime)
-        let isLiked = viewModel.userInfo.likedPosts.contains(postInfo.id)
+ 
+        let timeAgo = timeAgoString(from: postInfo?.postingTime ?? Date())
+        let isLiked = viewModel?.userInfo.likedPosts.contains(postInfo!.id)
         
         authorImageView.image = UIImage(systemName: "person.fill")
-        nameLabel.text = "\(viewModel.userInfo.displayName)"
-        usernameLabel.text = "\(viewModel.userInfo.userName)"
+        nameLabel.text = "\(viewModel?.userInfo.displayName ?? "")"
+        usernameLabel.text = "\(viewModel?.userInfo.userName ?? "")"
         timeLabel.text = timeAgo
-        headerLabel.text = postInfo.header
-        bodyLabel.text = postInfo.body
+        headerLabel.text = postInfo?.header
+        bodyLabel.text = postInfo?.body
         
         self.backgroundColor = .clear
         self.selectionStyle = .none
         
-        DispatchQueue.main.async {
-            self.updateLikeButtonUI(isLiked: isLiked)
-        }
+        //DispatchQueue.main.async {
+        self.updateLikeButtonUI(isLiked: isLiked ?? false)
+        //}
     }
     
     // MARK: - Constraints
@@ -486,6 +484,7 @@ final class PostsTableViewCell: UITableViewCell {
                         return
                     }
                 }
+                updateLikeButtonUI(isLiked: viewModel?.userInfo.likedPosts.contains(postInfo.id) ?? false)
             }
         } else {
             userReference.updateData([
@@ -504,6 +503,7 @@ final class PostsTableViewCell: UITableViewCell {
                         return
                     }
                 }
+                updateLikeButtonUI(isLiked: viewModel?.userInfo.likedPosts.contains(postInfo.id) ?? true)
             }
         }
     }

@@ -161,6 +161,7 @@ final class PostDetailsSceneView: UIViewController {
         viewModel.submitCommentButtonTapped(commentText: typeCommentTextView.text)
         typeCommentTextView.text = ""
         typeCommentTextView.resignFirstResponder()
+        tableView.reloadData()
     }
 }
 
