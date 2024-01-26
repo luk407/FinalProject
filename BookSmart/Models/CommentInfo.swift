@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct CommentInfo: Identifiable, Codable {
+struct CommentInfo: Identifiable, Codable, Hashable {
     let id: UUID
     let authorID: UserInfo.ID
     let commentTime: Date

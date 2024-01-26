@@ -12,7 +12,7 @@ final class LoginSceneViewModel {
     
     // MARK: - Properties
     
-    var fetchedUserData: UserInfo?
+    @Published var fetchedUserData: UserInfo?
     
     // MARK: - Init
     

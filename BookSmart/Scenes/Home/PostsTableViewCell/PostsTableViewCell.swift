@@ -47,6 +47,8 @@ final class PostsTableViewCell: UITableViewCell {
     
     private var postInfo: PostInfo?
     
+    weak var navigationController: UINavigationController?
+    
     // MARK: - Init
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -117,7 +119,7 @@ final class PostsTableViewCell: UITableViewCell {
     }
     
     func configureCell(viewModel: HomeSceneViewModel, postInfo: PostInfo) {
-    #warning("fetch real user image")
+    //real image needed
         self.viewModel = viewModel
         self.postInfo = postInfo
         
@@ -353,7 +355,7 @@ final class PostsTableViewCell: UITableViewCell {
     }
     
     @objc private func authorImageTapped(sender: UITapGestureRecognizer) {
-    #warning("go to profile page")
+
         if sender.state == .ended {
             UIView.animate(withDuration: 0.1, animations: {
                 self.authorImageView.alpha = 0.2
@@ -364,6 +366,9 @@ final class PostsTableViewCell: UITableViewCell {
             }
             print("image tapped, go to profile page")
         }
+        // fix force unwrap
+        let profileSceneViewController = UIHostingController(rootView: ProfileSceneView(profileSceneViewModel: ProfileSceneViewModel(profileOwnerInfoID: postInfo!.authorID, userInfo: viewModel!.userInfo)).background(Color(uiColor: .customBackgroundColor)))
+        navigationController?.pushViewController(profileSceneViewController, animated: true)
     }
     
     @objc private func postHeaderOrBodyTapped(sender: UITapGestureRecognizer) {
@@ -380,7 +385,7 @@ final class PostsTableViewCell: UITableViewCell {
                     self.bodyLabel.alpha = 1.0
                     
                     if let navigationController = self.window?.rootViewController as? UINavigationController {
-                        #warning("fix force unwrapping, dont change optional types.")
+                        //fix force unwrap
                         let commentDetailsViewController = PostDetailsSceneView(
                             viewModel: PostDetailsSceneViewModel(
                                 userInfo: viewModel!.userInfo,
@@ -424,7 +429,7 @@ final class PostsTableViewCell: UITableViewCell {
                     self.commentButtonLabel.alpha = 1.0
                     
                     if let navigationController = self.window?.rootViewController as? UINavigationController {
-                        #warning("fix force unwrapping, dont change optional types.")
+                        // fix force unwrap
                         let commentDetailsViewController = PostDetailsSceneView(
                             viewModel: PostDetailsSceneViewModel(
                                 userInfo: viewModel!.userInfo,

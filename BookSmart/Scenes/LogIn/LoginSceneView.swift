@@ -249,7 +249,7 @@ final class LoginSceneView: UIViewController {
         
         if emailTextField.text == "" || passwordTextField.text == "" {
             //present(emptyAlert, animated: true, completion: nil)
-            #warning("change after finishing project")
+            //change after finishing project
             emailTextField.text = "luk@gmail.com"
             passwordTextField.text = "Luka!2345"            
         } else {

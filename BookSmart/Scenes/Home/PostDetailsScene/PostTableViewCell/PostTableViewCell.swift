@@ -295,7 +295,7 @@ class PostTableViewCell: UITableViewCell {
     
     @objc private func authorImageTapped(sender: UITapGestureRecognizer) {
         
-    #warning("go to author page")
+    //go to profile page
         
         if sender.state == .ended {
             UIView.animate(withDuration: 0.1, animations: {

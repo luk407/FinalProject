@@ -106,6 +106,7 @@ extension HomeSceneView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let postInfo = homeSceneViewModel.fetchedPostsInfo[indexPath.row]
         if let cell = postsTableView.dequeueReusableCell(withIdentifier: "postCell", for: indexPath) as? PostsTableViewCell {
+            cell.navigationController = navigationController
             cell.configureCell(viewModel: homeSceneViewModel, postInfo: postInfo)
             cell.contentView.isUserInteractionEnabled = false
             return cell

@@ -267,7 +267,7 @@ class CommentTableViewCell: UITableViewCell {
     // MARK: - Animations
     @objc private func authorImageOrNameTapped(sender: UITapGestureRecognizer) {
         
-        #warning("go to profile")
+        // go to profile page
         if sender.state == .ended {
             UIView.animate(withDuration: 0.1, animations: {
                 self.authorImageView.alpha = 0.2
