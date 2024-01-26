@@ -41,9 +41,12 @@ struct ProfileSceneView: View {
         .background(Color(uiColor: .customBackgroundColor))
         .padding()
         .onAppear {
+            //profileSceneViewModel.fetchOwnerInfo()
             profileSceneViewModel.postsInfoListener()
             profileSceneViewModel.commentInfoListener()
             profileSceneViewModel.connectionsInfoListener()
+            profileSceneViewModel.checkProfileOwner()
+            profileSceneViewModel.checkIfInConnections()
         }
     }
     
@@ -61,15 +64,33 @@ struct ProfileSceneView: View {
     private var optionsView: some View {
         //MARK: if user is me setting, else add connection
         VStack {
-            
-            Button {
-                
-            } label: {
-                Image(systemName: "pencil.circle.fill")
-                    .resizable()
-                    .frame(width: 30, height: 30)
-                    .foregroundStyle(Color(uiColor: .customAccentColor))
+            if profileSceneViewModel.isOwnProfile {
+                editProfileButton
+            } else {
+                addRemoveConnectionButton
             }
+        }
+    }
+    
+    private var editProfileButton: some View {
+        Button {
+            profileSceneViewModel.editProfile()
+        } label: {
+            Image(systemName: "pencil.circle.fill")
+                .resizable()
+                .frame(width: 30, height: 30)
+                .foregroundStyle(Color(uiColor: profileSceneViewModel.isEditable ? .red : .green))
+        }
+    }
+    
+    private var addRemoveConnectionButton: some View {
+        Button {
+            profileSceneViewModel.addRemoveConnections()
+        } label: {
+            Image(systemName: profileSceneViewModel.isInConnections ? "person.fill.badge.minus" : "person.fill.badge.plus")
+                .resizable()
+                .frame(width: 30, height: 30)
+                .foregroundStyle(Color(uiColor: profileSceneViewModel.isInConnections ? .red : .green))
         }
     }
     
@@ -77,15 +98,15 @@ struct ProfileSceneView: View {
         
         VStack {
             
-            TextField("", text: $profileSceneViewModel.userInfo.displayName)
+            TextField("", text: $profileSceneViewModel.fetchedOwnerDisplayName)
                 .font(.system(size: 20).bold())
                 .foregroundStyle(.white)
-                .disabled(true)
+                .disabled(profileSceneViewModel.isEditable)
             
-            TextField("", text: $profileSceneViewModel.userInfo.userName)
+            TextField("", text: $profileSceneViewModel.fetchedOwnerUsername)
                 .font(.system(size: 14))
                 .foregroundStyle(.gray)
-                .disabled(true)
+                .disabled(profileSceneViewModel.isEditable)
         }
     }
     
@@ -98,16 +119,15 @@ struct ProfileSceneView: View {
                 .foregroundStyle(.black)
                 .frame(maxWidth: .infinity, alignment: .leading)
             
-            TextField("Nothing to see here...", text: $profileSceneViewModel.userInfo.bio)
+            TextField("Nothing to see here...", text: $profileSceneViewModel.fetchedOwnerBio)
                 .font(.system(size: 14))
-                .disabled(true)
+                .disabled(profileSceneViewModel.isEditable)
         }
         .padding()
         .background(
             RoundedRectangle(cornerRadius: 8)
                 .foregroundStyle(Color(uiColor: .customAccentColor.withAlphaComponent(0.7)))
                 .padding(.vertical, 10)
-                
         )
     }
     
@@ -115,7 +135,7 @@ struct ProfileSceneView: View {
         HStack {
             LazyHStack {
                 ScrollView(.horizontal) {
-                    ForEach(profileSceneViewModel.userInfo.badges, id: \.self) { badge in
+                    ForEach(profileSceneViewModel.fetchedOwnerInfo?.badges ?? [], id: \.self) { badge in
                         // MARK: finish this
                     }
                 }
@@ -158,20 +178,7 @@ struct ProfileSceneView: View {
             return AnyView(
                 List {
                     ForEach(profileSceneViewModel.postsInfo) { post in
-                        HStack(spacing: 8) {
-                            Text(post.body)
-                                .font(.system(size: 12))
-                                .foregroundStyle(.black)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .lineLimit(5)
-                            
-                            VStack(spacing: 8) {
-                                Text(profileSceneViewModel.timeAgoString(from: post.postingTime))
-                                    .font(.system(size: 10))
-                                Spacer()
-                            }
-                        }
-                        .padding(.vertical, 10)
+                       postListItem(post)
                     }
                     .listRowBackground(
                         RoundedRectangle(cornerRadius: 8)
@@ -183,6 +190,23 @@ struct ProfileSceneView: View {
                     .listRowSeparator(.hidden)
             )
         }
+    }
+    
+    private func postListItem(_ post: PostInfo) -> some View {
+        HStack(spacing: 8) {
+            Text(post.body)
+                .font(.system(size: 12))
+                .foregroundStyle(.black)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .lineLimit(5)
+            
+            VStack(spacing: 8) {
+                Text(profileSceneViewModel.timeAgoString(from: post.postingTime))
+                    .font(.system(size: 10))
+                Spacer()
+            }
+        }
+        .padding(.vertical, 10)
     }
     
     private var commentsList: some View {
@@ -192,20 +216,8 @@ struct ProfileSceneView: View {
             return AnyView(
                 List {
                     ForEach(profileSceneViewModel.commentsInfo) { comment in
-                        HStack(spacing: 8) {
-                            Text(comment.body)
-                                .font(.system(size: 12))
-                                .foregroundStyle(.black)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .lineLimit(5)
-                            
-                            VStack {
-                                Text(profileSceneViewModel.timeAgoString(from: comment.commentTime))
-                                    .font(.system(size: 10))
-                                Spacer()
-                            }
-                        }
-                        .padding(.vertical, 10)
+                        
+                        postListItem(comment)
                     }
                     .listRowBackground(
                         RoundedRectangle(cornerRadius: 8)
@@ -219,6 +231,23 @@ struct ProfileSceneView: View {
         }
     }
     
+    private func postListItem(_ comment: CommentInfo) -> some View {
+        HStack(spacing: 8) {
+            Text(comment.body)
+                .font(.system(size: 12))
+                .foregroundStyle(.black)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .lineLimit(5)
+            
+            VStack {
+                Text(profileSceneViewModel.timeAgoString(from: comment.commentTime))
+                    .font(.system(size: 10))
+                Spacer()
+            }
+        }
+        .padding(.vertical, 10)
+    }
+    
     private var connectionsList: some View {
         if profileSceneViewModel.connectionsInfo.isEmpty {
             return AnyView(EmptyStateView())
@@ -226,23 +255,7 @@ struct ProfileSceneView: View {
             return AnyView(
                 List {
                     ForEach(profileSceneViewModel.connectionsInfo) { connection in
-                        HStack(spacing: 8) {
-                            Image(systemName: "person.fill")
-                                .resizable()
-                                .frame(width: 30, height: 30)
-                                .clipShape(Circle())
-                            
-                            VStack(spacing: 8) {
-                                Text(connection.displayName)
-                                    .font(.system(size: 14).bold())
-                                    .foregroundStyle(.black)
-                                
-                                Text(connection.userName)
-                                    .font(.system(size: 12))
-                                    .foregroundStyle(.gray)
-                            }
-                        }
-                        .padding(.vertical, 10)
+                        connectionListItem(connection)
                     }
                     .listRowBackground(
                         RoundedRectangle(cornerRadius: 8)
@@ -254,5 +267,25 @@ struct ProfileSceneView: View {
                     .listRowSeparator(.hidden)
             )
         }
+    }
+    
+    private func connectionListItem(_ connection: UserInfo) -> some View {
+        HStack(spacing: 8) {
+            Image(systemName: "person.fill")
+                .resizable()
+                .frame(width: 30, height: 30)
+                .clipShape(Circle())
+            
+            VStack(spacing: 8) {
+                Text(connection.displayName)
+                    .font(.system(size: 14).bold())
+                    .foregroundStyle(.black)
+                
+                Text(connection.userName)
+                    .font(.system(size: 12))
+                    .foregroundStyle(.gray)
+            }
+        }
+        .padding(.vertical, 10)
     }
 }

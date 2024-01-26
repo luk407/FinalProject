@@ -17,28 +17,47 @@ class ProfileSceneViewModel: ObservableObject {
     
     // MARK: - Properties
     
+    var profileOwnerInfoID: UserInfo.ID
     var userInfo: UserInfo
-    var loggedInUserInfo: UserInfo
+    var fetchedOwnerInfo: UserInfo?
+    let connectionGroup = DispatchGroup()
+    let fetchGroup = DispatchGroup()
+    
     @Published var displayInfoType: DisplayInfoType = .posts
     @Published var postsInfo: [PostInfo] = []
     @Published var commentsInfo: [CommentInfo] = []
     @Published var connectionsInfo: [UserInfo] = []
-    let connectionGroup = DispatchGroup()
-    let fetchGroup = DispatchGroup()
-    let parseGroup = DispatchGroup()
+    @Published var isOwnProfile = false
+    @Published var isEditable = false
+    @Published var isInConnections = false
+    @Published var fetchedOwnerDisplayName: String = ""
+    @Published var fetchedOwnerUsername: String = ""
+    @Published var fetchedOwnerBio: String = ""
     
     // MARK: - Init
     
-    init(userInfo: UserInfo, loggedInUserInfo: UserInfo) {
+    init(profileOwnerInfoID: UserInfo.ID, userInfo: UserInfo) {
+        self.profileOwnerInfoID = profileOwnerInfoID
         self.userInfo = userInfo
-        self.loggedInUserInfo = loggedInUserInfo
-        
-        postsInfoListener()
-        commentInfoListener()
-        connectionsInfoListener()
     }
     
     // MARK: - Methods
+    
+    func checkProfileOwner() {
+        if profileOwnerInfoID == userInfo.id {
+            isOwnProfile = true
+        } else {
+            isOwnProfile = false
+        }
+    }
+    
+    func checkIfInConnections() {
+        if userInfo.connections.contains(where: { $0.uuidString == profileOwnerInfoID.uuidString }) {
+            isInConnections = true
+        } else {
+            isInConnections = false
+        }
+    }
     
     func timeAgoString(from date: Date) -> String {
         let currentDate = Date()
@@ -59,10 +78,41 @@ class ProfileSceneViewModel: ObservableObject {
             return "Now"
         }
     }
+    
+    func addRemoveConnections() {
+        if isInConnections {
+            removeConnection()
+            isInConnections = false
+        } else {
+            addConnection()
+            isInConnections = true
+        }
+    }
+    
+    func editProfile() {
+        if isEditable {
+            isEditable = false
+        } else {
+            isEditable = true
+        }
+    }
 
     // MARK: - Firebase Methods
     
     // MARK: - Posts
+    func fetchOwnerInfo() {
+        fetchOwnerInfoOnce(with: profileOwnerInfoID) { userInfo, error in
+            if let userInfo = userInfo {
+                self.fetchedOwnerInfo = userInfo
+                self.fetchedOwnerDisplayName = userInfo.displayName
+                self.fetchedOwnerUsername = userInfo.userName
+                self.fetchedOwnerBio = userInfo.bio
+            } else if let error = error {
+                print("Error fetching connection info: \(error.localizedDescription)")
+            }
+        }
+    }
+    
     func postsInfoListener() {
         
         postsInfo = []
@@ -73,13 +123,10 @@ class ProfileSceneViewModel: ObservableObject {
         reference.addSnapshotListener(includeMetadataChanges: true) { [weak self] snapshot, error in
             if let error = error {
                 print("Error fetching posts: \(error.localizedDescription)")
-                //completion(false)
                 return
             }
             
             guard let self = self, let snapshot = snapshot else {
-                print("fdfdf")
-                //completion(false)
                 return
             }
             
@@ -90,6 +137,7 @@ class ProfileSceneViewModel: ObservableObject {
                     let id = data["id"] as? String,
                     let authorIDString = data["authorID"] as? String,
                     let authorID = UUID(uuidString: authorIDString),
+                    authorID == self.profileOwnerInfoID,
                     let typeString = data["type"] as? String,
                     let header = data["header"] as? String,
                     let body = data["body"] as? String,
@@ -119,18 +167,17 @@ class ProfileSceneViewModel: ObservableObject {
                         announcementType: announcementType
                     )
                     self.postsInfo.append(postInfo)
-                    print("posts")
                 }
             }
-            //completion(true)
         }
     }
     
     // MARK: - Comment
+    
     func commentInfoListener() {
         _ = Firestore.firestore()
             .collection("CommentInfo")
-            .whereField("authorID", isEqualTo: userInfo.id.uuidString)
+            .whereField("authorID", isEqualTo: profileOwnerInfoID.uuidString)
             .addSnapshotListener(includeMetadataChanges: true) { [weak self] (querySnapshot, error) in
                 
                 guard let self = self else { return }
@@ -175,7 +222,6 @@ class ProfileSceneViewModel: ObservableObject {
                     fetchedComments.append(commentInfo)
                 }
                 self.commentsInfo = fetchedComments
-                print("comment")
             }
     }
     
@@ -183,11 +229,7 @@ class ProfileSceneViewModel: ObservableObject {
     
     func connectionsInfoListener() {
 
-        guard !userInfo.connections.isEmpty else {
-            return
-        }
-
-        let userDocumentReference = Firestore.firestore().collection("UserInfo").document(userInfo.id.uuidString)
+        let userDocumentReference = Firestore.firestore().collection("UserInfo").document(profileOwnerInfoID.uuidString)
         
         userDocumentReference.addSnapshotListener(includeMetadataChanges: true) { [weak self] (documentSnapshot, error) in
             
@@ -205,29 +247,29 @@ class ProfileSceneViewModel: ObservableObject {
             
             var fetchedConnections: [UserInfo] = []
             
-            
             for connectionIDString in connectionsData {
                 
                 let connectionID = UUID(uuidString: connectionIDString) ?? UUID()
                 
                 connectionGroup.enter()
                 self.fetchUserInfo(with: connectionID) { (userInfo, error) in
+                    
                     self.fetchGroup.enter()
                     if let userInfo = userInfo {
                         fetchedConnections.append(userInfo)
-                        print("Fetching happened")
                     } else if let error = error {
                         print("Error fetching connection info: \(error.localizedDescription)")
                     }
+                    
+                    self.fetchGroup.notify(queue: .main) {
+                        self.connectionGroup.leave()
+                    }
                 }
             }
-            fetchGroup.notify(queue: .main) {
-                self.connectionGroup.leave()
-            }
+     
             connectionGroup.notify(queue: .main) {
                 self.connectionsInfo = fetchedConnections
             }
-            
         }
     }
     
@@ -251,11 +293,13 @@ class ProfileSceneViewModel: ObservableObject {
             } else {
                 completion(nil, NSError(domain: "User Document Not Found", code: 0, userInfo: nil))
             }
+            
             self.fetchGroup.leave()
         }
     }
 
     private func parseUserInfo(from data: [String: Any]?) -> UserInfo? {
+        
         guard
             let idString = data?["id"] as? String,
             let id = UUID(uuidString: idString),
@@ -297,7 +341,7 @@ class ProfileSceneViewModel: ObservableObject {
         let likedPosts = likedPostsData.compactMap { UUID(uuidString: $0) }
         let connections = connectionsData.compactMap { UUID(uuidString: $0) }
 
-        // Parse booksFinished and quotesUsed
+        // Parse booksFinished and quotesUsed later
         var booksFinished: [Book] = []
         for bookData in booksFinishedData {
 
@@ -325,6 +369,54 @@ class ProfileSceneViewModel: ObservableObject {
             booksFinished: booksFinished,
             quotesUsed: quotesUsed
         )
+        
         return userInfo
+    }
+    
+    func fetchOwnerInfoOnce(with userID: UUID, completion: @escaping (UserInfo?, Error?) -> Void) {
+        
+        let userDocumentReference = Firestore.firestore().collection("UserInfo").document(userID.uuidString)
+        
+        userDocumentReference.addSnapshotListener(includeMetadataChanges: true) { (documentSnapshot, error) in
+            if let error = error {
+                completion(nil, error)
+                return
+            }
+
+            if let document = documentSnapshot, document.exists {
+                if let userInfo = self.parseUserInfo(from: document.data()) {
+                    completion(userInfo, nil)
+                } else {
+                    completion(nil, NSError(domain: "UserInfo Parsing Error", code: 0, userInfo: nil))
+                }
+            } else {
+                completion(nil, NSError(domain: "User Document Not Found", code: 0, userInfo: nil))
+            }
+        }
+    }
+
+    
+    private func addConnection() {
+        let userDocumentReference = Firestore.firestore().collection("UserInfo").document(profileOwnerInfoID.uuidString)
+        
+        userDocumentReference.updateData(["connections": FieldValue.arrayUnion([userInfo.id.uuidString])]) { error in
+            if let error = error {
+                print("Error adding connection: \(error.localizedDescription)")
+            } else {
+                print("Connection added successfully.")
+            }
+        }
+    }
+    
+    private func removeConnection() {
+        let userDocumentReference = Firestore.firestore().collection("UserInfo").document(profileOwnerInfoID.uuidString)
+        
+        userDocumentReference.updateData(["connections": FieldValue.arrayRemove([userInfo.id.uuidString])]) { error in
+            if let error = error {
+                print("Error removing connection: \(error.localizedDescription)")
+            } else {
+                print("Connection removed successfully.")
+            }
+        }
     }
 }

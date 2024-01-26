@@ -56,8 +56,8 @@ class TabBarController: UITabBarController {
         let profileViewController = UIHostingController(
             rootView: ProfileSceneView(
                 profileSceneViewModel: ProfileSceneViewModel(
-                    userInfo: userInfo,
-                    loggedInUserInfo: userInfo)).background(Color(uiColor: .customBackgroundColor)))
+                    profileOwnerInfoID: userInfo.id,
+                    userInfo: userInfo)).background(Color(uiColor: .customBackgroundColor)))
         
         homeViewController.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house.fill"), selectedImage: nil)
         announcementsViewController.tabBarItem = UITabBarItem(title: "Announcements", image: UIImage(systemName: "megaphone.fill"), selectedImage: nil)
@@ -90,6 +90,5 @@ extension TabBarController: UITabBarControllerDelegate {
         }
         return true
     }
-    
 }
 
