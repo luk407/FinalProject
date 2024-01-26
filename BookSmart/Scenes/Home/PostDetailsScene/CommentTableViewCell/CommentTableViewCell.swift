@@ -96,13 +96,12 @@ class CommentTableViewCell: UITableViewCell {
         setupCommentStackViewUI()
     }
     
-    func configureCell(viewModel: PostDetailsSceneViewModel, commentInfo: CommentInfo.ID) {
-        
-        self.commentInfo = self.viewModel?.getCommentInfo(for: commentInfo)
-        self.viewModel = viewModel
-        self.viewModel?.commentInfoListener()
-        
-        updateCellUI(with: (self.viewModel?.getCommentInfo(for: commentInfo)))
+    func configureCell() {
+        let isLiked = commentInfo?.likedBy.contains(viewModel?.userInfo.id ?? UUID())
+
+        viewModel?.commentCellDelegate = self
+        updateCellUI(with: commentInfo)
+        updateLikeButtonUI(isLiked: isLiked ?? false)
     }
     
     // MARK: - Constraints
@@ -314,15 +313,20 @@ class CommentTableViewCell: UITableViewCell {
     }
     
     private func updateCellUI(with commentInfo: CommentInfo?) {
+        
         DispatchQueue.main.async { [self] in
+            let authorInfo = viewModel?.getAuthorInfo(with: commentInfo?.authorID ?? UUID())
             authorImageView.image = UIImage(systemName: "person.fill")
-            nameLabel.text = commentInfo?.authorID.uuidString
+            nameLabel.text = authorInfo?.userName
             timeLabel.text = viewModel?.timeAgoString(from: commentInfo?.commentTime ?? Date())
             bodyTextView.text = commentInfo?.body
         }
     }
+}
 
-    private func updateLikeButtonUI(isLiked: Bool) {
+// MARK: - Extensions
+extension CommentTableViewCell: PostDetailsSceneViewDelegateForCells {
+    func updateLikeButtonUI(isLiked: Bool) {
         DispatchQueue.main.async {
             let imageName = isLiked ? "heart.fill" : "heart"
             

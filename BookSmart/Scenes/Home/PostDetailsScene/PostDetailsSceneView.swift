@@ -44,6 +44,12 @@ final class PostDetailsSceneView: UIViewController {
         setupUI()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.postDetailsSceneViewWillAppear()
+    }
+
+    
     // MARK: - Setup Subviews, Constraints, UI
     
     private func setupSubviews() {
@@ -161,7 +167,7 @@ final class PostDetailsSceneView: UIViewController {
         viewModel.submitCommentButtonTapped(commentText: typeCommentTextView.text)
         typeCommentTextView.text = ""
         typeCommentTextView.resignFirstResponder()
-        tableView.reloadData()
+        
     }
 }
 
@@ -186,9 +192,11 @@ extension PostDetailsSceneView: UITableViewDataSource {
         } else {
             if let cell = tableView.dequeueReusableCell(withIdentifier: "commentCell", for: indexPath) as? CommentTableViewCell {
                 let comment = viewModel.postInfo.comments[indexPath.row - 1]
-                cell.configureCell(viewModel: viewModel, commentInfo: comment)
+                cell.viewModel = viewModel
+                cell.commentInfo = viewModel.getCommentInfo(for: comment)
+                cell.configureCell()
                 cell.backgroundColor = .customBackgroundColor
-                //cell.contentView.isUserInteractionEnabled = false
+                cell.contentView.isUserInteractionEnabled = false
                 return cell
             } else {
                 return UITableViewCell()

@@ -380,7 +380,7 @@ class PostTableViewCell: UITableViewCell {
 }
 
 // MARK: - Extensions
-extension PostTableViewCell: PostDetailsSceneViewDelegateForPostCell {
+extension PostTableViewCell: PostDetailsSceneViewDelegateForCells {
     
     func updateLikeButtonUI(isLiked: Bool) {
         DispatchQueue.main.async {

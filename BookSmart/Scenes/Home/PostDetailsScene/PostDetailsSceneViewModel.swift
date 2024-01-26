@@ -8,7 +8,8 @@
 import Foundation
 import Firebase
 
-protocol PostDetailsSceneViewDelegateForPostCell: AnyObject {
+
+protocol PostDetailsSceneViewDelegateForCells: AnyObject {
     func updateLikeButtonUI(isLiked: Bool)
 }
 
@@ -28,18 +29,30 @@ final class PostDetailsSceneViewModel {
     
     weak var delegate: PostDetailsSceneViewDelegate?
     
-    weak var postCellDelegate: PostDetailsSceneViewDelegateForPostCell?
+    weak var postCellDelegate: PostDetailsSceneViewDelegateForCells?
+    
+    weak var commentCellDelegate: PostDetailsSceneViewDelegateForCells?
+    
+    private var dispatchGroup = DispatchGroup()
     
     // MARK: - Init
     
     init(userInfo: UserInfo, postInfo: PostInfo) {
         self.userInfo = userInfo
         self.postInfo = postInfo
-        
-        commentInfoListener()
     }
     
     // MARK: - Methods
+    
+    func postDetailsSceneViewWillAppear() {
+        dispatchGroup.enter()
+        commentInfoListener()
+        dispatchGroup.leave()
+        
+        dispatchGroup.notify(queue: .main) {
+            self.delegate?.postUpdated()
+        }
+    }
     
     func timeAgoString(from date: Date) -> String {
         let currentDate = Date()
@@ -114,7 +127,6 @@ final class PostDetailsSceneViewModel {
                         print("Error adding user to likedBy in PostInfo: \(error.localizedDescription)")
                         return
                     }
-                    print("done")
                     userInfo.likedPosts.append(postInfo.id)
                     postInfo.likedBy.append(userInfo.id)
                 }
@@ -122,74 +134,19 @@ final class PostDetailsSceneViewModel {
         }
     }
     
-//    private func fetchPostsInfo() {
-//        let database = Firestore.firestore()
-//        let reference = database.collection("PostInfo").document(postInfo.id.uuidString)
-//        
-//        reference.addSnapshotListener { [weak self] document, error in
-//            guard let self = self else { return }
-//            
-//            if let error = error {
-//                print("Error fetching posts: \(error.localizedDescription)")
-//                return
-//            }
-//            
-//            guard let document = document, document.exists else {
-//                print("Document does not exist")
-//                return
-//            }
-//            
-//            let data = document.data()
-//            
-//            guard
-//                let id = data?["id"] as? String,
-//                let authorIDString = data?["authorID"] as? String,
-//                let authorID = UUID(uuidString: authorIDString),
-//                let typeString = data?["type"] as? String,
-//                let header = data?["header"] as? String,
-//                let body = data?["body"] as? String,
-//                let postingTimeTimestamp = data?["postingTime"] as? Timestamp,
-//                let likedBy = data?["likedBy"] as? [String],
-//                let comments = data?["comments"] as? [String],
-//                let spoilersAllowed = data?["spoilersAllowed"] as? Bool,
-//                let announcementTypeString = data?["announcementType"] as? String
-//            else {
-//                print("Error parsing post data")
-//                return
-//            }
-//            
-//            if let type = PostType(rawValue: typeString),
-//               let announcementType = AnnouncementType(rawValue: announcementTypeString) {
-//                
-//                let upToDatePost = PostInfo(
-//                    id: UUID(uuidString: id) ?? UUID(),
-//                    authorID: authorID,
-//                    type: type,
-//                    header: header,
-//                    body: body,
-//                    postingTime: postingTimeTimestamp.dateValue(),
-//                    likedBy: likedBy.map { UUID(uuidString: $0) ?? UUID() },
-//                    comments: comments.map { UUID(uuidString: $0) ?? UUID() },
-//                    spoilersAllowed: spoilersAllowed,
-//                    announcementType: announcementType
-//                )
-//                
-//                self.postInfo = upToDatePost
-//                
-//                self.delegate?.postUpdated()
-//            }
-//        }
-//    }
-    
     // MARK: - Methods for comments
     
     func commentInfoListener() {
         let commentsIDs = postInfo.comments
         
         guard !commentsIDs.isEmpty else { return }
-
+        
         let database = Firestore.firestore()
         let commentCollection = database.collection("CommentInfo")
+        
+        let isLiked = postInfo.likedBy.contains(userInfo.id)
+        
+        commentCellDelegate?.updateLikeButtonUI(isLiked: !isLiked)
         
         commentCollection
             .whereField("id", in: commentsIDs.map { $0.uuidString })
@@ -233,70 +190,59 @@ final class PostDetailsSceneViewModel {
                         likedBy: likedBy.map { UUID(uuidString: $0) ?? UUID() },
                         comments: comments.map { UUID(uuidString: $0) ?? UUID() }
                     )
+                    
                     fetchedComments.append(commentInfo)
                 }
                 self.commentInfo = fetchedComments
-                
-                // delegate update ui
             }
     }
     
     func toggleLikeComment(commentInfo: CommentInfo?) {
-
-        guard let commentInfo else { return }
+        
+        guard let commentInfo = commentInfo else { return }
         
         let database = Firestore.firestore()
         
-        let userReference = database.collection("UserInfo").document(userInfo.id.uuidString)
         let commentReference = database.collection("CommentInfo").document(commentInfo.id.uuidString)
+        print("CommentInfo ID: \(commentInfo.id)")
+        print("UserInfo ID: \(userInfo.id)")
+        print("LikedBy: \(commentInfo.likedBy)")
         
         let isLiked = commentInfo.likedBy.contains(userInfo.id)
+        print("IsLiked: \(isLiked)")
+        commentCellDelegate?.updateLikeButtonUI(isLiked: !isLiked)
         
         if isLiked {
-            userReference.updateData([
-                "likedComments": FieldValue.arrayRemove([commentInfo.id.uuidString])
+            commentReference.updateData([
+                "likedBy": FieldValue.arrayRemove([userInfo.id.uuidString])
             ]) { [self] error in
                 if let error = error {
-                    print("Error removing liked comment from user: \(error.localizedDescription)")
+                    print("Error removing user from likedBy in comment: \(error.localizedDescription)")
                     return
                 }
                 
-                commentReference.updateData([
-                    "likedBy": FieldValue.arrayRemove([userInfo.id.uuidString])
-                ]) { error in
-                    if let error = error {
-                        print("Error removing user from likedBy in comment: \(error.localizedDescription)")
-                        return
+                if let indexOfUser = commentInfo.likedBy.firstIndex(of: userInfo.id) {
+                    if  let indexOfComment = self.commentInfo?.firstIndex(of: commentInfo) {
+                        self.commentInfo?[indexOfComment].comments.remove(at: indexOfUser)
                     }
-                    
-//                    if let index = commentInfo.likedBy.firstIndex(of: userInfo.id) {
-//                        self.commentInfo.likedBy.remove(at: index)
-//                    }
-                    // delegate update like
                 }
             }
         } else {
-            userReference.updateData([
-                "likedComments": FieldValue.arrayUnion([commentInfo.id.uuidString])
-            ]) { [self] error in
+            commentReference.updateData([
+                "likedBy": FieldValue.arrayUnion([userInfo.id.uuidString])
+            ]) { error in
                 if let error = error {
-                    print("Error adding liked comment to user: \(error.localizedDescription)")
+                    print("Error adding user to likedBy in comment: \(error.localizedDescription)")
                     return
                 }
                 
-                commentReference.updateData([
-                    "likedBy": FieldValue.arrayUnion([userInfo.id.uuidString])
-                ]) { error in
-                    if let error = error {
-                        print("Error adding user to likedBy in comment: \(error.localizedDescription)")
-                        return
-                    }
-                    
-                    //self.commentInfo?.likedBy.append(userInfo.id)
+                if let indexOfComment = self.commentInfo?.firstIndex(of: commentInfo) {
+                    self.commentInfo?[indexOfComment].likedBy.append(self.userInfo.id)
                 }
             }
         }
     }
+    
     
     func submitCommentButtonTapped(commentText: String) {
         let database = Firestore.firestore()
@@ -322,7 +268,7 @@ final class PostDetailsSceneViewModel {
             
             print("Comment added to Firebase successfully")
             
-//            self.fetchPostsInfo()
+            //            self.fetchPostsInfo()
         }
         
         let commentReference = database.collection("CommentInfo").document(newComment.id.uuidString)
@@ -342,7 +288,87 @@ final class PostDetailsSceneViewModel {
     func getCommentInfo(for commentID: UUID) -> CommentInfo? {
         return commentInfo?.first { $0.id == commentID }
     }
-
+    
+    func getAuthorInfo(with authorID: UserInfo.ID) -> UserInfo? {
+        
+        var authorInfo: UserInfo?
+        
+        let database = Firestore.firestore()
+        let reference = database.collection("UserInfo")
+        
+        reference.getDocuments { [weak self] snapshot, error in
+            
+            guard let self = self else { return }
+            
+            if let error = error {
+                print("Error fetching user information: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let snapshot = snapshot else {
+                return
+            }
+            
+            for document in snapshot.documents {
+                let data = document.data()
+                
+                guard
+                    let id = data["id"] as? String,
+                    let username = data["username"] as? String,
+                    let email = data["email"] as? String,
+                    let password = data["password"] as? String,
+                    let displayName = data["displayName"] as? String,
+                    let registrationDateTimestamp = data["registrationDate"] as? Timestamp,
+                    let bio = data["bio"] as? String,
+                    let image = data["image"] as? String,
+                    let badges = data["badges"] as? [BadgeInfo],
+                    let posts = data["posts"] as? [String],
+                    let comments = data["comments"] as? [String],
+                    let likedPosts = data["likedPosts"] as? [String],
+                    let connections = data["connections"] as? [String],
+                    let booksFinishedArray = data["booksFinished"] as? [[String: Any]],
+                    let quotesUsed = data["quotesUsed"] as? [Quote]
+                else {
+                    print("Error parsing user data")
+                    continue
+                }
+                
+                let userInfo = UserInfo(
+                    id: UUID(uuidString: id) ?? UUID(),
+                    userName: username,
+                    email: email,
+                    password: password,
+                    displayName: displayName,
+                    registrationDate: registrationDateTimestamp.dateValue(),
+                    bio: bio,
+                    image: image,
+                    badges: badges,
+                    posts: posts.map { UUID(uuidString: $0) ?? UUID() },
+                    comments: comments.map { UUID(uuidString: $0) ?? UUID() },
+                    likedPosts: likedPosts.map { UUID(uuidString: $0) ?? UUID() },
+                    connections: connections.map { UUID(uuidString: $0) ?? UUID() },
+                    booksFinished: self.parseBooksFinishedArray(booksFinishedArray),
+                    quotesUsed: quotesUsed
+                )
+                authorInfo = userInfo
+            }
+        }
+        return authorInfo
+    }
+    
+    private func parseBooksFinishedArray(_ booksFinishedArray: [[String: Any]]) -> [Book] {
+        var booksFinished: [Book] = []
+        
+        for bookInfo in booksFinishedArray {
+            if let title = bookInfo["title"] as? String,
+               let authorName = bookInfo["author"] as? [String] {
+                let book = Book(title: title, authorName: authorName)
+                booksFinished.append(book)
+            }
+        }
+        return booksFinished
+    }
+    
 }
 
 
