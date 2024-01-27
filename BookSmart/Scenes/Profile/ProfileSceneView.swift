@@ -41,24 +41,39 @@ struct ProfileSceneView: View {
         .background(Color(uiColor: .customBackgroundColor))
         .padding()
         .onAppear {
-            //profileSceneViewModel.fetchOwnerInfo()
+            profileSceneViewModel.fetchOwnerInfo()
             profileSceneViewModel.postsInfoListener()
             profileSceneViewModel.commentInfoListener()
             profileSceneViewModel.connectionsInfoListener()
             profileSceneViewModel.checkProfileOwner()
             profileSceneViewModel.checkIfInConnections()
         }
+        .sheet(isPresented: $profileSceneViewModel.isImagePickerShowing) {
+            ImagePicker(selectedImage: $profileSceneViewModel.selectedImage, isPickerShowing: $profileSceneViewModel.isImagePickerShowing)
+        }
     }
     
     // MARK: - Views
     
     private var profilePictureView: some View {
-        Image(systemName: "person.fill")
+        Image(uiImage: (profileSceneViewModel.selectedImage == nil ? UIImage(systemName: "person.fill") : profileSceneViewModel.selectedImage)!)
             .resizable()
             .frame(width: 100, height: 100)
             .clipShape(
                 Circle()
             )
+            .overlay(alignment: .bottomTrailing) {
+                if profileSceneViewModel.isEditable {
+                    Button {
+                        profileSceneViewModel.isImagePickerShowing = true
+                    } label: {
+                        Image(systemName: "plus.circle.fill")
+                            .resizable()
+                            .frame(width: 30, height: 30)
+                            .foregroundStyle(.green)
+                    }
+                }
+            }
     }
     
     private var optionsView: some View {
@@ -101,12 +116,12 @@ struct ProfileSceneView: View {
             TextField("", text: $profileSceneViewModel.fetchedOwnerDisplayName)
                 .font(.system(size: 20).bold())
                 .foregroundStyle(.white)
-                .disabled(profileSceneViewModel.isEditable)
+                .disabled(!profileSceneViewModel.isEditable)
             
             TextField("", text: $profileSceneViewModel.fetchedOwnerUsername)
                 .font(.system(size: 14))
                 .foregroundStyle(.gray)
-                .disabled(profileSceneViewModel.isEditable)
+                .disabled(!profileSceneViewModel.isEditable)
         }
     }
     
@@ -121,7 +136,7 @@ struct ProfileSceneView: View {
             
             TextField("Nothing to see here...", text: $profileSceneViewModel.fetchedOwnerBio)
                 .font(.system(size: 14))
-                .disabled(profileSceneViewModel.isEditable)
+                .disabled(!profileSceneViewModel.isEditable)
         }
         .padding()
         .background(

@@ -27,9 +27,11 @@ class ProfileSceneViewModel: ObservableObject {
     @Published var postsInfo: [PostInfo] = []
     @Published var commentsInfo: [CommentInfo] = []
     @Published var connectionsInfo: [UserInfo] = []
+    @Published var selectedImage: UIImage?
     @Published var isOwnProfile = false
     @Published var isEditable = false
     @Published var isInConnections = false
+    @Published var isImagePickerShowing = false
     @Published var fetchedOwnerDisplayName: String = ""
     @Published var fetchedOwnerUsername: String = ""
     @Published var fetchedOwnerBio: String = ""

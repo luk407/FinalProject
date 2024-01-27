@@ -50,6 +50,7 @@
 		A106953E2B5E9941009E5843 /* CommentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A106953D2B5E9941009E5843 /* CommentTableViewCell.swift */; };
 		A10695412B601886009E5843 /* PostTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10695402B601886009E5843 /* PostTableViewCell.swift */; };
 		A137260A2B62661F00F1EA6E /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13726092B62661F00F1EA6E /* EmptyStateView.swift */; };
+		A137260C2B64F23E00F1EA6E /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A137260B2B64F23E00F1EA6E /* ImagePicker.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -95,6 +96,7 @@
 		A106953D2B5E9941009E5843 /* CommentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentTableViewCell.swift; sourceTree = "<group>"; };
 		A10695402B601886009E5843 /* PostTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostTableViewCell.swift; sourceTree = "<group>"; };
 		A13726092B62661F00F1EA6E /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
+		A137260B2B64F23E00F1EA6E /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -264,6 +266,7 @@
 		A10695142B583B57009E5843 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				A137260B2B64F23E00F1EA6E /* ImagePicker.swift */,
 				A10695152B583B90009E5843 /* PasswordStrengthChecklistUIView.swift */,
 				A10695172B584525009E5843 /* ChecklistItemView.swift */,
 				A13726092B62661F00F1EA6E /* EmptyStateView.swift */,
@@ -422,6 +425,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A137260C2B64F23E00F1EA6E /* ImagePicker.swift in Sources */,
 				A106952A2B5BAF4C009E5843 /* AnnouncementPostView.swift in Sources */,
 				A106953C2B5E939E009E5843 /* PostDetailsSceneViewModel.swift in Sources */,
 				A137260A2B62661F00F1EA6E /* EmptyStateView.swift in Sources */,
