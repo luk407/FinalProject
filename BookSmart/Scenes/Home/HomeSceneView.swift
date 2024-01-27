@@ -16,6 +16,8 @@ class HomeSceneView: UIViewController {
     
     private var postsTableView = UITableView()
     
+    private let refreshControl = UIRefreshControl()
+    
     var homeSceneViewModel: HomeSceneViewModel
     
     // MARK: - Init
@@ -42,7 +44,6 @@ class HomeSceneView: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        postsTableView.reloadData()
     }
     
     // MARK: - Setup Subviews, Constraints, UI
@@ -94,11 +95,20 @@ class HomeSceneView: UIViewController {
     private func setupPostsTableViewUI() {
         postsTableView.translatesAutoresizingMaskIntoConstraints = false
         postsTableView.backgroundColor = .clear
-        postsTableView.estimatedRowHeight = 150
+        postsTableView.estimatedRowHeight = 200
         postsTableView.rowHeight = UITableView.automaticDimension
         postsTableView.register(PostsTableViewCell.self, forCellReuseIdentifier: "postCell")
         postsTableView.dataSource = self
         postsTableView.delegate = self
+        postsTableView.refreshControl = refreshControl
+        
+        refreshControl.addTarget(self, action: #selector(refreshTableView), for: .valueChanged)
+        refreshControl.tintColor = .customAccentColor
+    }
+    
+    @objc private func refreshTableView() {
+        postsTableView.reloadData()
+        refreshControl.endRefreshing()
     }
 }
 
@@ -116,6 +126,7 @@ extension HomeSceneView: UITableViewDataSource {
             cell.postInfo = postInfo
             cell.configureCell()
             cell.contentView.isUserInteractionEnabled = false
+            cell.layoutIfNeeded()
             return cell
         } else {
             return UITableViewCell()
