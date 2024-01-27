@@ -51,8 +51,6 @@ class HomeSceneViewModel {
     
     private func postsInfoListener() {
         
-        fetchedPostsInfo = []
-        
         let database = Firestore.firestore()
         let reference = database.collection("PostInfo")
         
@@ -66,6 +64,8 @@ class HomeSceneViewModel {
                 print("fdfdf")
                 return
             }
+            
+            self.fetchedPostsInfo.removeAll()
             
             for document in snapshot.documents {
                 let data = document.data()

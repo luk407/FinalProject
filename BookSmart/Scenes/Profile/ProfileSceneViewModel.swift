@@ -276,7 +276,9 @@ class ProfileSceneViewModel: ObservableObject {
             }
      
             connectionGroup.notify(queue: .main) {
-                self.connectionsInfo = fetchedConnections
+                DispatchQueue.main.async {
+                    self.connectionsInfo = fetchedConnections
+                }
             }
         }
     }
