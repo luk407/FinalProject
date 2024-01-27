@@ -42,6 +42,7 @@ struct ProfileSceneView: View {
         .padding()
         .onAppear {
             profileSceneViewModel.fetchOwnerInfo()
+            profileSceneViewModel.retrieveImage()
             profileSceneViewModel.postsInfoListener()
             profileSceneViewModel.commentInfoListener()
             profileSceneViewModel.connectionsInfoListener()
@@ -56,7 +57,7 @@ struct ProfileSceneView: View {
     // MARK: - Views
     
     private var profilePictureView: some View {
-        Image(uiImage: (profileSceneViewModel.selectedImage == nil ? UIImage(systemName: "person.fill") : profileSceneViewModel.selectedImage)!)
+        Image(uiImage: (profileSceneViewModel.selectedImage == nil ? profileSceneViewModel.fetchedOwnerImage : profileSceneViewModel.selectedImage)!)
             .resizable()
             .frame(width: 100, height: 100)
             .clipShape(

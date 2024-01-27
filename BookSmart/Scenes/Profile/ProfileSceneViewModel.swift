@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import Firebase
+import FirebaseStorage
 
 enum DisplayInfoType {
     case posts, comments, connections
@@ -35,6 +36,7 @@ class ProfileSceneViewModel: ObservableObject {
     @Published var fetchedOwnerDisplayName: String = ""
     @Published var fetchedOwnerUsername: String = ""
     @Published var fetchedOwnerBio: String = ""
+    @Published var fetchedOwnerImage = UIImage()
     
     // MARK: - Init
     
@@ -94,6 +96,9 @@ class ProfileSceneViewModel: ObservableObject {
     func editProfile() {
         if isEditable {
             isEditable = false
+            if selectedImage != nil {
+                uploadImage()
+            }
         } else {
             isEditable = true
         }
@@ -419,6 +424,72 @@ class ProfileSceneViewModel: ObservableObject {
                 print("Error removing connection: \(error.localizedDescription)")
             } else {
                 print("Connection removed successfully.")
+            }
+        }
+    }
+    
+    private func uploadImage() {
+        
+        let storageReference = Storage.storage().reference()
+        
+        let imageData = selectedImage?.jpegData(compressionQuality: 0.8)
+        
+        guard imageData != nil else {
+            return
+        }
+        
+        let path = "profileImages/\(profileOwnerInfoID.uuidString).jpg"
+        
+        let fileReference = storageReference.child(path)
+        
+        fileReference.putData(imageData!, metadata: nil) { metadata, error in
+            
+            if error == nil && metadata != nil {
+                self.changeImagePathOfOwner(path)
+            }
+        }
+    }
+    
+    private func changeImagePathOfOwner(_ path: String) {
+        let database = Firestore.firestore()
+        let userDocumentReference = database.collection("UserInfo").document(profileOwnerInfoID.uuidString)
+        
+        userDocumentReference.updateData(["image": path]) { error in
+            if let error = error {
+                print("Error updating image path: \(error.localizedDescription)")
+            } else {
+                print("Image path updated successfully.")
+            }
+        }
+    }
+    
+    func retrieveImage() {
+        
+        let database = Firestore.firestore()
+        database.collection("UserInfo").document(profileOwnerInfoID.uuidString).getDocument { document, error in
+            
+            if error == nil && document != nil {
+                
+                let imagePath = document?.data()?["image"] as? String
+                
+                self.fetchImage(imagePath ?? "")
+            }
+        }
+    }
+    
+    private func fetchImage(_ imagePath: String) {
+        let storageReference = Storage.storage().reference()
+        let fileReference = storageReference.child(imagePath)
+        
+        fileReference.getData(maxSize: 5 * 1024 * 1024) { data, error in
+            if data != nil && error == nil {
+                
+                if let fetchedImage = UIImage(data: data!) {
+                    
+                    DispatchQueue.main.async {
+                        self.fetchedOwnerImage = fetchedImage
+                    }
+                }
             }
         }
     }
