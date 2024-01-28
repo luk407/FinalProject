@@ -38,6 +38,16 @@ class ProfileSceneViewModel: ObservableObject {
     @Published var fetchedOwnerBio: String = ""
     @Published var fetchedOwnerImage = UIImage()
     
+    var ownerBadges: [BadgeInfo] {
+        var badges: [BadgeInfo] = []
+
+        if let fetchedOwnerInfo = fetchedOwnerInfo {
+            badges = BadgeManager.calculateBadges(for: fetchedOwnerInfo)
+        }
+        
+        return badges
+    }
+    
     // MARK: - Init
     
     init(profileOwnerInfoID: UserInfo.ID, userInfo: UserInfo) {
@@ -518,6 +528,7 @@ class ProfileSceneViewModel: ObservableObject {
         updateData["displayName"] = fetchedOwnerDisplayName
         updateData["username"] = fetchedOwnerUsername.dropFirst()
         updateData["bio"] = fetchedOwnerBio
+        updateData["badges"] = convertBadgesToArray(badges: ownerBadges)
         
         userDocumentReference.updateData(updateData) { error in
             if let error = error {
@@ -526,5 +537,19 @@ class ProfileSceneViewModel: ObservableObject {
                 print("User profile updated successfully.")
             }
         }
+    }
+    
+    private func convertBadgesToArray(badges: [BadgeInfo]) -> [[String: Any]] {
+        var badgesArray: [[String: Any]] = []
+        
+        for badge in badges {
+            let badgeData: [String: Any] = [
+                "category": badge.category.rawValue,
+                "type": badge.type.rawValue
+            ]
+            badgesArray.append(badgeData)
+        }
+        
+        return badgesArray
     }
 }

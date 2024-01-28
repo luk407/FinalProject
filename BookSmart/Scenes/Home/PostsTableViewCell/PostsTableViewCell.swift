@@ -540,47 +540,49 @@ final class PostsTableViewCell: UITableViewCell {
                 
                 if let document = snapshot.documents.first {
                     let data = document.data()
-
-                guard
-                    let id = data["id"] as? String,
-                    let username = data["username"] as? String,
-                    let email = data["email"] as? String,
-                    let password = data["password"] as? String,
-                    let displayName = data["displayName"] as? String,
-                    let registrationDateTimestamp = data["registrationDate"] as? Timestamp,
-                    let bio = data["bio"] as? String,
-                    let image = data["image"] as? String,
-                    let badges = data["badges"] as? [BadgeInfo],
-                    let posts = data["posts"] as? [String],
-                    let comments = data["comments"] as? [String],
-                    let likedPosts = data["likedPosts"] as? [String],
-                    let connections = data["connections"] as? [String],
-                    let booksFinishedArray = data["booksFinished"] as? [[String: Any]],
-                    let quotesUsed = data["quotesUsed"] as? [Quote]
-                else {
-                    print("Error parsing user data")
-                    return
+                    
+                    guard
+                        let id = data["id"] as? String,
+                        let username = data["username"] as? String,
+                        let email = data["email"] as? String,
+                        let password = data["password"] as? String,
+                        let displayName = data["displayName"] as? String,
+                        let registrationDateTimestamp = data["registrationDate"] as? Timestamp,
+                        let bio = data["bio"] as? String,
+                        let image = data["image"] as? String,
+                        let badgesData = data["badges"] as? [[String: String]],
+                        let posts = data["posts"] as? [String],
+                        let comments = data["comments"] as? [String],
+                        let likedPosts = data["likedPosts"] as? [String],
+                        let connections = data["connections"] as? [String],
+                        let booksFinishedArray = data["booksFinished"] as? [[String: Any]],
+                        let quotesUsed = data["quotesUsed"] as? [Quote]
+                    else {
+                        print("Error parsing user data")
+                        return
+                    }
+                    
+                    let badges = self.parseBadgesArray(badgesData)
+                    
+                    let userInfo = UserInfo(
+                        id: UUID(uuidString: id) ?? UUID(),
+                        userName: username,
+                        email: email,
+                        password: password,
+                        displayName: displayName,
+                        registrationDate: registrationDateTimestamp.dateValue(),
+                        bio: bio,
+                        image: image,
+                        badges: badges,
+                        posts: posts.map { UUID(uuidString: $0) ?? UUID() },
+                        comments: comments.map { UUID(uuidString: $0) ?? UUID() },
+                        likedPosts: likedPosts.map { UUID(uuidString: $0) ?? UUID() },
+                        connections: connections.map { UUID(uuidString: $0) ?? UUID() },
+                        booksFinished: self.parseBooksFinishedArray(booksFinishedArray),
+                        quotesUsed: quotesUsed
+                    )
+                    completion(userInfo)
                 }
-                
-                let userInfo = UserInfo(
-                    id: UUID(uuidString: id) ?? UUID(),
-                    userName: username,
-                    email: email,
-                    password: password,
-                    displayName: displayName,
-                    registrationDate: registrationDateTimestamp.dateValue(),
-                    bio: bio,
-                    image: image,
-                    badges: badges,
-                    posts: posts.map { UUID(uuidString: $0) ?? UUID() },
-                    comments: comments.map { UUID(uuidString: $0) ?? UUID() },
-                    likedPosts: likedPosts.map { UUID(uuidString: $0) ?? UUID() },
-                    connections: connections.map { UUID(uuidString: $0) ?? UUID() },
-                    booksFinished: self.parseBooksFinishedArray(booksFinishedArray),
-                    quotesUsed: quotesUsed
-                )
-                completion(userInfo)
-            }
         }
     }
     
@@ -595,6 +597,24 @@ final class PostsTableViewCell: UITableViewCell {
             }
         }
         return booksFinished
+    }
+    
+    private func parseBadgesArray(_ badgesData: [[String: String]]) -> [BadgeInfo] {
+        
+        var badges: [BadgeInfo] = []
+
+        for badgeInfo in badgesData {
+            if
+                let categoryString = badgeInfo["category"],
+                let category = BadgeCategory(rawValue: categoryString),
+                let typeString = badgeInfo["type"],
+                let type = BadgeType(rawValue: typeString)
+            {
+                let badge = BadgeInfo(category: category, type: type)
+                badges.append(badge)
+            }
+        }
+        return badges
     }
     
     func retrieveImage() {

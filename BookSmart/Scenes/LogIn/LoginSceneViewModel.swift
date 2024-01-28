@@ -86,7 +86,7 @@ final class LoginSceneViewModel: ObservableObject {
                         let registrationDateTimestamp = data["registrationDate"] as? Timestamp,
                         let bio = data["bio"] as? String,
                         let image = data["image"] as? String,
-                        let badges = data["badges"] as? [BadgeInfo],
+                        let badgesData = data["badges"] as? [[String: String]],
                         let posts = data["posts"] as? [String],
                         let comments = data["comments"] as? [String],
                         let likedPosts = data["likedPosts"] as? [String],
@@ -97,6 +97,8 @@ final class LoginSceneViewModel: ObservableObject {
                         print("Error parsing user data")
                         continue
                     }
+                    
+                    let badges = self.parseBadgesArray(badgesData)
                     
                     let userInfo = UserInfo(
                         id: UUID(uuidString: id) ?? UUID(),
@@ -137,5 +139,23 @@ final class LoginSceneViewModel: ObservableObject {
         }
         
         return booksFinished
+    }
+    
+    private func parseBadgesArray(_ badgesData: [[String: String]]) -> [BadgeInfo] {
+        
+        var badges: [BadgeInfo] = []
+
+        for badgeInfo in badgesData {
+            if
+                let categoryString = badgeInfo["category"],
+                let category = BadgeCategory(rawValue: categoryString),
+                let typeString = badgeInfo["type"],
+                let type = BadgeType(rawValue: typeString)
+            {
+                let badge = BadgeInfo(category: category, type: type)
+                badges.append(badge)
+            }
+        }
+        return badges
     }
 }

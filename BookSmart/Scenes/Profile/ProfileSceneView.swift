@@ -13,6 +13,8 @@ struct ProfileSceneView: View {
     
     @ObservedObject var profileSceneViewModel: ProfileSceneViewModel
     
+    private let gridColumns = [GridItem(.fixed(40)), GridItem(.fixed(40)), GridItem(.fixed(40))]
+    
     // MARK: - Body
     
     var body: some View {
@@ -25,11 +27,17 @@ struct ProfileSceneView: View {
                 
                 Spacer()
                 
-                optionsView
-                
+                badgesVGrid
             }
             
-            namesView
+            HStack {
+                
+                namesView
+                
+                Spacer()
+                
+                optionsView
+            }
             
             bioView
             
@@ -53,24 +61,38 @@ struct ProfileSceneView: View {
     // MARK: - Views
     
     private var profilePictureView: some View {
-        Image(uiImage: (profileSceneViewModel.selectedImage == nil ? profileSceneViewModel.fetchedOwnerImage : profileSceneViewModel.selectedImage)!)
-            .resizable()
-            .frame(width: 100, height: 100)
-            .clipShape(
-                Circle()
-            )
-            .overlay(alignment: .bottomTrailing) {
-                if profileSceneViewModel.isEditable {
-                    Button {
-                        profileSceneViewModel.isImagePickerShowing = true
-                    } label: {
-                        Image(systemName: "plus.circle.fill")
-                            .resizable()
-                            .frame(width: 30, height: 30)
-                            .foregroundStyle(.green)
+        ZStack {
+            
+            Circle()
+                .stroke(lineWidth: 4)
+                .frame(width: 110, height: 110)
+                .foregroundStyle(Color(uiColor: .customAccentColor))
+            
+            Image(uiImage: (profileSceneViewModel.selectedImage == nil ? profileSceneViewModel.fetchedOwnerImage : profileSceneViewModel.selectedImage)!)
+                .resizable()
+                .frame(width: 100, height: 100)
+                .clipShape(
+                    Circle()
+                )
+                .overlay(alignment: .bottomTrailing) {
+                    if profileSceneViewModel.isEditable {
+                        Button {
+                            profileSceneViewModel.isImagePickerShowing = true
+                        } label: {
+                            ZStack {
+                                Circle()
+                                    .frame(width: 40, height: 40)
+                                    .foregroundStyle(Color(uiColor: .customBackgroundColor))
+                                
+                                Image(systemName: "plus.circle.fill")
+                                    .resizable()
+                                    .frame(width: 30, height: 30)
+                                    .foregroundStyle(Color(uiColor: .customDarkGreenColor))
+                            }
+                        }
                     }
                 }
-            }
+        }
     }
     
     private var optionsView: some View {
@@ -91,7 +113,7 @@ struct ProfileSceneView: View {
             Image(systemName: "pencil.circle.fill")
                 .resizable()
                 .frame(width: 30, height: 30)
-                .foregroundStyle(Color(uiColor: profileSceneViewModel.isEditable ? .red : .green))
+                .foregroundStyle(Color(uiColor: profileSceneViewModel.isEditable ? .customDarkRedColor : .customDarkGreenColor))
         }
     }
     
@@ -102,7 +124,7 @@ struct ProfileSceneView: View {
             Image(systemName: profileSceneViewModel.isInConnections ? "person.fill.badge.minus" : "person.fill.badge.plus")
                 .resizable()
                 .frame(width: 30, height: 30)
-                .foregroundStyle(Color(uiColor: profileSceneViewModel.isInConnections ? .red : .green))
+                .foregroundStyle(Color(uiColor: profileSceneViewModel.isInConnections ? .customDarkRedColor : .customDarkGreenColor))
         }
     }
     
@@ -144,14 +166,10 @@ struct ProfileSceneView: View {
         )
     }
     
-    private var badgesView: some View {
-        HStack {
-            LazyHStack {
-                ScrollView(.horizontal) {
-                    ForEach(profileSceneViewModel.fetchedOwnerInfo?.badges ?? [], id: \.self) { badge in
-                        // MARK: finish this
-                    }
-                }
+    private var badgesVGrid: some View {
+        LazyVGrid(columns: gridColumns, spacing: 10) {
+            ForEach(profileSceneViewModel.ownerBadges, id: \.self) { badge in
+                BadgeView(badge: badge)
             }
         }
     }
