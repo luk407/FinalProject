@@ -306,7 +306,5 @@ class HomeSceneViewModel {
 
         return quotes
     }
-    
-    
 }
 

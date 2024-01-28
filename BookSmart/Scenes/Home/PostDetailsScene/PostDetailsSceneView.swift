@@ -132,8 +132,8 @@ final class PostDetailsSceneView: UIViewController {
     private func setupTableViewUI() {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.backgroundColor = .customBackgroundColor
-//        tableView.estimatedRowHeight = 100
-//        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 100
+        tableView.rowHeight = UITableView.automaticDimension
         tableView.register(PostTableViewCell.self, forCellReuseIdentifier: "postCell")
         tableView.register(CommentTableViewCell.self, forCellReuseIdentifier: "commentCell")
         tableView.dataSource = self
@@ -190,10 +190,10 @@ extension PostDetailsSceneView: UITableViewDataSource {
             }
         } else {
             if let cell = tableView.dequeueReusableCell(withIdentifier: "commentCell", for: indexPath) as? CommentTableViewCell {
-                let comment = viewModel.postInfo.comments[indexPath.row - 1]
-                cell.viewModel = viewModel
-                cell.commentInfo = viewModel.getCommentInfo(for: comment)
-                cell.configureCell()
+                guard let commentInfo = viewModel.commentsInfo?[indexPath.row - 1] else { return UITableViewCell() }
+                cell.configureCell(
+                    viewModel: viewModel,
+                    commentInfo: commentInfo)
                 cell.backgroundColor = .customBackgroundColor
                 cell.contentView.isUserInteractionEnabled = false
                 return cell

@@ -7,6 +7,7 @@
 
 import UIKit
 import Firebase
+import FirebaseStorage
 
 class CommentTableViewCell: UITableViewCell {
     
@@ -15,7 +16,7 @@ class CommentTableViewCell: UITableViewCell {
     private let mainStackView = UIStackView()
     
     private let authorInfoStackView = UIStackView()
-    private let authorImageView = UIImageView()    
+    private let authorImageView = UIImageView()
     private let nameLabel = UILabel()
     
     private let timeLabel = UILabel()
@@ -32,11 +33,13 @@ class CommentTableViewCell: UITableViewCell {
     private let commentStackView = UIStackView()
     private let commentButtonImageView = UIImageView()
     private let commentButtonLabel = UILabel()
-
+    
     var viewModel: PostDetailsSceneViewModel?
     
     var commentInfo: CommentInfo?
-
+    
+    var authorInfo: UserInfo?
+    
     // MARK: - Init
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -96,12 +99,21 @@ class CommentTableViewCell: UITableViewCell {
         setupCommentStackViewUI()
     }
     
-    func configureCell() {
-        let isLiked = commentInfo?.likedBy.contains(viewModel?.userInfo.id ?? UUID())
-
-        viewModel?.commentCellDelegate = self
-        updateCellUI(with: commentInfo)
-        updateLikeButtonUI(isLiked: isLiked ?? false)
+    func configureCell(viewModel: PostDetailsSceneViewModel, commentInfo: CommentInfo) {
+        self.viewModel = viewModel
+        self.commentInfo = commentInfo
+        
+        getAuthorInfo(with: commentInfo.authorID) { [self] authorInfo in
+            self.authorInfo = authorInfo
+            
+            let isLiked = commentInfo.likedBy.contains(viewModel.userInfo.id)
+            authorImageView.image = UIImage(systemName: "person.fill")
+            nameLabel.text = authorInfo?.userName
+            timeLabel.text = viewModel.timeAgoString(from: commentInfo.commentTime)
+            bodyTextView.text = commentInfo.body
+            updateLikeButtonUI(isLiked: isLiked)
+            retrieveImage()
+        }
     }
     
     // MARK: - Constraints
@@ -261,9 +273,7 @@ class CommentTableViewCell: UITableViewCell {
         stackView.addArrangedSubview(label)
     }
     
-    // MARK: - Private Methods
-    
-    // MARK: - Animations
+    // MARK: - Button Methods
     @objc private func authorImageOrNameTapped(sender: UITapGestureRecognizer) {
         
         // go to profile page
@@ -283,7 +293,7 @@ class CommentTableViewCell: UITableViewCell {
     
     @objc private func likeButtonTapped(sender: UITapGestureRecognizer) {
         
-        viewModel?.toggleLikeComment(commentInfo: commentInfo)
+        toggleLikeComment()
         
         if sender.state == .ended {
             UIView.animate(withDuration: 0.1, animations: {
@@ -312,26 +322,221 @@ class CommentTableViewCell: UITableViewCell {
         }
     }
     
-    private func updateCellUI(with commentInfo: CommentInfo?) {
+//    private func updateCellUI(with commentInfo: CommentInfo?) {
+//        
+//        DispatchQueue.main.async { [self] in
+//            let authorInfo = getAuthorInfo(with: commentInfo?.authorID ?? UUID())
+//            authorImageView.image = UIImage(systemName: "person.fill")
+//            nameLabel.text = authorInfo?.userName
+//            timeLabel.text = viewModel?.timeAgoString(from: commentInfo?.commentTime ?? Date())
+//            bodyTextView.text = commentInfo?.body
+//        }
+//    }
+    
+    func toggleLikeComment() {
         
-        DispatchQueue.main.async { [self] in
-            let authorInfo = viewModel?.getAuthorInfo(with: commentInfo?.authorID ?? UUID())
-            authorImageView.image = UIImage(systemName: "person.fill")
-            nameLabel.text = authorInfo?.userName
-            timeLabel.text = viewModel?.timeAgoString(from: commentInfo?.commentTime ?? Date())
-            bodyTextView.text = commentInfo?.body
+        guard let commentInfo = commentInfo else { return }
+        
+        let database = Firestore.firestore()
+        
+        let commentReference = database.collection("CommentInfo").document(commentInfo.id.uuidString)
+        
+        let isLiked = commentInfo.likedBy.contains(viewModel!.userInfo.id)
+        
+        updateLikeButtonUI(isLiked: !isLiked)
+        
+        if isLiked {
+            commentReference.updateData([
+                "likedBy": FieldValue.arrayRemove([viewModel?.userInfo.id.uuidString ?? ""])
+            ]) { [self] error in
+                if let error = error {
+                    print("Error removing user from likedBy in comment: \(error.localizedDescription)")
+                    return
+                }
+                
+                if let indexOfUser = commentInfo.likedBy.firstIndex(of: viewModel!.userInfo.id) {
+                    if  let indexOfComment = viewModel?.commentsInfo?.firstIndex(of: commentInfo) {
+                        viewModel?.commentsInfo?[indexOfComment].comments.remove(at: indexOfUser)
+                    }
+                }
+            }
+        } else {
+            commentReference.updateData([
+                "likedBy": FieldValue.arrayUnion([viewModel?.userInfo.id.uuidString ?? ""])
+            ]) { [self] error in
+                if let error = error {
+                    print("Error adding user to likedBy in comment: \(error.localizedDescription)")
+                    return
+                }
+                
+                if let indexOfComment = viewModel?.commentsInfo?.firstIndex(of: commentInfo) {
+                    viewModel?.commentsInfo?[indexOfComment].likedBy.append(viewModel!.userInfo.id)
+                }
+            }
         }
     }
-}
-
-// MARK: - Extensions
-extension CommentTableViewCell: PostDetailsSceneViewDelegateForCells {
+    
     func updateLikeButtonUI(isLiked: Bool) {
         DispatchQueue.main.async {
             let imageName = isLiked ? "heart.fill" : "heart"
             
             self.likeButtonImageView.image = UIImage(systemName: imageName)?.withTintColor(.customLikeButtonColor)
             self.likeButtonLabel.textColor = .customLikeButtonColor
+        }
+    }
+    
+    func getAuthorInfo(with authorID: UserInfo.ID, completion: @escaping (UserInfo?) -> Void) {
+        
+        var authorInfo: UserInfo?
+        
+        let database = Firestore.firestore()
+        let reference = database.collection("UserInfo")
+        
+        reference.getDocuments { [weak self] snapshot, error in
+            
+            guard let self = self else { return }
+            
+            if let error = error {
+                print("Error fetching user information: \(error.localizedDescription)")
+                completion(nil)
+                return
+            }
+            
+            guard let snapshot = snapshot else {
+                completion(nil)
+                return
+            }
+            
+            for document in snapshot.documents {
+                let data = document.data()
+                
+                guard
+                    let id = data["id"] as? String,
+                    let username = data["username"] as? String,
+                    let email = data["email"] as? String,
+                    let password = data["password"] as? String,
+                    let displayName = data["displayName"] as? String,
+                    let registrationDateTimestamp = data["registrationDate"] as? Timestamp,
+                    let bio = data["bio"] as? String,
+                    let image = data["image"] as? String,
+                    let badgesData = data["badges"] as? [[String: String]],
+                    let posts = data["posts"] as? [String],
+                    let comments = data["comments"] as? [String],
+                    let likedPosts = data["likedPosts"] as? [String],
+                    let connections = data["connections"] as? [String],
+                    let booksFinishedArray = data["booksFinished"] as? [[String: Any]],
+                    let quotesUsedData = data["quotesUsed"] as? [[String: String]]
+                else {
+                    print("Error parsing user data")
+                    completion(nil)
+                    continue
+                }
+                
+                let badges = self.parseBadgesArray(badgesData)
+                let quotesUsed = self.parseQuotesArray(quotesUsedData)
+                let booksFinished = self.parseBooksFinishedArray(booksFinishedArray)
+                
+                let userInfo = UserInfo(
+                    id: UUID(uuidString: id) ?? UUID(),
+                    userName: username,
+                    email: email,
+                    password: password,
+                    displayName: displayName,
+                    registrationDate: registrationDateTimestamp.dateValue(),
+                    bio: bio,
+                    image: image,
+                    badges: badges,
+                    posts: posts.map { UUID(uuidString: $0) ?? UUID() },
+                    comments: comments.map { UUID(uuidString: $0) ?? UUID() },
+                    likedPosts: likedPosts.map { UUID(uuidString: $0) ?? UUID() },
+                    connections: connections.map { UUID(uuidString: $0) ?? UUID() },
+                    booksFinished: booksFinished,
+                    quotesUsed: quotesUsed
+                )
+                authorInfo = userInfo
+            }
+            
+            completion(authorInfo)
+        }
+    }
+    
+    private func parseBooksFinishedArray(_ booksFinishedArray: [[String: Any]]) -> [Book] {
+        var booksFinished: [Book] = []
+        
+        for bookInfo in booksFinishedArray {
+            if let title = bookInfo["title"] as? String,
+               let authorName = bookInfo["authorName"] as? [String] {
+                let book = Book(title: title, authorName: authorName)
+                booksFinished.append(book)
+            }
+        }
+        return booksFinished
+    }
+    
+    private func parseBadgesArray(_ badgesData: [[String: String]]) -> [BadgeInfo] {
+        
+        var badges: [BadgeInfo] = []
+        
+        for badgeInfo in badgesData {
+            if
+                let categoryString = badgeInfo["category"],
+                let category = BadgeCategory(rawValue: categoryString),
+                let typeString = badgeInfo["type"],
+                let type = BadgeType(rawValue: typeString)
+            {
+                let badge = BadgeInfo(category: category, type: type)
+                badges.append(badge)
+            }
+        }
+        return badges
+    }
+    
+    private func parseQuotesArray(_ quotesData: [[String: String]]) -> [Quote] {
+        var quotes: [Quote] = []
+        
+        for quoteData in quotesData {
+            if let text = quoteData["text"], let author = quoteData["author"] {
+                let quote = Quote(text: text, author: author)
+                quotes.append(quote)
+            }
+        }
+        
+        return quotes
+    }
+    
+    func retrieveImage() {
+        authorImageView.image = UIImage(systemName: "person.fill")
+        authorImageView.tintColor = .customAccentColor
+        
+        guard let imageName = commentInfo?.authorID.uuidString else { return }
+        
+        if let cachedImage = CacheManager.instance.get(name: imageName) {
+            authorImageView.image = cachedImage
+        } else {
+            let database = Firestore.firestore()
+            database.collection("UserInfo").document((commentInfo?.authorID.uuidString)!).getDocument { document, error in
+                if error == nil && document != nil {
+                    let imagePath = document?.data()?["image"] as? String
+                    self.fetchImage(imagePath ?? "")
+                }
+            }
+        }
+    }
+    
+    private func fetchImage(_ imagePath: String) {
+        let storageReference = Storage.storage().reference()
+        let fileReference = storageReference.child(imagePath)
+        
+        fileReference.getData(maxSize: 5 * 1024 * 1024) { data, error in
+            if let data = data, error == nil, let fetchedImage = UIImage(data: data) {
+                print("Image fetched successfully.")
+                DispatchQueue.main.async {
+                    self.authorImageView.image = fetchedImage
+                    CacheManager.instance.add(image: fetchedImage, name: self.commentInfo?.authorID.uuidString ?? "")
+                }
+            } else {
+                print("Error fetching image:", error?.localizedDescription ?? "Unknown error")
+            }
         }
     }
 }

@@ -44,6 +44,7 @@ class HomeSceneView: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        postsTableView.reloadData()
     }
     
     // MARK: - Setup Subviews, Constraints, UI

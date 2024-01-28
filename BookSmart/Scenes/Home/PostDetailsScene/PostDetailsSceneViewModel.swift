@@ -25,13 +25,11 @@ final class PostDetailsSceneViewModel {
     
     var postInfo: PostInfo
     
-    var commentInfo: [CommentInfo]?
+    var commentsInfo: [CommentInfo]?
     
     weak var delegate: PostDetailsSceneViewDelegate?
     
     weak var postCellDelegate: PostDetailsSceneViewDelegateForCells?
-    
-    weak var commentCellDelegate: PostDetailsSceneViewDelegateForCells?
     
     private var dispatchGroup = DispatchGroup()
     
@@ -144,10 +142,6 @@ final class PostDetailsSceneViewModel {
         let database = Firestore.firestore()
         let commentCollection = database.collection("CommentInfo")
         
-        let isLiked = postInfo.likedBy.contains(userInfo.id)
-        
-        commentCellDelegate?.updateLikeButtonUI(isLiked: !isLiked)
-        
         commentCollection
             .whereField("id", in: commentsIDs.map { $0.uuidString })
             .addSnapshotListener(includeMetadataChanges: true) { [weak self] (querySnapshot, error) in
@@ -193,54 +187,8 @@ final class PostDetailsSceneViewModel {
                     
                     fetchedComments.append(commentInfo)
                 }
-                self.commentInfo = fetchedComments
+                self.commentsInfo = fetchedComments
             }
-    }
-    
-    func toggleLikeComment(commentInfo: CommentInfo?) {
-        
-        guard let commentInfo = commentInfo else { return }
-        
-        let database = Firestore.firestore()
-        
-        let commentReference = database.collection("CommentInfo").document(commentInfo.id.uuidString)
-        print("CommentInfo ID: \(commentInfo.id)")
-        print("UserInfo ID: \(userInfo.id)")
-        print("LikedBy: \(commentInfo.likedBy)")
-        
-        let isLiked = commentInfo.likedBy.contains(userInfo.id)
-        print("IsLiked: \(isLiked)")
-        commentCellDelegate?.updateLikeButtonUI(isLiked: !isLiked)
-        
-        if isLiked {
-            commentReference.updateData([
-                "likedBy": FieldValue.arrayRemove([userInfo.id.uuidString])
-            ]) { [self] error in
-                if let error = error {
-                    print("Error removing user from likedBy in comment: \(error.localizedDescription)")
-                    return
-                }
-                
-                if let indexOfUser = commentInfo.likedBy.firstIndex(of: userInfo.id) {
-                    if  let indexOfComment = self.commentInfo?.firstIndex(of: commentInfo) {
-                        self.commentInfo?[indexOfComment].comments.remove(at: indexOfUser)
-                    }
-                }
-            }
-        } else {
-            commentReference.updateData([
-                "likedBy": FieldValue.arrayUnion([userInfo.id.uuidString])
-            ]) { error in
-                if let error = error {
-                    print("Error adding user to likedBy in comment: \(error.localizedDescription)")
-                    return
-                }
-                
-                if let indexOfComment = self.commentInfo?.firstIndex(of: commentInfo) {
-                    self.commentInfo?[indexOfComment].likedBy.append(self.userInfo.id)
-                }
-            }
-        }
     }
     
     func submitCommentButtonTapped(commentText: String) {
@@ -302,7 +250,7 @@ final class PostDetailsSceneViewModel {
     }
     
     func getCommentInfo(for commentID: UUID) -> CommentInfo? {
-        return commentInfo?.first { $0.id == commentID }
+        return commentsInfo?.first { $0.id == commentID }
     }
     
     func getAuthorInfo(with authorID: UserInfo.ID) -> UserInfo? {
@@ -337,17 +285,21 @@ final class PostDetailsSceneViewModel {
                     let registrationDateTimestamp = data["registrationDate"] as? Timestamp,
                     let bio = data["bio"] as? String,
                     let image = data["image"] as? String,
-                    let badges = data["badges"] as? [BadgeInfo],
+                    let badgesData = data["badges"] as? [[String: String]],
                     let posts = data["posts"] as? [String],
                     let comments = data["comments"] as? [String],
                     let likedPosts = data["likedPosts"] as? [String],
                     let connections = data["connections"] as? [String],
                     let booksFinishedArray = data["booksFinished"] as? [[String: Any]],
-                    let quotesUsed = data["quotesUsed"] as? [Quote]
+                    let quotesUsedData = data["quotesUsed"] as? [[String: String]]
                 else {
-                    print("Error parsing user data")
+                    print("Error parsing user dat")
                     continue
                 }
+                
+                let badges = self.parseBadgesArray(badgesData)
+                let quotesUsed = self.parseQuotesArray(quotesUsedData)
+                let booksFinished = self.parseBooksFinishedArray(booksFinishedArray)
                 
                 let userInfo = UserInfo(
                     id: UUID(uuidString: id) ?? UUID(),
@@ -363,7 +315,7 @@ final class PostDetailsSceneViewModel {
                     comments: comments.map { UUID(uuidString: $0) ?? UUID() },
                     likedPosts: likedPosts.map { UUID(uuidString: $0) ?? UUID() },
                     connections: connections.map { UUID(uuidString: $0) ?? UUID() },
-                    booksFinished: self.parseBooksFinishedArray(booksFinishedArray),
+                    booksFinished: booksFinished,
                     quotesUsed: quotesUsed
                 )
                 authorInfo = userInfo
@@ -374,15 +326,46 @@ final class PostDetailsSceneViewModel {
     
     private func parseBooksFinishedArray(_ booksFinishedArray: [[String: Any]]) -> [Book] {
         var booksFinished: [Book] = []
-        
+
         for bookInfo in booksFinishedArray {
             if let title = bookInfo["title"] as? String,
-               let authorName = bookInfo["author"] as? [String] {
+               let authorName = bookInfo["authorName"] as? [String] {
                 let book = Book(title: title, authorName: authorName)
                 booksFinished.append(book)
             }
         }
         return booksFinished
+    }
+    
+    private func parseBadgesArray(_ badgesData: [[String: String]]) -> [BadgeInfo] {
+        
+        var badges: [BadgeInfo] = []
+        
+        for badgeInfo in badgesData {
+            if
+                let categoryString = badgeInfo["category"],
+                let category = BadgeCategory(rawValue: categoryString),
+                let typeString = badgeInfo["type"],
+                let type = BadgeType(rawValue: typeString)
+            {
+                let badge = BadgeInfo(category: category, type: type)
+                badges.append(badge)
+            }
+        }
+        return badges
+    }
+    
+    private func parseQuotesArray(_ quotesData: [[String: String]]) -> [Quote] {
+        var quotes: [Quote] = []
+
+        for quoteData in quotesData {
+            if let text = quoteData["text"], let author = quoteData["author"] {
+                let quote = Quote(text: text, author: author)
+                quotes.append(quote)
+            }
+        }
+
+        return quotes
     }
 }
 
