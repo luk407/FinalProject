@@ -96,7 +96,7 @@ class CommentTableViewCell: UITableViewCell {
         setupNameLabelUI()
         setupTimeLabelUI()
         setupCommentContentStackViewUI()
-        setupBodyLabelUI()
+        setupBodyTextViewUI()
         setupLikeCommentStackViewUI()
         setupLikeStackViewUI()
         setupCommentStackViewUI()
@@ -221,11 +221,12 @@ class CommentTableViewCell: UITableViewCell {
         commentContentStackView.distribution = .fillProportionally
     }
     
-    private func setupBodyLabelUI() {
+    private func setupBodyTextViewUI() {
         bodyTextView.font = .systemFont(ofSize: 14)
         bodyTextView.textColor = .white
         bodyTextView.backgroundColor = .clear
         bodyTextView.isEditable = false
+        bodyTextView.isScrollEnabled = false
     }
     
     private func setupLikeCommentStackViewUI() {
@@ -264,6 +265,8 @@ class CommentTableViewCell: UITableViewCell {
         
         imageView.contentMode = .scaleAspectFit
         imageView.tintColor = buttonColor
+        imageView.widthAnchor.constraint(equalToConstant: 25).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: 25).isActive = true
         
         label.font = .systemFont(ofSize: 14, weight: .semibold)
         label.textColor = .customAccentColor
@@ -362,8 +365,10 @@ class CommentTableViewCell: UITableViewCell {
                 }
                 
                 if let indexOfUser = commentInfo.likedBy.firstIndex(of: viewModel!.userInfo.id) {
-                    if  let indexOfComment = viewModel?.commentsInfo?.firstIndex(of: commentInfo) {
-                        viewModel?.commentsInfo?[indexOfComment].comments.remove(at: indexOfUser)
+                    self.commentInfo?.likedBy.remove(at: indexOfUser)
+                    
+                    DispatchQueue.main.async {
+                        self.updateLikeButtonUI(isLiked: false)
                     }
                 }
             }
@@ -376,8 +381,10 @@ class CommentTableViewCell: UITableViewCell {
                     return
                 }
                 
-                if let indexOfComment = viewModel?.commentsInfo?.firstIndex(of: commentInfo) {
-                    viewModel?.commentsInfo?[indexOfComment].likedBy.append(viewModel!.userInfo.id)
+                self.commentInfo?.likedBy.append(viewModel!.userInfo.id)
+                
+                DispatchQueue.main.async {
+                    self.updateLikeButtonUI(isLiked: true)
                 }
             }
         }
@@ -388,7 +395,6 @@ class CommentTableViewCell: UITableViewCell {
             let imageName = isLiked ? "heart.fill" : "heart"
             
             self.likeButtonImageView.image = UIImage(systemName: imageName)?.withTintColor(.customLikeButtonColor)
-            self.likeButtonLabel.textColor = .customLikeButtonColor
         }
     }
     

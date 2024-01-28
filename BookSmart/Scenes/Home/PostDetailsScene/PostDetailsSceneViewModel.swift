@@ -73,6 +73,7 @@ final class PostDetailsSceneViewModel {
     }
     
     // MARK: - Methods for posts
+    
     func toggleLikePost() {
         
         let database = Firestore.firestore()

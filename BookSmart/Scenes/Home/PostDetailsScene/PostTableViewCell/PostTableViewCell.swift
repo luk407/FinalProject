@@ -28,7 +28,7 @@ class PostTableViewCell: UITableViewCell {
     
     private let postContentStackView = UIStackView()
     private let headerLabel = UILabel()
-    private let bodyTextField = UITextField()
+    private let bodyTextView = UITextView()
     
     private let likeCommentShareStackView = UIStackView()
 
@@ -72,7 +72,7 @@ class PostTableViewCell: UITableViewCell {
         usernameLabel.text = nil
         timeLabel.text = nil
         headerLabel.text = nil
-        bodyTextField.text = nil
+        bodyTextView.text = nil
     }
 
     // MARK: - Setup Subviews, Constraints, UI
@@ -87,7 +87,7 @@ class PostTableViewCell: UITableViewCell {
         authorInfoStackView.addArrangedSubview(timeLabel)
         mainStackView.addArrangedSubview(postContentStackView)
         postContentStackView.addArrangedSubview(headerLabel)
-        postContentStackView.addArrangedSubview(bodyTextField)
+        postContentStackView.addArrangedSubview(bodyTextView)
         mainStackView.addArrangedSubview(likeCommentShareStackView)
         likeCommentShareStackView.addArrangedSubview(likeStackView)
         likeCommentShareStackView.addArrangedSubview(commentStackView)
@@ -96,6 +96,7 @@ class PostTableViewCell: UITableViewCell {
     
     private func setupConstraints() {
         setupMainStackViewConstraints()
+        setupAuthorInfoStackViewConstraints()
         setupAuthorImageViewConstraints()
         setupTimeLabelConstraints()
     }
@@ -110,7 +111,7 @@ class PostTableViewCell: UITableViewCell {
         setupTimeLabelUI()
         setupPostContentStackViewUI()
         setupHeaderLabelUI()
-        setupBodyTextFieldUI()
+        setupBodyTextViewUI()
         setupLikeCommentShareStackViewUI()
         setupLikeStackViewUI()
         setupCommentStackViewUI()
@@ -129,7 +130,7 @@ class PostTableViewCell: UITableViewCell {
         usernameLabel.text = userInfo.userName
         timeLabel.text = viewModel.timeAgoString(from: postInfo.postingTime)
         headerLabel.text = postInfo.header
-        bodyTextField.text = postInfo.body
+        bodyTextView.text = postInfo.body
         
         retrieveImage()
         
@@ -144,6 +145,13 @@ class PostTableViewCell: UITableViewCell {
             mainStackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
             mainStackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
             mainStackView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -20),
+        ])
+    }
+    
+    private func setupAuthorInfoStackViewConstraints() {
+        NSLayoutConstraint.activate([
+            authorInfoStackView.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor, constant: 20),
+            authorInfoStackView.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor, constant: -20),
         ])
     }
     
@@ -222,7 +230,6 @@ class PostTableViewCell: UITableViewCell {
     }
     
     private func setupPostContentStackViewUI() {
-        postContentStackView.clipsToBounds = false
         postContentStackView.axis = .vertical
         postContentStackView.spacing = 16
         postContentStackView.alignment = .leading
@@ -234,11 +241,12 @@ class PostTableViewCell: UITableViewCell {
         headerLabel.textColor = .white
     }
     
-    private func setupBodyTextFieldUI() {
-        bodyTextField.font = .systemFont(ofSize: 14)
-        bodyTextField.isEnabled = false
-        bodyTextField.backgroundColor = .clear
-        bodyTextField.textColor = .white
+    private func setupBodyTextViewUI() {
+        bodyTextView.font = .systemFont(ofSize: 14)
+        bodyTextView.isEditable = false
+        bodyTextView.backgroundColor = .clear
+        bodyTextView.textColor = .white
+        bodyTextView.isScrollEnabled = false
     }
 
     private func setupLikeCommentShareStackViewUI() {
@@ -288,6 +296,8 @@ class PostTableViewCell: UITableViewCell {
         
         imageView.contentMode = .scaleAspectFit
         imageView.tintColor = buttonColor
+        imageView.widthAnchor.constraint(equalToConstant: 25).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: 25).isActive = true
         
         label.font = .systemFont(ofSize: 14, weight: .semibold)
         label.textColor = .customAccentColor
