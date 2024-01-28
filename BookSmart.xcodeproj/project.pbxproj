@@ -52,6 +52,7 @@
 		A137260A2B62661F00F1EA6E /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13726092B62661F00F1EA6E /* EmptyStateView.swift */; };
 		A137260C2B64F23E00F1EA6E /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A137260B2B64F23E00F1EA6E /* ImagePicker.swift */; };
 		A137260F2B64FDA300F1EA6E /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = A137260E2B64FDA300F1EA6E /* FirebaseStorage */; };
+		A13726112B663E2500F1EA6E /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13726102B663E2500F1EA6E /* CacheManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -98,6 +99,7 @@
 		A10695402B601886009E5843 /* PostTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostTableViewCell.swift; sourceTree = "<group>"; };
 		A13726092B62661F00F1EA6E /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
 		A137260B2B64F23E00F1EA6E /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
+		A13726102B663E2500F1EA6E /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -142,6 +144,7 @@
 				A10694CB2B56F53F009E5843 /* Extensions */,
 				A10694CC2B56F622009E5843 /* Resources */,
 				A10694972B56EC75009E5843 /* Info.plist */,
+				A13726102B663E2500F1EA6E /* CacheManager.swift */,
 			);
 			path = BookSmart;
 			sourceTree = "<group>";
@@ -472,6 +475,7 @@
 				A10694B12B56F1C3009E5843 /* SignupSceneView.swift in Sources */,
 				A106953E2B5E9941009E5843 /* CommentTableViewCell.swift in Sources */,
 				A10695372B5C1A6E009E5843 /* AddQuoteViewModel.swift in Sources */,
+				A13726112B663E2500F1EA6E /* CacheManager.swift in Sources */,
 				A10694AA2B56F108009E5843 /* LoginSceneView.swift in Sources */,
 				A10695252B5BADA8009E5843 /* CreatePostSceneView.swift in Sources */,
 				A10695352B5C1A15009E5843 /* AddQuoteView.swift in Sources */,

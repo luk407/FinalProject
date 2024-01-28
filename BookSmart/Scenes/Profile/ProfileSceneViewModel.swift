@@ -479,14 +479,15 @@ class ProfileSceneViewModel: ObservableObject {
     private func retrieveImage() {
         fetchedOwnerImage = UIImage(systemName: "person.fill")!
         
-        let database = Firestore.firestore()
-        database.collection("UserInfo").document(profileOwnerInfoID.uuidString).getDocument { document, error in
-            
-            if error == nil && document != nil {
-                
-                let imagePath = document?.data()?["image"] as? String
-                
-                self.fetchImage(imagePath ?? "")
+        if let cachedImage = CacheManager.instance.get(name: profileOwnerInfoID.uuidString) {
+            fetchedOwnerImage = cachedImage
+        } else {
+            let database = Firestore.firestore()
+            database.collection("UserInfo").document(profileOwnerInfoID.uuidString).getDocument { document, error in
+                if error == nil && document != nil {
+                    let imagePath = document?.data()?["image"] as? String
+                    self.fetchImage(imagePath ?? "")
+                }
             }
         }
     }
@@ -496,14 +497,14 @@ class ProfileSceneViewModel: ObservableObject {
         let fileReference = storageReference.child(imagePath)
         
         fileReference.getData(maxSize: 5 * 1024 * 1024) { data, error in
-            if data != nil && error == nil {
-                
-                if let fetchedImage = UIImage(data: data!) {
-                    
-                    DispatchQueue.main.async {
-                        self.fetchedOwnerImage = fetchedImage
-                    }
+            if let data = data, error == nil, let fetchedImage = UIImage(data: data) {
+                print("Image fetched successfully.")
+                DispatchQueue.main.async {
+                    self.fetchedOwnerImage = fetchedImage
+                    CacheManager.instance.add(image: fetchedImage, name: self.profileOwnerInfoID.uuidString)
                 }
+            } else {
+                print("Error fetching image:", error?.localizedDescription ?? "Unknown error")
             }
         }
     }

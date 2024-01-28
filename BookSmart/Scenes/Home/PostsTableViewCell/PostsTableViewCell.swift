@@ -102,7 +102,7 @@ final class PostsTableViewCell: UITableViewCell {
     
     private func setupConstraints() {
         setupMainStackViewConstraints()
-        //setupAuthorInfoStackViewConstraints()
+        setupAuthorInfoStackViewConstraints()
         setupAuthorImageViewConstraints()
         setupSpoilerTagStackViewConstraints()
         setupTimeLabelConstraints()
@@ -218,13 +218,6 @@ final class PostsTableViewCell: UITableViewCell {
             bodyLabel.trailingAnchor.constraint(equalTo: postContentStackView.trailingAnchor),
         ])
     }
-    
-//    private func setupLikeCommentShareStackViewConstrains() {
-//        NSLayoutConstraint.activate([
-//            likeCommentShareStackView.topAnchor.constraint(equalTo: bodyLabel.bottomAnchor, constant: 16),
-//            likeCommentShareStackView.bottomAnchor.constraint(equalTo: mainStackView.bottomAnchor),
-//        ])
-//    }
     
     // MARK: - UI
     
@@ -616,18 +609,20 @@ final class PostsTableViewCell: UITableViewCell {
     }
     
     func retrieveImage() {
-        
         authorImageView.image = UIImage(systemName: "person.fill")
         authorImageView.tintColor = .customAccentColor
         
-        let database = Firestore.firestore()
-        database.collection("UserInfo").document((postInfo?.authorID.uuidString)!).getDocument { document, error in
-            
-            if error == nil && document != nil {
-                
-                let imagePath = document?.data()?["image"] as? String
-                
-                self.fetchImage(imagePath ?? "")
+        guard let imageName = postInfo?.authorID.uuidString else { return }
+        
+        if let cachedImage = CacheManager.instance.get(name: imageName) {
+            authorImageView.image = cachedImage
+        } else {
+            let database = Firestore.firestore()
+            database.collection("UserInfo").document((postInfo?.authorID.uuidString)!).getDocument { document, error in
+                if error == nil && document != nil {
+                    let imagePath = document?.data()?["image"] as? String
+                    self.fetchImage(imagePath ?? "")
+                }
             }
         }
     }
@@ -637,14 +632,14 @@ final class PostsTableViewCell: UITableViewCell {
         let fileReference = storageReference.child(imagePath)
         
         fileReference.getData(maxSize: 5 * 1024 * 1024) { data, error in
-            if data != nil && error == nil {
-                
-                if let fetchedImage = UIImage(data: data!) {
-                    
-                    DispatchQueue.main.async {
-                        self.authorImageView.image = fetchedImage
-                    }
+            if let data = data, error == nil, let fetchedImage = UIImage(data: data) {
+                print("Image fetched successfully.")
+                DispatchQueue.main.async {
+                    self.authorImageView.image = fetchedImage
+                    CacheManager.instance.add(image: fetchedImage, name: self.postInfo?.authorID.uuidString ?? "")
                 }
+            } else {
+                print("Error fetching image:", error?.localizedDescription ?? "Unknown error")
             }
         }
     }
