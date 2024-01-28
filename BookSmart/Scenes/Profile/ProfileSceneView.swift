@@ -41,16 +41,12 @@ struct ProfileSceneView: View {
         .background(Color(uiColor: .customBackgroundColor))
         .padding()
         .onAppear {
-            profileSceneViewModel.fetchOwnerInfo()
-            profileSceneViewModel.retrieveImage()
-            profileSceneViewModel.postsInfoListener()
-            profileSceneViewModel.commentInfoListener()
-            profileSceneViewModel.connectionsInfoListener()
-            profileSceneViewModel.checkProfileOwner()
-            profileSceneViewModel.checkIfInConnections()
+            profileSceneViewModel.viewOnAppear()
         }
         .sheet(isPresented: $profileSceneViewModel.isImagePickerShowing) {
-            ImagePicker(selectedImage: $profileSceneViewModel.selectedImage, isPickerShowing: $profileSceneViewModel.isImagePickerShowing)
+            ImagePicker(
+                selectedImage: $profileSceneViewModel.selectedImage,
+                isPickerShowing: $profileSceneViewModel.isImagePickerShowing)
         }
     }
     
@@ -115,15 +111,16 @@ struct ProfileSceneView: View {
         VStack {
             
             TextField("", text: $profileSceneViewModel.fetchedOwnerDisplayName)
-                .font(.system(size: 20).bold())
+                .font(.system(size: 24).bold())
                 .foregroundStyle(.white)
                 .disabled(!profileSceneViewModel.isEditable)
             
             TextField("", text: $profileSceneViewModel.fetchedOwnerUsername)
-                .font(.system(size: 14))
+                .font(.system(size: 16))
                 .foregroundStyle(.gray)
                 .disabled(!profileSceneViewModel.isEditable)
         }
+        .padding(.horizontal, 20)
     }
     
     private var bioView: some View {
@@ -286,20 +283,20 @@ struct ProfileSceneView: View {
     }
     
     private func connectionListItem(_ connection: UserInfo) -> some View {
-        HStack(spacing: 8) {
+        HStack(spacing: 16) {
             Image(systemName: "person.fill")
                 .resizable()
                 .frame(width: 30, height: 30)
                 .clipShape(Circle())
             
-            VStack(spacing: 8) {
+            VStack(alignment: .leading, spacing: 8) {
                 Text(connection.displayName)
-                    .font(.system(size: 14).bold())
+                    .font(.system(size: 16).bold())
                     .foregroundStyle(.black)
                 
-                Text(connection.userName)
+                Text("@\(connection.userName)")
                     .font(.system(size: 12))
-                    .foregroundStyle(.gray)
+                    .foregroundStyle(.black.opacity(0.8))
             }
         }
         .padding(.vertical, 10)

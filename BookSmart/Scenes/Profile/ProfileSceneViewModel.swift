@@ -47,7 +47,17 @@ class ProfileSceneViewModel: ObservableObject {
     
     // MARK: - Methods
     
-    func checkProfileOwner() {
+    func viewOnAppear() {
+        fetchOwnerInfo()
+        retrieveImage()
+        postsInfoListener()
+        commentInfoListener()
+        connectionsInfoListener()
+        checkProfileOwner()
+        checkIfInConnections()
+    }
+    
+    private func checkProfileOwner() {
         if profileOwnerInfoID == userInfo.id {
             isOwnProfile = true
         } else {
@@ -55,7 +65,7 @@ class ProfileSceneViewModel: ObservableObject {
         }
     }
     
-    func checkIfInConnections() {
+    private func checkIfInConnections() {
         if userInfo.connections.contains(where: { $0.uuidString == profileOwnerInfoID.uuidString }) {
             isInConnections = true
         } else {
@@ -99,6 +109,7 @@ class ProfileSceneViewModel: ObservableObject {
             if selectedImage != nil {
                 uploadImage()
             }
+            updateUserProfile()
         } else {
             isEditable = true
         }
@@ -107,12 +118,12 @@ class ProfileSceneViewModel: ObservableObject {
     // MARK: - Firebase Methods
     
     // MARK: - Posts
-    func fetchOwnerInfo() {
+    private func fetchOwnerInfo() {
         fetchOwnerInfoOnce(with: profileOwnerInfoID) { userInfo, error in
             if let userInfo = userInfo {
                 self.fetchedOwnerInfo = userInfo
                 self.fetchedOwnerDisplayName = userInfo.displayName
-                self.fetchedOwnerUsername = userInfo.userName
+                self.fetchedOwnerUsername = "@\(userInfo.userName)"
                 self.fetchedOwnerBio = userInfo.bio
             } else if let error = error {
                 print("Error fetching connection info: \(error.localizedDescription)")
@@ -120,7 +131,7 @@ class ProfileSceneViewModel: ObservableObject {
         }
     }
     
-    func postsInfoListener() {
+    private func postsInfoListener() {
         
         postsInfo = []
         
@@ -181,7 +192,7 @@ class ProfileSceneViewModel: ObservableObject {
     
     // MARK: - Comment
     
-    func commentInfoListener() {
+    private func commentInfoListener() {
         _ = Firestore.firestore()
             .collection("CommentInfo")
             .whereField("authorID", isEqualTo: profileOwnerInfoID.uuidString)
@@ -234,7 +245,7 @@ class ProfileSceneViewModel: ObservableObject {
     
     // MARK: - Connections
     
-    func connectionsInfoListener() {
+    private func connectionsInfoListener() {
 
         let userDocumentReference = Firestore.firestore().collection("UserInfo").document(profileOwnerInfoID.uuidString)
         
@@ -383,7 +394,7 @@ class ProfileSceneViewModel: ObservableObject {
         return userInfo
     }
     
-    func fetchOwnerInfoOnce(with userID: UUID, completion: @escaping (UserInfo?, Error?) -> Void) {
+    private func fetchOwnerInfoOnce(with userID: UUID, completion: @escaping (UserInfo?, Error?) -> Void) {
         
         let userDocumentReference = Firestore.firestore().collection("UserInfo").document(userID.uuidString)
         
@@ -465,7 +476,8 @@ class ProfileSceneViewModel: ObservableObject {
         }
     }
     
-    func retrieveImage() {
+    private func retrieveImage() {
+        fetchedOwnerImage = UIImage(systemName: "person.fill")!
         
         let database = Firestore.firestore()
         database.collection("UserInfo").document(profileOwnerInfoID.uuidString).getDocument { document, error in
@@ -492,6 +504,25 @@ class ProfileSceneViewModel: ObservableObject {
                         self.fetchedOwnerImage = fetchedImage
                     }
                 }
+            }
+        }
+    }
+    
+    func updateUserProfile() {
+        let database = Firestore.firestore()
+        let userDocumentReference = database.collection("UserInfo").document(userInfo.id.uuidString)
+        
+        var updateData: [String: Any] = [:]
+        
+        updateData["displayName"] = fetchedOwnerDisplayName
+        updateData["username"] = fetchedOwnerUsername.dropFirst()
+        updateData["bio"] = fetchedOwnerBio
+        
+        userDocumentReference.updateData(updateData) { error in
+            if let error = error {
+                print("Error updating user profile: \(error.localizedDescription)")
+            } else {
+                print("User profile updated successfully.")
             }
         }
     }

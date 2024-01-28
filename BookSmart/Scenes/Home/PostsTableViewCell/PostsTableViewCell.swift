@@ -617,7 +617,8 @@ final class PostsTableViewCell: UITableViewCell {
     
     func retrieveImage() {
         
-        authorImageView.image = UIImage(systemName: "person.fill")?.withTintColor(.customAccentColor)
+        authorImageView.image = UIImage(systemName: "person.fill")
+        authorImageView.tintColor = .customAccentColor
         
         let database = Firestore.firestore()
         database.collection("UserInfo").document((postInfo?.authorID.uuidString)!).getDocument { document, error in
