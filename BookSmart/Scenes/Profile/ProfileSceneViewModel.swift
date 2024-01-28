@@ -341,30 +341,16 @@ class ProfileSceneViewModel: ObservableObject {
             let registrationTimestamp = data?["registrationDate"] as? Timestamp,
             let bio = data?["bio"] as? String,
             let image = data?["image"] as? String,
-            let badgesData = data?["badges"] as? [[String: Any]],
+            let badgesData = data?["badges"] as? [[String: String]],
             let postsData = data?["posts"] as? [String],
             let commentsData = data?["comments"] as? [String],
             let likedPostsData = data?["likedPosts"] as? [String],
             let connectionsData = data?["connections"] as? [String],
-            let booksFinishedData = data?["booksFinished"] as? [[String: Any]],
-            let quotesUsedData = data?["quotesUsed"] as? [[String: Any]]
+            let booksFinishedArray = data?["booksFinished"] as? [[String: Any]],
+            let quotesUsedData = data?["quotesUsed"] as? [[String: String]]
         else {
             print("Error parsing UserInfo data")
             return nil
-        }
-
-        // Parse badges
-        var badges: [BadgeInfo] = []
-        for badgeData in badgesData {
-            if
-                let categoryString = badgeData["category"] as? String,
-                let category = BadgeCategory(rawValue: categoryString),
-                let typeString = badgeData["type"] as? String,
-                let type = BadgeType(rawValue: typeString)
-            {
-                let badge = BadgeInfo(category: category, type: type)
-                badges.append(badge)
-            }
         }
 
         let posts = postsData.compactMap { UUID(uuidString: $0) }
@@ -372,16 +358,9 @@ class ProfileSceneViewModel: ObservableObject {
         let likedPosts = likedPostsData.compactMap { UUID(uuidString: $0) }
         let connections = connectionsData.compactMap { UUID(uuidString: $0) }
 
-        // Parse booksFinished and quotesUsed later
-        var booksFinished: [Book] = []
-        for bookData in booksFinishedData {
-
-        }
-
-        var quotesUsed: [Quote] = []
-        for quoteData in quotesUsedData {
-
-        }
+        let badges = self.parseBadgesArray(badgesData)
+        let quotesUsed = parseQuotesArray(quotesUsedData)
+        let booksFinished = parseBooksFinishedArray(booksFinishedArray)
 
         let userInfo = UserInfo(
             id: id,
@@ -403,6 +382,53 @@ class ProfileSceneViewModel: ObservableObject {
         
         return userInfo
     }
+    
+    private func parseBooksFinishedArray(_ booksFinishedArray: [[String: Any]]) -> [Book] {
+        
+        var booksFinished: [Book] = []
+        
+        for bookInfo in booksFinishedArray {
+            if let title = bookInfo["title"] as? String,
+               let authorName = bookInfo["authorName"] as? [String] {
+                let book = Book(title: title, authorName: authorName)
+                booksFinished.append(book)
+            }
+        }
+        
+        return booksFinished
+    }
+    
+    private func parseBadgesArray(_ badgesData: [[String: String]]) -> [BadgeInfo] {
+        
+        var badges: [BadgeInfo] = []
+
+        for badgeInfo in badgesData {
+            if
+                let categoryString = badgeInfo["category"],
+                let category = BadgeCategory(rawValue: categoryString),
+                let typeString = badgeInfo["type"],
+                let type = BadgeType(rawValue: typeString)
+            {
+                let badge = BadgeInfo(category: category, type: type)
+                badges.append(badge)
+            }
+        }
+        return badges
+    }
+    
+    private func parseQuotesArray(_ quotesData: [[String: String]]) -> [Quote] {
+        var quotes: [Quote] = []
+
+        for quoteData in quotesData {
+            if let text = quoteData["text"], let author = quoteData["author"] {
+                let quote = Quote(text: text, author: author)
+                quotes.append(quote)
+            }
+        }
+
+        return quotes
+    }
+
     
     private func fetchOwnerInfoOnce(with userID: UUID, completion: @escaping (UserInfo?, Error?) -> Void) {
         

@@ -178,7 +178,7 @@ class HomeSceneViewModel {
 
         for bookInfo in booksFinishedArray {
             if let title = bookInfo["title"] as? String,
-               let authorName = bookInfo["author"] as? [String] {
+               let authorName = bookInfo["authorName"] as? [String] {
                 let book = Book(title: title, authorName: authorName)
                 booksFinished.append(book)
             }

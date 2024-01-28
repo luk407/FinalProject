@@ -92,13 +92,15 @@ final class LoginSceneViewModel: ObservableObject {
                         let likedPosts = data["likedPosts"] as? [String],
                         let connections = data["connections"] as? [String],
                         let booksFinishedArray = data["booksFinished"] as? [[String: Any]],
-                        let quotesUsed = data["quotesUsed"] as? [Quote]
+                        let quotesUsedData = data["quotesUsed"] as? [[String: String]]
                     else {
                         print("Error parsing user data")
                         continue
                     }
                     
                     let badges = self.parseBadgesArray(badgesData)
+                    let quotesUsed = parseQuotesArray(quotesUsedData)
+                    let booksFinished = parseBooksFinishedArray(booksFinishedArray)
                     
                     let userInfo = UserInfo(
                         id: UUID(uuidString: id) ?? UUID(),
@@ -114,7 +116,7 @@ final class LoginSceneViewModel: ObservableObject {
                         comments: comments.map { UUID(uuidString: $0) ?? UUID() },
                         likedPosts: likedPosts.map { UUID(uuidString: $0) ?? UUID() },
                         connections: connections.map { UUID(uuidString: $0) ?? UUID() },
-                        booksFinished: self.parseBooksFinishedArray(booksFinishedArray),
+                        booksFinished: booksFinished,
                         quotesUsed: quotesUsed
                     )
                     
@@ -132,7 +134,7 @@ final class LoginSceneViewModel: ObservableObject {
         
         for bookInfo in booksFinishedArray {
             if let title = bookInfo["title"] as? String,
-               let authorName = bookInfo["author"] as? [String] {
+               let authorName = bookInfo["authorName"] as? [String] {
                 let book = Book(title: title, authorName: authorName)
                 booksFinished.append(book)
             }
@@ -157,5 +159,18 @@ final class LoginSceneViewModel: ObservableObject {
             }
         }
         return badges
+    }
+    
+    private func parseQuotesArray(_ quotesData: [[String: String]]) -> [Quote] {
+        var quotes: [Quote] = []
+
+        for quoteData in quotesData {
+            if let text = quoteData["text"], let author = quoteData["author"] {
+                let quote = Quote(text: text, author: author)
+                quotes.append(quote)
+            }
+        }
+
+        return quotes
     }
 }

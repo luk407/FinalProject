@@ -61,7 +61,7 @@ final class AnnouncementPostViewModel: ObservableObject {
     
     private func debounceTextChanges() {
         $searchText
-            .debounce(for: 4, scheduler: RunLoop.main)
+            .debounce(for: 2, scheduler: RunLoop.main)
         
             .sink {
                 self.fetchBooksData(with: $0)
@@ -130,14 +130,17 @@ final class AnnouncementPostViewModel: ObservableObject {
     private func updateUserDataOnFirebase(postID: UUID) {
         let database = Firestore.firestore()
         let userReference = database.collection("UserInfo").document(userInfo.id.uuidString)
-
+        
         let updatedPosts = FieldValue.arrayUnion([postID.uuidString])
         
         var updatedFinishedBooks = userInfo.booksFinished
+        
         if selectedAnnouncementType == .finishedBook, let selectedBook = selectedBook {
-            updatedFinishedBooks.append(selectedBook)
+            if !updatedFinishedBooks.contains(selectedBook) {
+                updatedFinishedBooks.append(selectedBook)
+            }
         }
-
+        
         let userData: [String: Any] = [
             "posts": updatedPosts,
             "booksFinished": updatedFinishedBooks.map { book in
@@ -147,7 +150,7 @@ final class AnnouncementPostViewModel: ObservableObject {
                 ]
             }
         ]
-
+        
         userReference.updateData(userData) { error in
             if let error = error {
                 print("Error updating user data on Firebase: \(error.localizedDescription)")

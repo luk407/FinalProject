@@ -556,13 +556,14 @@ final class PostsTableViewCell: UITableViewCell {
                         let likedPosts = data["likedPosts"] as? [String],
                         let connections = data["connections"] as? [String],
                         let booksFinishedArray = data["booksFinished"] as? [[String: Any]],
-                        let quotesUsed = data["quotesUsed"] as? [Quote]
+                        let quotesUsedData = data["quotesUsed"] as? [[String: String]]
                     else {
                         print("Error parsing user data")
                         return
                     }
                     
                     let badges = self.parseBadgesArray(badgesData)
+                    let quotesUsed = self.parseQuotesArray(quotesUsedData)
                     
                     let userInfo = UserInfo(
                         id: UUID(uuidString: id) ?? UUID(),
@@ -615,6 +616,19 @@ final class PostsTableViewCell: UITableViewCell {
             }
         }
         return badges
+    }
+    
+    private func parseQuotesArray(_ quotesData: [[String: String]]) -> [Quote] {
+        var quotes: [Quote] = []
+
+        for quoteData in quotesData {
+            if let text = quoteData["text"], let author = quoteData["author"] {
+                let quote = Quote(text: text, author: author)
+                quotes.append(quote)
+            }
+        }
+
+        return quotes
     }
     
     func retrieveImage() {

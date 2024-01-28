@@ -73,6 +73,7 @@ struct StoryPostView: View {
             .onChange(of: selectedQuote) { newQuote in
                 if let quote = newQuote {
                     viewModel.bodyText += "\(quote.text) - \(quote.author)."
+                    viewModel.addQuote(quote)
                     selectedQuote = nil
                 }
             }

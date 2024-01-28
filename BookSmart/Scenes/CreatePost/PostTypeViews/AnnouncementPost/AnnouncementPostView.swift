@@ -63,11 +63,11 @@ struct AnnouncementPostView: View {
             case .none:
                 EmptyView()
             case .startedBook:
-                Text("\(viewModel.userInfo.displayName) has just started reading a book \"\(viewModel.selectedBook?.title ?? "")\"")
+                Text(viewModel.headerTextForStart)
                     .foregroundStyle(.white)
                     .font(.system(size: 20, weight: .bold))
             case .finishedBook:
-                Text("\(viewModel.userInfo.displayName) has just finished reading a book \"\(viewModel.selectedBook?.title ?? "")\"")
+                Text(viewModel.headerTextForFinish)
                     .foregroundStyle(.white)
                     .font(.system(size: 20, weight: .bold))
             }

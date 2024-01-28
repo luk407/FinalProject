@@ -16,6 +16,7 @@ final class StoryPostViewModel: ObservableObject {
     @Published var bodyText: String = ""
     @Published var isSpoilersAllowed: Bool = false
     @Published var isAddPostSheetPresented: Bool = false
+    @Published var selectedQuotes: [Quote] = []
     
     var userInfo: UserInfo
     
@@ -26,6 +27,10 @@ final class StoryPostViewModel: ObservableObject {
     }
     
     // MARK: - Methods
+    
+    func addQuote(_ quote: Quote) {
+        selectedQuotes.append(quote)
+    }
     
     func addPost() {
         let newPost = PostInfo(
@@ -43,6 +48,8 @@ final class StoryPostViewModel: ObservableObject {
         
         addPostToFirebase(post: newPost)
         
+        addQuotesToFirebase(quotes: selectedQuotes)
+
         updateUserDataOnFirebase(postID: newPost.id)
     }
     
@@ -64,6 +71,24 @@ final class StoryPostViewModel: ObservableObject {
         ]
         
         postReference.setData(postData)
+    }
+    
+    private func addQuotesToFirebase(quotes: [Quote]) {
+        let database = Firestore.firestore()
+        let userReference = database.collection("UserInfo").document(userInfo.id.uuidString)
+        
+        let quotesData: [[String: Any]] = quotes.map { quote in
+            return [
+                "text": quote.text,
+                "author": quote.author
+            ]
+        }
+        
+        userReference.updateData(["quotesUsed": FieldValue.arrayUnion(quotesData)]) { error in
+            if let error = error {
+                print("Error updating user quotes on Firebase: \(error.localizedDescription)")
+            }
+        }
     }
     
     private func updateUserDataOnFirebase(postID: UUID) {

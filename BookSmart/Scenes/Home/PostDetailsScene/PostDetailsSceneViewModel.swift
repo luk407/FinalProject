@@ -267,6 +267,7 @@ final class PostDetailsSceneViewModel {
             
             print("Comment added to Firebase successfully")
             
+            self?.updateUserDataWithNewCommentID(commentID: newComment.id)
         }
         
         let commentReference = database.collection("CommentInfo").document(newComment.id.uuidString)
@@ -283,6 +284,21 @@ final class PostDetailsSceneViewModel {
         commentReference.setData(commentData)
         
         delegate?.postUpdated()
+    }
+    
+    private func updateUserDataWithNewCommentID(commentID: UUID) {
+        let database = Firestore.firestore()
+        let userReference = database.collection("UserInfo").document(userInfo.id.uuidString)
+        
+        userReference.updateData([
+            "comments": FieldValue.arrayUnion([commentID.uuidString])
+        ]) { error in
+            if let error = error {
+                print("Error updating user data with new comment ID: \(error.localizedDescription)")
+            } else {
+                print("User data updated with new comment ID")
+            }
+        }
     }
     
     func getCommentInfo(for commentID: UUID) -> CommentInfo? {
