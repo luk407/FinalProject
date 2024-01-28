@@ -132,7 +132,7 @@ final class PostsTableViewCell: UITableViewCell {
     func configureCell() {
 
         DispatchQueue.main.async { [self] in
-            getAuthorInfo(with: postInfo!.authorID) { [self] authorInfo in
+            viewModel?.getAuthorInfo(with: postInfo!.authorID) { [self] authorInfo in
                 self.authorInfo = authorInfo
                 self.retrieveImage()
                 
@@ -141,7 +141,7 @@ final class PostsTableViewCell: UITableViewCell {
             }
         }
         
-        let timeAgo = timeAgoString(from: postInfo?.postingTime ?? Date())
+        let timeAgo = viewModel?.timeAgoString(from: postInfo?.postingTime ?? Date())
         
         timeLabel.text = timeAgo
         headerLabel.text = postInfo?.header
@@ -372,26 +372,6 @@ final class PostsTableViewCell: UITableViewCell {
     
     // MARK: - Private Methods
     
-    private func timeAgoString(from date: Date) -> String {
-        let currentDate = Date()
-        let calendar = Calendar.current
-        let components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: date, to: currentDate)
-        
-        if let years = components.year, years > 0 {
-            return "\(years)y"
-        } else if let months = components.month, months > 0 {
-            return "\(months)m"
-        } else if let days = components.day, days > 0 {
-            return "\(days)d"
-        } else if let hours = components.hour, hours > 0 {
-            return "\(hours)h"
-        } else if let minutes = components.minute, minutes > 0 {
-            return "\(minutes)m"
-        } else {
-            return "Now"
-        }
-    }
-    
     @objc private func authorImageTapped(sender: UITapGestureRecognizer) {
 
         if sender.state == .ended {
@@ -518,117 +498,6 @@ final class PostsTableViewCell: UITableViewCell {
             activityViewController.popoverPresentationController?.sourceView = self
             viewController.present(activityViewController, animated: true, completion: nil)
         }
-    }
-    
-    func getAuthorInfo(with authorID: UserInfo.ID, completion: @escaping (UserInfo?) -> Void) {
-
-        let database = Firestore.firestore()
-        let reference = database.collection("UserInfo").whereField("id", isEqualTo: authorID.uuidString)
-
-            reference.getDocuments { snapshot, error in
-            
-            if let error = error {
-                print("Error fetching user information: \(error.localizedDescription)")
-                completion(nil)
-                return
-            }
-            
-            guard let snapshot = snapshot else {
-                completion(nil)
-                return
-            }
-                
-                if let document = snapshot.documents.first {
-                    let data = document.data()
-                    
-                    guard
-                        let id = data["id"] as? String,
-                        let username = data["username"] as? String,
-                        let email = data["email"] as? String,
-                        let password = data["password"] as? String,
-                        let displayName = data["displayName"] as? String,
-                        let registrationDateTimestamp = data["registrationDate"] as? Timestamp,
-                        let bio = data["bio"] as? String,
-                        let image = data["image"] as? String,
-                        let badgesData = data["badges"] as? [[String: String]],
-                        let posts = data["posts"] as? [String],
-                        let comments = data["comments"] as? [String],
-                        let likedPosts = data["likedPosts"] as? [String],
-                        let connections = data["connections"] as? [String],
-                        let booksFinishedArray = data["booksFinished"] as? [[String: Any]],
-                        let quotesUsedData = data["quotesUsed"] as? [[String: String]]
-                    else {
-                        print("Error parsing user data")
-                        return
-                    }
-                    
-                    let badges = self.parseBadgesArray(badgesData)
-                    let quotesUsed = self.parseQuotesArray(quotesUsedData)
-                    
-                    let userInfo = UserInfo(
-                        id: UUID(uuidString: id) ?? UUID(),
-                        userName: username,
-                        email: email,
-                        password: password,
-                        displayName: displayName,
-                        registrationDate: registrationDateTimestamp.dateValue(),
-                        bio: bio,
-                        image: image,
-                        badges: badges,
-                        posts: posts.map { UUID(uuidString: $0) ?? UUID() },
-                        comments: comments.map { UUID(uuidString: $0) ?? UUID() },
-                        likedPosts: likedPosts.map { UUID(uuidString: $0) ?? UUID() },
-                        connections: connections.map { UUID(uuidString: $0) ?? UUID() },
-                        booksFinished: self.parseBooksFinishedArray(booksFinishedArray),
-                        quotesUsed: quotesUsed
-                    )
-                    completion(userInfo)
-                }
-        }
-    }
-    
-    private func parseBooksFinishedArray(_ booksFinishedArray: [[String: Any]]) -> [Book] {
-        var booksFinished: [Book] = []
-        
-        for bookInfo in booksFinishedArray {
-            if let title = bookInfo["title"] as? String,
-               let authorName = bookInfo["author"] as? [String] {
-                let book = Book(title: title, authorName: authorName)
-                booksFinished.append(book)
-            }
-        }
-        return booksFinished
-    }
-    
-    private func parseBadgesArray(_ badgesData: [[String: String]]) -> [BadgeInfo] {
-        
-        var badges: [BadgeInfo] = []
-
-        for badgeInfo in badgesData {
-            if
-                let categoryString = badgeInfo["category"],
-                let category = BadgeCategory(rawValue: categoryString),
-                let typeString = badgeInfo["type"],
-                let type = BadgeType(rawValue: typeString)
-            {
-                let badge = BadgeInfo(category: category, type: type)
-                badges.append(badge)
-            }
-        }
-        return badges
-    }
-    
-    private func parseQuotesArray(_ quotesData: [[String: String]]) -> [Quote] {
-        var quotes: [Quote] = []
-
-        for quoteData in quotesData {
-            if let text = quoteData["text"], let author = quoteData["author"] {
-                let quote = Quote(text: text, author: author)
-                quotes.append(quote)
-            }
-        }
-
-        return quotes
     }
     
     func retrieveImage() {
