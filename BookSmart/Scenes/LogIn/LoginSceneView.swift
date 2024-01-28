@@ -253,11 +253,7 @@ final class LoginSceneView: UIViewController {
             //change after finishing project
             emailTextField.text = "luk@gmail.com"
             passwordTextField.text = "Luka!2345"            
-        } else {
-//            loginSceneViewModel.loginToFirebase(
-//                email: emailTextField.text ?? "",
-//                password: passwordTextField.text ?? "")
-            
+        } else {  
             loginSceneViewModel.loginAndNavigate(
                 email: emailTextField.text ?? "",
                 password: passwordTextField.text ?? "")

@@ -167,7 +167,6 @@ final class PostDetailsSceneView: UIViewController {
         viewModel.submitCommentButtonTapped(commentText: typeCommentTextView.text)
         typeCommentTextView.text = ""
         typeCommentTextView.resignFirstResponder()
-        
     }
 }
 
@@ -206,14 +205,12 @@ extension PostDetailsSceneView: UITableViewDataSource {
 }
 
 extension PostDetailsSceneView: UITableViewDelegate {
-    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         UITableView.automaticDimension
     }
 }
 
 extension PostDetailsSceneView: PostDetailsSceneViewDelegate {
-    
     func postUpdated() {
         tableView.reloadData()
     }

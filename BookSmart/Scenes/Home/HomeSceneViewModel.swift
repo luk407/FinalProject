@@ -111,9 +111,9 @@ class HomeSceneViewModel {
     
     private func userInfoListener() {
         let database = Firestore.firestore()
-        let reference = database.collection("UserInfo")
-
-        reference.addSnapshotListener(includeMetadataChanges: true) { [weak self] snapshot, error in
+        let reference = database.collection("UserInfo").document(userInfo.id.uuidString)
+        
+        reference.addSnapshotListener(includeMetadataChanges: true) { [weak self] documentSnapshot, error in
             
             guard let self = self else { return }
             
@@ -122,53 +122,51 @@ class HomeSceneViewModel {
                 return
             }
             
-            guard let snapshot = snapshot else {
+            guard let document = documentSnapshot, document.exists else {
                 return
             }
             
-            for document in snapshot.documents {
-                let data = document.data()
-                
-                guard
-                    let id = data["id"] as? String,
-                    let username = data["username"] as? String,
-                    let email = data["email"] as? String,
-                    let password = data["password"] as? String,
-                    let displayName = data["displayName"] as? String,
-                    let registrationDateTimestamp = data["registrationDate"] as? Timestamp,
-                    let bio = data["bio"] as? String,
-                    let image = data["image"] as? String,
-                    let badges = data["badges"] as? [BadgeInfo],
-                    let posts = data["posts"] as? [String],
-                    let comments = data["comments"] as? [String],
-                    let likedPosts = data["likedPosts"] as? [String],
-                    let connections = data["connections"] as? [String],
-                    let booksFinishedArray = data["booksFinished"] as? [[String: Any]],
-                    let quotesUsed = data["quotesUsed"] as? [Quote]
-                else {
-                    print("Error parsing user data")
-                    continue
-                }
-                
-                let userInfo = UserInfo(
-                    id: UUID(uuidString: id) ?? UUID(),
-                    userName: username,
-                    email: email,
-                    password: password,
-                    displayName: displayName,
-                    registrationDate: registrationDateTimestamp.dateValue(),
-                    bio: bio,
-                    image: image,
-                    badges: badges,
-                    posts: posts.map { UUID(uuidString: $0) ?? UUID() },
-                    comments: comments.map { UUID(uuidString: $0) ?? UUID() },
-                    likedPosts: likedPosts.map { UUID(uuidString: $0) ?? UUID() },
-                    connections: connections.map { UUID(uuidString: $0) ?? UUID() },
-                    booksFinished: self.parseBooksFinishedArray(booksFinishedArray),
-                    quotesUsed: quotesUsed
-                )
-                self.userInfo = userInfo
+            let data = document.data()
+            
+            guard
+                let id = data?["id"] as? String,
+                let username = data?["username"] as? String,
+                let email = data?["email"] as? String,
+                let password = data?["password"] as? String,
+                let displayName = data?["displayName"] as? String,
+                let registrationDateTimestamp = data?["registrationDate"] as? Timestamp,
+                let bio = data?["bio"] as? String,
+                let image = data?["image"] as? String,
+                let badges = data?["badges"] as? [BadgeInfo],
+                let posts = data?["posts"] as? [String],
+                let comments = data?["comments"] as? [String],
+                let likedPosts = data?["likedPosts"] as? [String],
+                let connections = data?["connections"] as? [String],
+                let booksFinishedArray = data?["booksFinished"] as? [[String: Any]],
+                let quotesUsed = data?["quotesUsed"] as? [Quote]
+            else {
+                print("Error parsing user data")
+                return
             }
+            
+            let userInfo = UserInfo(
+                id: UUID(uuidString: id) ?? UUID(),
+                userName: username,
+                email: email,
+                password: password,
+                displayName: displayName,
+                registrationDate: registrationDateTimestamp.dateValue(),
+                bio: bio,
+                image: image,
+                badges: badges,
+                posts: posts.map { UUID(uuidString: $0) ?? UUID() },
+                comments: comments.map { UUID(uuidString: $0) ?? UUID() },
+                likedPosts: likedPosts.map { UUID(uuidString: $0) ?? UUID() },
+                connections: connections.map { UUID(uuidString: $0) ?? UUID() },
+                booksFinished: parseBooksFinishedArray(booksFinishedArray),
+                quotesUsed: quotesUsed
+            )
+            self.userInfo = userInfo
         }
         dispatchGroup.leave()
     }

@@ -136,21 +136,13 @@ final class PostsTableViewCell: UITableViewCell {
                 self.authorInfo = authorInfo
                 self.retrieveImage()
                 
-                let timeAgo = timeAgoString(from: postInfo?.postingTime ?? Date())
-                
                 nameLabel.text = "\(authorInfo?.displayName ?? "")"
-                usernameLabel.text = "\(authorInfo?.userName ?? "")"
-                timeLabel.text = timeAgo
-                headerLabel.text = postInfo?.header
-                bodyLabel.text = postInfo?.body
-                setupSpoilerTagUI()
+                usernameLabel.text = "@\(authorInfo?.userName ?? "")"
             }
         }
         
         let timeAgo = timeAgoString(from: postInfo?.postingTime ?? Date())
         
-        nameLabel.text = "\(authorInfo?.displayName ?? "")"
-        usernameLabel.text = "\(authorInfo?.userName ?? "")"
         timeLabel.text = timeAgo
         headerLabel.text = postInfo?.header
         bodyLabel.text = postInfo?.body
@@ -159,10 +151,7 @@ final class PostsTableViewCell: UITableViewCell {
         self.backgroundColor = .clear
         self.selectionStyle = .none
         
-        //DispatchQueue.main.async {
         self.updateLikeButtonUI(isLiked: isLiked ?? false)
-        //}
-
     }
     
     // MARK: - Constraints
@@ -178,8 +167,8 @@ final class PostsTableViewCell: UITableViewCell {
     
     private func setupAuthorInfoStackViewConstraints() {
         NSLayoutConstraint.activate([
-            authorInfoStackView.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor),
-            authorInfoStackView.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor),
+            authorInfoStackView.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor, constant: 10),
+            authorInfoStackView.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor, constant: -10),
         ])
     }
     
@@ -274,7 +263,7 @@ final class PostsTableViewCell: UITableViewCell {
     
     private func setupSpoilerTagUI() {
         spoilerTagStackView.customize(
-            backgroundColor: postInfo?.spoilersAllowed ?? false ? .red : .green,
+            backgroundColor: .customAccentColor,
             radiusSize: 8,
             borderColor: .clear,
             borderWidth: 0)
@@ -647,13 +636,15 @@ final class PostsTableViewCell: UITableViewCell {
     private func toggleLikePost() {
         
         guard let postInfo else { return }
+        
+        guard let viewModel else { return }
  
         let database = Firestore.firestore()
         
-        let userReference = database.collection("UserInfo").document(viewModel?.userInfo.id.uuidString ?? "")
+        let userReference = database.collection("UserInfo").document(viewModel.userInfo.id.uuidString)
         let postReference = database.collection("PostInfo").document(postInfo.id.uuidString)
         
-        let isLiked = viewModel!.userInfo.likedPosts.contains(postInfo.id)
+        let isLiked = viewModel.userInfo.likedPosts.contains(postInfo.id)
         
         if isLiked {
             userReference.updateData([
@@ -665,14 +656,14 @@ final class PostsTableViewCell: UITableViewCell {
                 }
                 
                 postReference.updateData([
-                    "likedBy": FieldValue.arrayRemove([viewModel!.userInfo.id.uuidString])
+                    "likedBy": FieldValue.arrayRemove([viewModel.userInfo.id.uuidString])
                 ]) { error in
                     if let error = error {
                         print(error.localizedDescription)
                         return
                     }
                 }
-                updateLikeButtonUI(isLiked: viewModel?.userInfo.likedPosts.contains(postInfo.id) ?? false)
+                updateLikeButtonUI(isLiked: viewModel.userInfo.likedPosts.contains(postInfo.id))
             }
         } else {
             userReference.updateData([
@@ -684,14 +675,14 @@ final class PostsTableViewCell: UITableViewCell {
                 }
                 
                 postReference.updateData([
-                    "likedBy": FieldValue.arrayUnion([viewModel!.userInfo.id.uuidString])
+                    "likedBy": FieldValue.arrayUnion([viewModel.userInfo.id.uuidString])
                 ]) {  error in
                     if let error = error {
                         print(error.localizedDescription)
                         return
                     }
                 }
-                updateLikeButtonUI(isLiked: viewModel?.userInfo.likedPosts.contains(postInfo.id) ?? true)
+                updateLikeButtonUI(isLiked: viewModel.userInfo.likedPosts.contains(postInfo.id))
             }
         }
     }

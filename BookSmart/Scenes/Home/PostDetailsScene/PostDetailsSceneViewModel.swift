@@ -243,7 +243,6 @@ final class PostDetailsSceneViewModel {
         }
     }
     
-    
     func submitCommentButtonTapped(commentText: String) {
         let database = Firestore.firestore()
         let postReference = database.collection("PostInfo").document(postInfo.id.uuidString)
@@ -268,7 +267,6 @@ final class PostDetailsSceneViewModel {
             
             print("Comment added to Firebase successfully")
             
-            //            self.fetchPostsInfo()
         }
         
         let commentReference = database.collection("CommentInfo").document(newComment.id.uuidString)
@@ -283,6 +281,8 @@ final class PostDetailsSceneViewModel {
         ]
         
         commentReference.setData(commentData)
+        
+        delegate?.postUpdated()
     }
     
     func getCommentInfo(for commentID: UUID) -> CommentInfo? {
@@ -368,7 +368,6 @@ final class PostDetailsSceneViewModel {
         }
         return booksFinished
     }
-    
 }
 
 
