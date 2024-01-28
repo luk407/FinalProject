@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 import Firebase
 import FirebaseStorage
 
@@ -44,6 +45,8 @@ class PostTableViewCell: UITableViewCell {
     private let shareButtonLabel = UILabel()
     
     var viewModel: PostDetailsSceneViewModel?
+    
+    weak var navigationController: UINavigationController?
 
     // MARK: - Init
     
@@ -302,7 +305,11 @@ class PostTableViewCell: UITableViewCell {
     
     @objc private func authorImageTapped(sender: UITapGestureRecognizer) {
         
-    //go to profile page
+        let profileSceneView = UIHostingController(rootView: ProfileSceneView(
+            profileSceneViewModel: ProfileSceneViewModel(
+                profileOwnerInfoID: viewModel!.postInfo.authorID,
+                userInfo: viewModel!.userInfo)).background(Color(uiColor: .customBackgroundColor)))
+        navigationController?.pushViewController(profileSceneView, animated: true)
         
         if sender.state == .ended {
             UIView.animate(withDuration: 0.1, animations: {

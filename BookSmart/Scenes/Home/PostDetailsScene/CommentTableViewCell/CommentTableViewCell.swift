@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 import Firebase
 import FirebaseStorage
 
@@ -39,6 +40,8 @@ class CommentTableViewCell: UITableViewCell {
     var commentInfo: CommentInfo?
     
     var authorInfo: UserInfo?
+    
+    weak var navigationController: UINavigationController?
     
     // MARK: - Init
     
@@ -276,7 +279,12 @@ class CommentTableViewCell: UITableViewCell {
     // MARK: - Button Methods
     @objc private func authorImageOrNameTapped(sender: UITapGestureRecognizer) {
         
-        // go to profile page
+        let profileSceneView = UIHostingController(rootView: ProfileSceneView(
+            profileSceneViewModel: ProfileSceneViewModel(
+                profileOwnerInfoID: authorInfo!.id,
+                userInfo: viewModel!.userInfo)).background(Color(uiColor: .customBackgroundColor)))
+        navigationController?.pushViewController(profileSceneView, animated: true)
+        
         if sender.state == .ended {
             UIView.animate(withDuration: 0.1, animations: {
                 self.authorImageView.alpha = 0.2
@@ -287,7 +295,6 @@ class CommentTableViewCell: UITableViewCell {
                     self.nameLabel.alpha = 1.0
                 }
             }
-            print("image tapped, go to profile page")
         }
     }
     

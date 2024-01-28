@@ -181,6 +181,7 @@ extension PostDetailsSceneView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.row == 0 {
             if let cell = tableView.dequeueReusableCell(withIdentifier: "postCell", for: indexPath) as? PostTableViewCell {
+                cell.navigationController = navigationController
                 cell.configureCell(viewModel: viewModel, userInfo: viewModel.userInfo, postInfo: viewModel.postInfo)
                 cell.backgroundColor = .customBackgroundColor
                 cell.contentView.isUserInteractionEnabled = false
@@ -191,6 +192,7 @@ extension PostDetailsSceneView: UITableViewDataSource {
         } else {
             if let cell = tableView.dequeueReusableCell(withIdentifier: "commentCell", for: indexPath) as? CommentTableViewCell {
                 guard let commentInfo = viewModel.commentsInfo?[indexPath.row - 1] else { return UITableViewCell() }
+                cell.navigationController = navigationController
                 cell.configureCell(
                     viewModel: viewModel,
                     commentInfo: commentInfo)
