@@ -51,7 +51,9 @@ class TabBarController: UITabBarController {
             rootView: CreatePostSceneView(
                 userInfo: userInfo))
         
-        let leaderboardViewController = LeaderboardSceneView()
+        let leaderboardViewController = LeaderboardSceneView(
+            leaderboardSceneViewModel: LeaderboardSceneViewModel(
+                userInfo: userInfo))
         
         let profileViewController = UIHostingController(
             rootView: ProfileSceneView(
