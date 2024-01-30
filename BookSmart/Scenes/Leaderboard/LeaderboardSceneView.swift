@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 final class LeaderboardSceneView: UIViewController {
     
@@ -24,6 +25,11 @@ final class LeaderboardSceneView: UIViewController {
             booksReadCount: leaderboardSceneViewModel.fetchedUsersInfo[0].booksFinished.count,
             shadowColor: .customGoldColor
         )
+        
+        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(navigateToProfile(_:)))
+        stackView.addGestureRecognizer(gestureRecognizer)
+        stackView.isUserInteractionEnabled = true
+        
         return stackView
     }()
 
@@ -36,6 +42,11 @@ final class LeaderboardSceneView: UIViewController {
             booksReadCount: leaderboardSceneViewModel.fetchedUsersInfo[1].booksFinished.count,
             shadowColor: .customSilverColor
         )
+        
+        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(navigateToProfile(_:)))
+        stackView.addGestureRecognizer(gestureRecognizer)
+        stackView.isUserInteractionEnabled = true
+        
         return stackView
     }()
     
@@ -48,6 +59,11 @@ final class LeaderboardSceneView: UIViewController {
             booksReadCount: leaderboardSceneViewModel.fetchedUsersInfo[2].booksFinished.count,
             shadowColor: .customBronzeColor
         )
+        
+        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(navigateToProfile(_:)))
+        stackView.addGestureRecognizer(gestureRecognizer)
+        stackView.isUserInteractionEnabled = true
+        
         return stackView
     }()
 
@@ -150,6 +166,34 @@ final class LeaderboardSceneView: UIViewController {
         leaderboardTableView.estimatedRowHeight = 50
         leaderboardTableView.register(LeaderboardTableViewCell.self, forCellReuseIdentifier: "userCell")
     }
+    
+    // MARK: - Methods
+
+    @objc private func navigateToProfile(_ gestureRecognizer: UITapGestureRecognizer) {
+        guard let tappedView = gestureRecognizer.view else { return }
+
+        var index: Int
+        
+        if tappedView == firstPlaceStackView {
+            index = 0
+        } else if tappedView == secondPlaceStackView {
+            index = 1
+        } else if tappedView == thirdPlaceStackView {
+            index = 2
+        } else {
+            return
+        }
+
+        navigateToProfile(index: index)
+    }
+
+    private func navigateToProfile(index: Int) {
+        let profileSceneView = UIHostingController(rootView: ProfileSceneView(
+            profileSceneViewModel: ProfileSceneViewModel(
+                profileOwnerInfoID: leaderboardSceneViewModel.fetchedUsersInfo[index].id,
+                userInfo: leaderboardSceneViewModel.userInfo)).background(Color(uiColor: .customBackgroundColor)))
+        navigationController?.pushViewController(profileSceneView, animated: true)
+    }
 }
 
 // MARK: - Extensions
@@ -162,7 +206,7 @@ extension LeaderboardSceneView: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let userInfo = leaderboardSceneViewModel.fetchedUsersInfo[indexPath.row + 2]
-        var cell = leaderboardTableView.dequeueReusableCell(withIdentifier: "userCell", for: indexPath) as! LeaderboardTableViewCell
+        let cell = leaderboardTableView.dequeueReusableCell(withIdentifier: "userCell", for: indexPath) as! LeaderboardTableViewCell
         let userImage = leaderboardSceneViewModel.getImage(userID: userInfo.id) ?? UIImage(systemName: "person.fill")!
         cell.backgroundColor = .clear
         cell.selectionStyle = .none
@@ -177,6 +221,14 @@ extension LeaderboardSceneView: UITableViewDataSource {
 extension LeaderboardSceneView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         UITableView.automaticDimension
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let profileSceneView = UIHostingController(rootView: ProfileSceneView(
+            profileSceneViewModel: ProfileSceneViewModel(
+                profileOwnerInfoID: leaderboardSceneViewModel.fetchedUsersInfo[indexPath.row + 2].id,
+                userInfo: leaderboardSceneViewModel.userInfo)).background(Color(uiColor: .customBackgroundColor)))
+        navigationController?.pushViewController(profileSceneView, animated: true)
     }
 }
 
