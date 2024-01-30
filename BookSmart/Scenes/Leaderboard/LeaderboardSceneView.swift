@@ -51,7 +51,7 @@ final class LeaderboardSceneView: UIViewController {
         return stackView
     }()
 
-    private let leaderboardTableView = UITableView()
+    private let leaderboardTableView = UITableView(frame: .zero, style: .grouped)
     
     var leaderboardSceneViewModel: LeaderboardSceneViewModel
     
@@ -79,6 +79,9 @@ final class LeaderboardSceneView: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         leaderboardSceneViewModel.retrieveAllImages() {
+            DispatchQueue.main.async {
+                self.leaderboardTableView.reloadData()
+            }
             print("finished fetching")
         }
     }
@@ -102,9 +105,6 @@ final class LeaderboardSceneView: UIViewController {
     private func setupUI() {
         setupMainStackViewUI()
         setupPodiumStackViewUI()
-//        setupFirstPlaceStackViewUI()
-//        setupSecondPlaceStackViewUI()
-//        setupThirdPlaceStackViewUI()
         setupLeaderBoardTableViewUI()
     }
     
@@ -140,52 +140,6 @@ final class LeaderboardSceneView: UIViewController {
         podiumStackView.alignment = .lastBaseline
     }
     
-//    private func setupFirstPlaceStackViewUI() {
-//        firstPlaceStackView = LeaderboardPodiumItemStackView(
-//            place: 1, 
-//            userImage: UIImage(systemName: "person.fill")!,
-//            username: leaderboardSceneViewModel.fetchedUsersInfo[0].userName,
-//            booksReadCount: leaderboardSceneViewModel.fetchedUsersInfo[0].booksFinished.count,
-//            shadowColor: .customGoldColor)
-//        
-//        firstPlaceStackView.setUserImageUpdateHandler { [weak self] image in
-//            guard let self = self else { return }
-//            self.leaderboardSceneViewModel.delegate?.updateUserImage(userIndex: 0, userImage: image!)
-//        }
-//        
-//        leaderboardSceneViewModel.retrieveImage(userIndex: 0)
-//    }
-//    
-//    private func setupSecondPlaceStackViewUI() {
-//        secondPlaceStackView = LeaderboardPodiumItemStackView(
-//            place: 2,
-//            userImage: UIImage(systemName: "person.fill")!,
-//            username: leaderboardSceneViewModel.fetchedUsersInfo[1].userName,
-//            booksReadCount: leaderboardSceneViewModel.fetchedUsersInfo[1].booksFinished.count,
-//            shadowColor: .customSilverColor)
-//        
-//        secondPlaceStackView.setUserImageUpdateHandler { [weak self] image in
-//            guard let self = self else { return }
-//            self.leaderboardSceneViewModel.delegate?.updateUserImage(userIndex: 1, userImage: image!)
-//        }
-//        leaderboardSceneViewModel.retrieveImage(userIndex: 1)
-//    }
-//    
-//    private func setupThirdPlaceStackViewUI() {
-//        thirdPlaceStackView = LeaderboardPodiumItemStackView(
-//            place: 3,
-//            userImage: UIImage(systemName: "person.fill")!,
-//            username: leaderboardSceneViewModel.fetchedUsersInfo[2].userName,
-//            booksReadCount: leaderboardSceneViewModel.fetchedUsersInfo[2].booksFinished.count,
-//            shadowColor: .customBronzeColor)
-//        
-//        thirdPlaceStackView.setUserImageUpdateHandler { [weak self] image in
-//            guard let self = self else { return }
-//            self.leaderboardSceneViewModel.delegate?.updateUserImage(userIndex: 2, userImage: image!)
-//        }
-//        leaderboardSceneViewModel.retrieveImage(userIndex: 2)
-//    }
-//
     private func setupLeaderBoardTableViewUI() {
         leaderboardTableView.translatesAutoresizingMaskIntoConstraints = false
         leaderboardTableView.backgroundColor = .clear
@@ -208,18 +162,15 @@ extension LeaderboardSceneView: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let userInfo = leaderboardSceneViewModel.fetchedUsersInfo[indexPath.row + 2]
-        if let cell = leaderboardTableView.dequeueReusableCell(withIdentifier: "userCell", for: indexPath) as? LeaderboardTableViewCell {
-            guard let userImage = leaderboardSceneViewModel.getImage(userID: userInfo.id) else { return UITableViewCell()}
-            cell.backgroundColor = .clear
-            cell.selectionStyle = .none
-            cell.configureCell(userInfo: userInfo, 
-                               place: indexPath.row + 4,
-                               userImage: userImage)
-            print("got the image")
-            return cell
-        } else {
-            return UITableViewCell()
-        }
+        var cell = leaderboardTableView.dequeueReusableCell(withIdentifier: "userCell", for: indexPath) as! LeaderboardTableViewCell
+        let userImage = leaderboardSceneViewModel.getImage(userID: userInfo.id) ?? UIImage(systemName: "person.fill")!
+        cell.backgroundColor = .clear
+        cell.selectionStyle = .none
+        cell.configureCell(userInfo: userInfo,
+                           place: indexPath.row + 4,
+                           userImage: userImage)
+        print("got the image")
+        return cell
     }
 }
 
@@ -243,8 +194,6 @@ extension LeaderboardSceneView: LeaderboardSceneViewModelDelegate {
             default:
                 break
             }
-            
-            self.leaderboardTableView.reloadData()
         }
     }
 }

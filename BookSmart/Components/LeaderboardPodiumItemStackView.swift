@@ -110,7 +110,7 @@ final class LeaderboardPodiumItemStackView: UIStackView {
     
     private func setupImageViewUI(imageView: UIImageView, image: UIImage?, size: CGFloat) {
         imageView.image = image
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleToFill
         imageView.heightAnchor.constraint(equalToConstant: size).isActive = true
         imageView.widthAnchor.constraint(equalToConstant: size).isActive = true
         imageView.tintColor = .white

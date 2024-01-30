@@ -31,6 +31,7 @@ class LeaderboardTableViewCell: UITableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        backgroundColor = .clear
         selectionStyle = .none
         setupSubViews()
         setupConstraints()
@@ -170,9 +171,11 @@ class LeaderboardTableViewCell: UITableViewCell {
     }
     
     private func setupUserImageViewUI() {
-        userImageView.contentMode = .scaleAspectFit
+        userImageView.contentMode = .scaleToFill
         userImageView.layer.cornerRadius = 25
         userImageView.clipsToBounds = true
+        userImageView.image = UIImage(systemName: "person.fill")
+        userImageView.tintColor = .customAccentColor
     }
     
     private func setupUsernameLabelUI() {
@@ -189,45 +192,4 @@ class LeaderboardTableViewCell: UITableViewCell {
         booksReadCountLabel.font = .systemFont(ofSize: 14)
         booksReadCountLabel.textColor = .white
     }
-    
-    // MARK: - Private Methods
-    
-//    func retrieveImage(userID: UserInfo.ID, completion: @escaping (UIImage) -> Void) {
-//        userImageView.image = UIImage(systemName: "person.fill")
-//        userImageView.tintColor = .customAccentColor
-//        
-//        if let cachedImage = CacheManager.instance.get(name: userID.uuidString) {
-//            userImageView.image = cachedImage
-//        } else {
-//            let database = Firestore.firestore()
-//            database.collection("UserInfo").document((userID.uuidString)).getDocument { document, error in
-//                if error == nil && document != nil {
-//                    let imagePath = document?.data()?["image"] as? String
-//                    completion(self.fetchImage(imagePath ?? "", userID: userID))
-//                }
-//            }
-//        }
-//    }
-//    
-//    private func fetchImage(_ imagePath: String, userID: UserInfo.ID) -> UIImage {
-//        let storageReference = Storage.storage().reference()
-//        let fileReference = storageReference.child(imagePath)
-//        
-//        var image = UIImage()
-//        
-//        fileReference.getData(maxSize: 5 * 1024 * 1024) { data, error in
-//            if let data = data, error == nil, let fetchedImage = UIImage(data: data) {
-//                print("Image fetched successfully.")
-//                DispatchQueue.main.async {
-//                    image = fetchedImage
-//                    CacheManager.instance.add(image: fetchedImage, name: userID.uuidString)
-//                }
-//            } else {
-//                print("Error fetching image:", error?.localizedDescription ?? "Unknown error")
-//            }
-//        }
-//        
-//        return image
-//    }
-
 }
