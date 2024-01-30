@@ -19,8 +19,9 @@ final class LeaderboardSceneViewModel {
     
     var userInfo: UserInfo
     var fetchedUsersInfo: [UserInfo] = []
-    private var fetchedUserImages: [UUID: UIImage] = [:]
+    var fetchedUserImages: [String: UIImage] = [:]
     weak var delegate: LeaderboardSceneViewModelDelegate?
+    let group = DispatchGroup()
     
     // MARK: - Init
     
@@ -30,7 +31,6 @@ final class LeaderboardSceneViewModel {
         getAllUsersInfo { usersInfo in
             if let usersInfo {
                 self.fetchedUsersInfo = usersInfo.sorted { $0.booksFinished.count > $1.booksFinished.count }
-                self.retrieveAllImages()
             }
         }
         
@@ -151,42 +151,62 @@ final class LeaderboardSceneViewModel {
                 quotes.append(quote)
             }
         }
-
+        
         return quotes
     }
     
-    func getImage(index: Int) -> UIImage? {
-        let userID = fetchedUsersInfo[index].id
-        return fetchedUserImages[userID]
+    func getImage(userID: UserInfo.ID) -> UIImage? {
+        return CacheManager.instance.get(name: userID.uuidString)
+    }
+
+    func retrieveAllImages(completion: @escaping () -> Void) {
+        self.fetchImagesSequentially(completion: completion)
     }
     
-    func retrieveAllImages() {
-        for (index, user) in fetchedUsersInfo.enumerated() {
+    private func fetchImagesSequentially(completion: @escaping () -> Void) {
+        var index = 0
+        
+        func fetchNextImage() {
+            guard index < fetchedUsersInfo.count else {
+                completion()
+                return
+            }
+            
+            let user = fetchedUsersInfo[index]
             let imageName = user.id.uuidString
             
             if let cachedImage = CacheManager.instance.get(name: imageName) {
                 delegate?.updateUserImage(userIndex: index, userImage: cachedImage)
+                fetchedUserImages[user.id.uuidString] = cachedImage
+                index += 1
+                fetchNextImage()
             } else {
-                fetchImage(imageName, userIndex: index)
+                fetchImage(imageName, userIndex: index) {
+                    index += 1
+                    fetchNextImage()
+                }
             }
         }
-    }
-    
-    private func fetchImage(_ imagePath: String, userIndex: Int) {
         
+        fetchNextImage()
+    }
+
+    private func fetchImage(_ imageName: String, userIndex: Int, completion: @escaping () -> Void)  {
         let storageReference = Storage.storage().reference()
-        let fileReference = storageReference.child(imagePath)
+        let fileReference = storageReference.child("profileImages/\(imageName).jpg")
+        let userID = self.fetchedUsersInfo[userIndex].id
         
         fileReference.getData(maxSize: 5 * 1024 * 1024) { data, error in
             if let data = data, error == nil, let fetchedImage = UIImage(data: data) {
-                print("Image fetched successfully.")
-                
-                let userID = self.fetchedUsersInfo[userIndex].id
-                self.fetchedUserImages[userID] = fetchedImage
-                
+                print("Image fetched successfullyyyyy")
+                CacheManager.instance.add(image: fetchedImage, name: userID.uuidString)
                 self.delegate?.updateUserImage(userIndex: userIndex, userImage: fetchedImage)
+                completion()
             } else {
                 print("Error fetching image:", error?.localizedDescription ?? "Unknown error")
+                CacheManager.instance.add(image: UIImage(systemName: "person.fill")!, name: userID.uuidString)
+                self.delegate?.updateUserImage(userIndex: userIndex, userImage: UIImage(systemName: "person.fill")!)
+                completion()
             }
         }
     }

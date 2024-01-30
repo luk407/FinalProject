@@ -9,7 +9,7 @@ import UIKit
 
 extension UIColor {
     //static let customBackgroundColor = UIColor(red: 21/255, green: 21/255, blue: 23/255, alpha: 1)
-    static let customBackgroundColor = UIColor(red: 0/255, green: 10/255, blue: 20/255, alpha: 1)
+    static let customBackgroundColor = UIColor(red: 9/255, green: 17/255, blue: 30/255, alpha: 1)
     static let customAccentColor = UIColor(red: 246/255, green: 238/255, blue: 227/255, alpha: 1)
     static let customLikeButtonColor = UIColor(red: 255/255, green: 213/255, blue: 234/255, alpha: 1)
     static let customCommentButtonColor = UIColor(red: 209/255, green: 239/255, blue: 255/255, alpha: 1)

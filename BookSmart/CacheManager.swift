@@ -32,4 +32,11 @@ class CacheManager {
     func get(name: String) -> UIImage? {
         return imageCache.object(forKey: name as NSString)
     }
+    
+    func update(image: UIImage, name: String) {
+        remove(name: name)
+        add(image: image, name: name)
+        print("updated in cache")
+    }
+
 }

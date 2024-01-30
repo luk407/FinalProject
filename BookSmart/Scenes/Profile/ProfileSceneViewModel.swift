@@ -428,7 +428,6 @@ class ProfileSceneViewModel: ObservableObject {
 
         return quotes
     }
-
     
     private func fetchOwnerInfoOnce(with userID: UUID, completion: @escaping (UserInfo?, Error?) -> Void) {
         
@@ -451,7 +450,6 @@ class ProfileSceneViewModel: ObservableObject {
             }
         }
     }
-
     
     private func addConnection() {
         let userDocumentReference = Firestore.firestore().collection("UserInfo").document(profileOwnerInfoID.uuidString)
@@ -491,10 +489,11 @@ class ProfileSceneViewModel: ObservableObject {
         
         let fileReference = storageReference.child(path)
         
-        fileReference.putData(imageData!, metadata: nil) { metadata, error in
+        fileReference.putData(imageData!, metadata: nil) { [self] metadata, error in
             
             if error == nil && metadata != nil {
-                self.changeImagePathOfOwner(path)
+                changeImagePathOfOwner(path)
+                CacheManager.instance.update(image: selectedImage ?? UIImage(systemName: "person.fill")!, name: profileOwnerInfoID.uuidString)
             }
         }
     }

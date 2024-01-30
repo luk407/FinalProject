@@ -77,6 +77,12 @@ final class LeaderboardSceneView: UIViewController {
         setupUI()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        leaderboardSceneViewModel.retrieveAllImages() {
+            print("finished fetching")
+        }
+    }
+    
     // MARK: - Setup Subviews, Constraints, UI
     
     private func setupSubViews() {
@@ -99,6 +105,7 @@ final class LeaderboardSceneView: UIViewController {
 //        setupFirstPlaceStackViewUI()
 //        setupSecondPlaceStackViewUI()
 //        setupThirdPlaceStackViewUI()
+        setupLeaderBoardTableViewUI()
     }
     
     // MARK: - Constraints
@@ -178,8 +185,11 @@ final class LeaderboardSceneView: UIViewController {
 //        }
 //        leaderboardSceneViewModel.retrieveImage(userIndex: 2)
 //    }
-//    
+//
     private func setupLeaderBoardTableViewUI() {
+        leaderboardTableView.translatesAutoresizingMaskIntoConstraints = false
+        leaderboardTableView.backgroundColor = .clear
+        leaderboardTableView.backgroundView = .none
         leaderboardTableView.dataSource = self
         leaderboardTableView.delegate = self
         leaderboardTableView.rowHeight = UITableView.automaticDimension
@@ -197,10 +207,15 @@ extension LeaderboardSceneView: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let user = leaderboardSceneViewModel.fetchedUsersInfo[indexPath.row + 2]
+        let userInfo = leaderboardSceneViewModel.fetchedUsersInfo[indexPath.row + 2]
         if let cell = leaderboardTableView.dequeueReusableCell(withIdentifier: "userCell", for: indexPath) as? LeaderboardTableViewCell {
-            
-            
+            guard let userImage = leaderboardSceneViewModel.getImage(userID: userInfo.id) else { return UITableViewCell()}
+            cell.backgroundColor = .clear
+            cell.selectionStyle = .none
+            cell.configureCell(userInfo: userInfo, 
+                               place: indexPath.row + 4,
+                               userImage: userImage)
+            print("got the image")
             return cell
         } else {
             return UITableViewCell()
@@ -209,21 +224,27 @@ extension LeaderboardSceneView: UITableViewDataSource {
 }
 
 extension LeaderboardSceneView: UITableViewDelegate {
-    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        UITableView.automaticDimension
+    }
 }
 
 extension LeaderboardSceneView: LeaderboardSceneViewModelDelegate {
     
     func updateUserImage(userIndex: Int, userImage: UIImage) {
-        switch userIndex {
-        case 0:
-            firstPlaceStackView.updateUserImage(image: userImage)
-        case 1:
-            secondPlaceStackView.updateUserImage(image: userImage)
-        case 2:
-            thirdPlaceStackView.updateUserImage(image: userImage)
-        default:
-            break
+        DispatchQueue.main.async { [self] in
+            switch userIndex {
+            case 0:
+                firstPlaceStackView.updateUserImage(image: userImage)
+            case 1:
+                secondPlaceStackView.updateUserImage(image: userImage)
+            case 2:
+                thirdPlaceStackView.updateUserImage(image: userImage)
+            default:
+                break
+            }
+            
+            self.leaderboardTableView.reloadData()
         }
     }
 }
