@@ -35,7 +35,6 @@ class HomeSceneView: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         homeSceneViewModel.delegate = self
-        homeSceneViewModel.homeSceneViewDidLoad()
         view.backgroundColor = .customBackgroundColor
         setupSubviews()
         setupConstraints()
@@ -44,6 +43,7 @@ class HomeSceneView: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        homeSceneViewModel.homeSceneViewDidLoad()
         postsTableView.reloadData()
     }
     
