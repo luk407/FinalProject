@@ -10,11 +10,17 @@ import SwiftUI
 import Firebase
 import FirebaseStorage
 
-class AnnouncementsTableViewCell: UITableViewCell {
+final class AnnouncementsTableViewCell: UITableViewCell {
 
     private let mainStackView = UIStackView()
     
-    private let authorInfoStackView = UIStackView()
+    private let announcementAuthorStackView = UIStackView()
+    
+    private let authorInfoView = UIStackView()
+    
+    private let backgroundImageView = UIImageView()
+    
+    //private let userImageAndNameStackView = UIStackView()
     
     private var authorImageView = UIImageView()
     
@@ -80,19 +86,28 @@ class AnnouncementsTableViewCell: UITableViewCell {
     // MARK: - Setup Subviews, Constraints, UI
     
     private func setupSubViews() {
-        addSubview(mainStackView)
-        mainStackView.addArrangedSubview(authorInfoStackView)
-        authorInfoStackView.addArrangedSubview(authorImageView)
-        authorInfoStackView.addArrangedSubview(namesStackView)
+        addSubview(mainStackView) // vertical
+        mainStackView.addArrangedSubview(announcementAuthorStackView) // horizontal
+        mainStackView.addArrangedSubview(postContentStackView) // vertical
+        mainStackView.addArrangedSubview(likeCommentShareStackView) // horizontal
+        
+        announcementAuthorStackView.addArrangedSubview(spoilerTagStackView)
+        announcementAuthorStackView.addArrangedSubview(authorInfoView) //vertical
+        announcementAuthorStackView.addArrangedSubview(timeLabel)
+        
+        authorInfoView.addArrangedSubview(backgroundImageView)
+        //authorInfoView.addSubview(userImageAndNameStackView)
+        
+        authorInfoView.addSubview(authorImageView)
+        authorInfoView.addArrangedSubview(namesStackView)
+        authorInfoView.bringSubviewToFront(authorImageView)
+        
         namesStackView.addArrangedSubview(nameLabel)
         namesStackView.addArrangedSubview(usernameLabel)
-        authorInfoStackView.addArrangedSubview(spoilerTagStackView)
-        spoilerTagStackView.addArrangedSubview(spoilerLabel)
-        authorInfoStackView.addArrangedSubview(timeLabel)
-        mainStackView.addArrangedSubview(postContentStackView)
+                
         postContentStackView.addArrangedSubview(headerLabel)
         postContentStackView.addArrangedSubview(bodyLabel)
-        mainStackView.addArrangedSubview(likeCommentShareStackView)
+        
         likeCommentShareStackView.addArrangedSubview(likeStackView)
         likeCommentShareStackView.addArrangedSubview(commentStackView)
         likeCommentShareStackView.addArrangedSubview(shareStackView)
@@ -100,18 +115,23 @@ class AnnouncementsTableViewCell: UITableViewCell {
     
     private func setupConstraints() {
         setupMainStackViewConstraints()
-        setupAuthorInfoStackViewConstraints()
-        setupAuthorImageViewConstraints()
+        setupAnnouncementAuthorStackViewConstraints()
+//        setupAuthorInfoViewConstraints()
+//        setupUserImageAndNameStackViewConstraints()
+        setupBackgroundImageViewConstraints()
         setupSpoilerTagStackViewConstraints()
+        setupAuthorImageViewConstraints()
         setupTimeLabelConstraints()
         setupPostContentStackViewConstraints()
         setupBodyLabelConstraints()
-        //setupLikeCommentShareStackViewConstrains()
     }
     
     private func setupUI() {
         setupMainStackViewUI()
-        setupAuthorInfoStackViewUI()
+        setupAnnouncementAuthorStackViewUI()
+        setupAuthorInfoViewUI()
+        setupBackgroundImageViewUI()
+//    setupUserImageAndNameStackViewUI()
         setupAuthorImageViewUI()
         setupNamesStackViewUI()
         setupNameLabelUI()
@@ -144,7 +164,8 @@ class AnnouncementsTableViewCell: UITableViewCell {
         timeLabel.text = timeAgo
         headerLabel.text = postInfo?.header
         bodyLabel.text = postInfo?.body
-        setupSpoilerTagUI()
+        spoilerLabel.text = postInfo?.spoilersAllowed ?? false ? "SPOILERS" : "SPOILER\nFREE"
+        
         let isLiked = viewModel?.userInfo.likedPosts.contains(postInfo!.id)
         self.backgroundColor = .clear
         self.selectionStyle = .none
@@ -163,19 +184,42 @@ class AnnouncementsTableViewCell: UITableViewCell {
         ])
     }
     
-    private func setupAuthorInfoStackViewConstraints() {
+    private func setupAnnouncementAuthorStackViewConstraints() {
         NSLayoutConstraint.activate([
-            authorInfoStackView.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor, constant: 10),
-            authorInfoStackView.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor, constant: -10),
+            announcementAuthorStackView.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor, constant: 20),
+            announcementAuthorStackView.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor, constant: -20),
+            announcementAuthorStackView.topAnchor.constraint(equalTo: mainStackView.topAnchor, constant: 20),
         ])
     }
     
-    private func setupAuthorImageViewConstraints() {
+    private func setupAuthorInfoViewConstraints() {
         NSLayoutConstraint.activate([
-            authorImageView.widthAnchor.constraint(equalToConstant: 50),
-            authorImageView.heightAnchor.constraint(equalToConstant: 50)
+            authorInfoView.leadingAnchor.constraint(equalTo: spoilerTagStackView.trailingAnchor, constant: 8),
+            authorInfoView.trailingAnchor.constraint(equalTo: timeLabel.leadingAnchor, constant: -8),
+            authorInfoView.topAnchor.constraint(equalTo: announcementAuthorStackView.topAnchor),
+            authorInfoView.bottomAnchor.constraint(equalTo: announcementAuthorStackView.bottomAnchor),
         ])
     }
+    
+    private func setupBackgroundImageViewConstraints() {
+        NSLayoutConstraint.activate([
+//            backgroundImageView.leadingAnchor.constraint(equalTo: authorInfoView.leadingAnchor),
+//            backgroundImageView.trailingAnchor.constraint(equalTo: authorInfoView.trailingAnchor),
+//            backgroundImageView.bottomAnchor.constraint(equalTo: authorInfoView.bottomAnchor),
+//            backgroundImageView.topAnchor.constraint(equalTo: authorInfoView.topAnchor),
+            backgroundImageView.heightAnchor.constraint(equalToConstant: 100),
+            backgroundImageView.widthAnchor.constraint(equalToConstant: 100),
+        ])
+    }
+    
+//    private func setupUserImageAndNameStackViewConstraints() {
+//        NSLayoutConstraint.activate([
+//            userImageAndNameStackView.leadingAnchor.constraint(equalTo: authorInfoView.leadingAnchor),
+//            userImageAndNameStackView.trailingAnchor.constraint(equalTo: authorInfoView.trailingAnchor),
+//            userImageAndNameStackView.bottomAnchor.constraint(equalTo: authorInfoView.bottomAnchor),
+//            userImageAndNameStackView.topAnchor.constraint(equalTo: authorInfoView.topAnchor),
+//        ])
+//    }
     
     private func setupSpoilerTagStackViewConstraints() {
         NSLayoutConstraint.activate([
@@ -185,10 +229,19 @@ class AnnouncementsTableViewCell: UITableViewCell {
 
     }
     
+    private func setupAuthorImageViewConstraints() {
+        NSLayoutConstraint.activate([
+            authorImageView.widthAnchor.constraint(equalToConstant: 60),
+            authorImageView.heightAnchor.constraint(equalToConstant: 60),
+            authorImageView.centerYAnchor.constraint(equalTo: authorInfoView.centerYAnchor),
+            authorImageView.centerXAnchor.constraint(equalTo: authorInfoView.centerXAnchor),
+        ])
+    }
+    
     private func setupTimeLabelConstraints() {
         NSLayoutConstraint.activate([
-            timeLabel.widthAnchor.constraint(equalToConstant: 30),
-            timeLabel.heightAnchor.constraint(equalToConstant: 30)
+            timeLabel.widthAnchor.constraint(equalToConstant: 50),
+            timeLabel.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
     
@@ -211,7 +264,7 @@ class AnnouncementsTableViewCell: UITableViewCell {
     private func setupMainStackViewUI() {
         mainStackView.translatesAutoresizingMaskIntoConstraints = false
         mainStackView.axis = .vertical
-        mainStackView.spacing = 16
+        mainStackView.spacing = 8
         mainStackView.alignment = .center
         mainStackView.customize(
             backgroundColor: .customAccentColor.withAlphaComponent(0.1),
@@ -219,15 +272,33 @@ class AnnouncementsTableViewCell: UITableViewCell {
             borderColor: .clear,
             borderWidth: 1)
         mainStackView.isLayoutMarginsRelativeArrangement = true
-        mainStackView.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        mainStackView.layoutMargins = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
     }
     
-    private func setupAuthorInfoStackViewUI() {
-        authorInfoStackView.axis = .horizontal
-        authorInfoStackView.distribution = .fillProportionally
-        authorInfoStackView.alignment = .center
-        authorInfoStackView.spacing = 16
+    private func setupAnnouncementAuthorStackViewUI() {
+        announcementAuthorStackView.axis = .horizontal
+        announcementAuthorStackView.spacing = 32
+        announcementAuthorStackView.alignment = .center
+        announcementAuthorStackView.distribution = .fillProportionally
     }
+    
+    private func setupAuthorInfoViewUI() {
+        authorInfoView.translatesAutoresizingMaskIntoConstraints = false
+        authorInfoView.axis = .vertical
+    }
+    
+    private func setupBackgroundImageViewUI() {
+        backgroundImageView.image =  UIImage(systemName: "book.fill")
+        backgroundImageView.tintColor = .customAccentColor
+        backgroundImageView.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
+    }
+//    
+//    private func setupUserImageAndNameStackViewUI() {
+//        userImageAndNameStackView.axis = .vertical
+//        userImageAndNameStackView.spacing = 8
+//        userImageAndNameStackView.alignment = .center
+//        userImageAndNameStackView.distribution = .fillProportionally
+//    }
     
     private func setupAuthorImageViewUI() {
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.authorImageTapped))
@@ -237,21 +308,22 @@ class AnnouncementsTableViewCell: UITableViewCell {
         authorImageView.translatesAutoresizingMaskIntoConstraints = false
         authorImageView.contentMode = .scaleAspectFill
         authorImageView.clipsToBounds = true
-        authorImageView.layer.cornerRadius = 25
-        authorImageView.layer.borderColor = UIColor.customAccentColor.withAlphaComponent(0.5).cgColor
-        authorImageView.layer.borderWidth = 2
+        authorImageView.layer.masksToBounds = true
+        authorImageView.layer.cornerRadius = 30
+        authorImageView.layer.borderColor = UIColor.customBackgroundColor.cgColor
+        authorImageView.layer.borderWidth = 4
     }
     
     private func setupNamesStackViewUI() {
         namesStackView.axis = .vertical
         namesStackView.distribution = .fillProportionally
-        namesStackView.alignment = .leading
+        namesStackView.alignment = .center
         namesStackView.spacing = 8
     }
     
     private func setupNameLabelUI() {
         nameLabel.font = .boldSystemFont(ofSize: 16)
-        nameLabel.textColor = .white
+        nameLabel.textColor = .black
     }
     
     private func setupUsernameLabelUI() {
@@ -268,16 +340,16 @@ class AnnouncementsTableViewCell: UITableViewCell {
         spoilerTagStackView.isLayoutMarginsRelativeArrangement = true
         spoilerTagStackView.layoutMargins = UIEdgeInsets(top: 2, left: 2, bottom: 2, right: 2)
         
-        spoilerLabel.text = postInfo?.spoilersAllowed ?? false ? "SPOILERS" : "SPOILER\nFREE"
         spoilerLabel.font = .boldSystemFont(ofSize: 8)
         spoilerLabel.numberOfLines = 2
-        spoilerLabel.textColor = .black
+        spoilerLabel.textColor = .white
         spoilerLabel.textAlignment = NSTextAlignment(.center)
     }
     
     private func setupTimeLabelUI() {
         timeLabel.font = .systemFont(ofSize: 14)
         timeLabel.textColor = .white
+        timeLabel.textAlignment = NSTextAlignment(.center)
     }
     
     private func setupPostContentStackViewUI() {
@@ -512,6 +584,7 @@ class AnnouncementsTableViewCell: UITableViewCell {
                 if error == nil && document != nil {
                     let imagePath = document?.data()?["image"] as? String
                     self.fetchImage(imagePath ?? "")
+                    print("fetched")
                 }
             }
         }
@@ -527,6 +600,7 @@ class AnnouncementsTableViewCell: UITableViewCell {
                 DispatchQueue.main.async {
                     self.authorImageView.image = fetchedImage
                     CacheManager.instance.add(image: fetchedImage, name: self.postInfo?.authorID.uuidString ?? "")
+                    print("fetchedfdf")
                 }
             } else {
                 print("Error fetching image:", error?.localizedDescription ?? "Unknown error")
