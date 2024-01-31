@@ -112,15 +112,15 @@ final class AnnouncementSceneView: UIViewController {
 
 extension AnnouncementSceneView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        announcementSceneViewModel.fetchedPostsInfo.count
+        announcementSceneViewModel.announcementPosts.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let postInfo = announcementSceneViewModel.fetchedPostsInfo[indexPath.row]
+        let announcementPostInfo = announcementSceneViewModel.announcementPosts[indexPath.row]
         if let cell = announcementsTableView.dequeueReusableCell(withIdentifier: "announcementCell", for: indexPath) as? AnnouncementsTableViewCell {
             cell.navigationController = navigationController
             cell.viewModel = announcementSceneViewModel
-            cell.postInfo = postInfo
+            cell.postInfo = announcementPostInfo
             cell.configureCell()
             cell.contentView.isUserInteractionEnabled = false
             cell.layoutIfNeeded()
