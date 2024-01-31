@@ -31,13 +31,13 @@ class TabBarController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //self.delegate = self
+        self.delegate = self
         navigationItem.hidesBackButton = true
         
         setupAppNameLabelUI()
         navigationItem.titleView = appNameLabel
         
-        let postsScenesViewModel = HomeSceneViewModel(userInfo: userInfo)
+        let postsScenesViewModel = PostsScenesViewModel(userInfo: userInfo)
     
         let homeViewController =  HomeSceneView(homeSceneViewModel: postsScenesViewModel)
         

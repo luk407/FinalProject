@@ -17,11 +17,11 @@ final class AnnouncementSceneView: UIViewController {
     
     private let refreshControl = UIRefreshControl()
     
-    var announcementSceneViewModel: HomeSceneViewModel
+    var announcementSceneViewModel: PostsScenesViewModel
     
     // MARK: - Init
     
-    init(announcementSceneViewModel: HomeSceneViewModel) {
+    init(announcementSceneViewModel: PostsScenesViewModel) {
         self.announcementSceneViewModel = announcementSceneViewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -137,7 +137,7 @@ extension AnnouncementSceneView: UITableViewDelegate {
     }
 }
 
-extension AnnouncementSceneView: HomeSceneViewDelegate {
+extension AnnouncementSceneView: PostsScenesViewModelDelegate {
     func reloadTableView() {
         DispatchQueue.main.async {
             self.announcementsTableView.reloadData()

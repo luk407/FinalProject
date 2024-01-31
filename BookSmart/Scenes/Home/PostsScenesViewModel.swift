@@ -8,11 +8,11 @@
 import Foundation
 import Firebase
 
-protocol HomeSceneViewDelegate: AnyObject {
+protocol PostsScenesViewModelDelegate: AnyObject {
     func reloadTableView()
 }
 
-final class HomeSceneViewModel {
+final class PostsScenesViewModel {
     
     // MARK: - Properties
     
@@ -21,7 +21,7 @@ final class HomeSceneViewModel {
 
     private let dispatchGroup = DispatchGroup()
     
-    weak var delegate: HomeSceneViewDelegate?
+    weak var delegate: PostsScenesViewModelDelegate?
     
     // MARK: - Init
     

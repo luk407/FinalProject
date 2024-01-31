@@ -47,7 +47,7 @@ final class PostsTableViewCell: UITableViewCell {
     private let shareButtonImageView = UIImageView()
     private let shareButtonLabel = UILabel()
     
-    var viewModel: HomeSceneViewModel?
+    var viewModel: PostsScenesViewModel?
     
     var postInfo: PostInfo?
     

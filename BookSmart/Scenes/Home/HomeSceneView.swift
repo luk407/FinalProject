@@ -18,11 +18,11 @@ final class HomeSceneView: UIViewController {
     
     private let refreshControl = UIRefreshControl()
     
-    var homeSceneViewModel: HomeSceneViewModel
+    var homeSceneViewModel: PostsScenesViewModel
     
     // MARK: - Init
     
-    init(homeSceneViewModel: HomeSceneViewModel) {
+    init(homeSceneViewModel: PostsScenesViewModel) {
         self.homeSceneViewModel = homeSceneViewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -144,7 +144,7 @@ extension HomeSceneView: UITableViewDelegate {
     }
 }
 
-extension HomeSceneView: HomeSceneViewDelegate {
+extension HomeSceneView: PostsScenesViewModelDelegate {
     func reloadTableView() {
         DispatchQueue.main.async {
             self.postsTableView.reloadData()

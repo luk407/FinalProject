@@ -19,8 +19,7 @@
 		A10694AF2B56F185009E5843 /* SignupSceneViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10694AE2B56F185009E5843 /* SignupSceneViewModel.swift */; };
 		A10694B12B56F1C3009E5843 /* SignupSceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10694B02B56F1C3009E5843 /* SignupSceneView.swift */; };
 		A10694B42B56F236009E5843 /* HomeSceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10694B32B56F236009E5843 /* HomeSceneView.swift */; };
-		A10694B62B56F247009E5843 /* HomeSceneViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10694B52B56F247009E5843 /* HomeSceneViewModel.swift */; };
-		A10694B92B56F2B9009E5843 /* AnnouncementSceneViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10694B82B56F2B9009E5843 /* AnnouncementSceneViewModel.swift */; };
+		A10694B62B56F247009E5843 /* PostsScenesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10694B52B56F247009E5843 /* PostsScenesViewModel.swift */; };
 		A10694BB2B56F300009E5843 /* AnnouncementSceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10694BA2B56F300009E5843 /* AnnouncementSceneView.swift */; };
 		A10694C32B56F40F009E5843 /* LeaderboardSceneViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10694C22B56F40F009E5843 /* LeaderboardSceneViewModel.swift */; };
 		A10694C52B56F425009E5843 /* LeaderboardSceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10694C42B56F425009E5843 /* LeaderboardSceneView.swift */; };
@@ -75,8 +74,7 @@
 		A10694AE2B56F185009E5843 /* SignupSceneViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupSceneViewModel.swift; sourceTree = "<group>"; };
 		A10694B02B56F1C3009E5843 /* SignupSceneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupSceneView.swift; sourceTree = "<group>"; };
 		A10694B32B56F236009E5843 /* HomeSceneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSceneView.swift; sourceTree = "<group>"; };
-		A10694B52B56F247009E5843 /* HomeSceneViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSceneViewModel.swift; sourceTree = "<group>"; };
-		A10694B82B56F2B9009E5843 /* AnnouncementSceneViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementSceneViewModel.swift; sourceTree = "<group>"; };
+		A10694B52B56F247009E5843 /* PostsScenesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsScenesViewModel.swift; sourceTree = "<group>"; };
 		A10694BA2B56F300009E5843 /* AnnouncementSceneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementSceneView.swift; sourceTree = "<group>"; };
 		A10694C22B56F40F009E5843 /* LeaderboardSceneViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardSceneViewModel.swift; sourceTree = "<group>"; };
 		A10694C42B56F425009E5843 /* LeaderboardSceneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardSceneView.swift; sourceTree = "<group>"; };
@@ -220,7 +218,7 @@
 				A10695382B5E9356009E5843 /* PostDetailsScene */,
 				A106951B2B5A7905009E5843 /* PostsTableViewCell */,
 				A10694B32B56F236009E5843 /* HomeSceneView.swift */,
-				A10694B52B56F247009E5843 /* HomeSceneViewModel.swift */,
+				A10694B52B56F247009E5843 /* PostsScenesViewModel.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -230,7 +228,6 @@
 			children = (
 				A137261B2B6980BC00F1EA6E /* AnnouncementsTableViewCell */,
 				A10694BA2B56F300009E5843 /* AnnouncementSceneView.swift */,
-				A10694B82B56F2B9009E5843 /* AnnouncementSceneViewModel.swift */,
 			);
 			path = Announcement;
 			sourceTree = "<group>";
@@ -495,12 +492,11 @@
 				A106951F2B5A7995009E5843 /* PostsTableViewCell.swift in Sources */,
 				A10694C52B56F425009E5843 /* LeaderboardSceneView.swift in Sources */,
 				A10694A42B56F069009E5843 /* CommentInfo.swift in Sources */,
-				A10694B92B56F2B9009E5843 /* AnnouncementSceneViewModel.swift in Sources */,
 				A10695162B583B90009E5843 /* PasswordStrengthChecklistUIView.swift in Sources */,
 				A10694C32B56F40F009E5843 /* LeaderboardSceneViewModel.swift in Sources */,
 				A10694C82B56F478009E5843 /* ProfileSceneView.swift in Sources */,
 				A10694D32B56FE8B009E5843 /* BooksData.swift in Sources */,
-				A10694B62B56F247009E5843 /* HomeSceneViewModel.swift in Sources */,
+				A10694B62B56F247009E5843 /* PostsScenesViewModel.swift in Sources */,
 				A10694A62B56F07E009E5843 /* BadgeInfo.swift in Sources */,
 				A10695232B5A848C009E5843 /* UIStackView+Extension.swift in Sources */,
 				A10694CA2B56F497009E5843 /* ProfileSceneViewModel.swift in Sources */,
