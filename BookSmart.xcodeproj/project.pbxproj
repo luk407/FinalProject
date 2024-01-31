@@ -57,6 +57,7 @@
 		A13726152B66787F00F1EA6E /* BadgeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13726142B66787F00F1EA6E /* BadgeManager.swift */; };
 		A13726172B681B8000F1EA6E /* LeaderboardPodiumItemStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13726162B681B8000F1EA6E /* LeaderboardPodiumItemStackView.swift */; };
 		A137261A2B6821C200F1EA6E /* LeaderboardTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13726192B6821C200F1EA6E /* LeaderboardTableViewCell.swift */; };
+		A137261D2B6980E900F1EA6E /* AnnouncementsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A137261C2B6980E900F1EA6E /* AnnouncementsTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -108,6 +109,7 @@
 		A13726142B66787F00F1EA6E /* BadgeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgeManager.swift; sourceTree = "<group>"; };
 		A13726162B681B8000F1EA6E /* LeaderboardPodiumItemStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardPodiumItemStackView.swift; sourceTree = "<group>"; };
 		A13726192B6821C200F1EA6E /* LeaderboardTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardTableViewCell.swift; sourceTree = "<group>"; };
+		A137261C2B6980E900F1EA6E /* AnnouncementsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementsTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -226,6 +228,7 @@
 		A10694B72B56F29F009E5843 /* Announcement */ = {
 			isa = PBXGroup;
 			children = (
+				A137261B2B6980BC00F1EA6E /* AnnouncementsTableViewCell */,
 				A10694BA2B56F300009E5843 /* AnnouncementSceneView.swift */,
 				A10694B82B56F2B9009E5843 /* AnnouncementSceneViewModel.swift */,
 			);
@@ -379,6 +382,14 @@
 			path = LeaderboardTableViewCell;
 			sourceTree = "<group>";
 		};
+		A137261B2B6980BC00F1EA6E /* AnnouncementsTableViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				A137261C2B6980E900F1EA6E /* AnnouncementsTableViewCell.swift */,
+			);
+			path = AnnouncementsTableViewCell;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -476,6 +487,7 @@
 				A10694AF2B56F185009E5843 /* SignupSceneViewModel.swift in Sources */,
 				A10694D52B56FFD8009E5843 /* Quote.swift in Sources */,
 				A106948A2B56EC73009E5843 /* AppDelegate.swift in Sources */,
+				A137261D2B6980E900F1EA6E /* AnnouncementsTableViewCell.swift in Sources */,
 				A13726132B6667A400F1EA6E /* BadgeView.swift in Sources */,
 				A106948C2B56EC73009E5843 /* SceneDelegate.swift in Sources */,
 				A106952E2B5C03B3009E5843 /* AnnouncementPostViewModel.swift in Sources */,

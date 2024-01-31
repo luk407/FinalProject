@@ -7,6 +7,6 @@
 
 import Foundation
 
-class AnnouncementSceneViewModel {
+final class AnnouncementSceneViewModel {
     
 }

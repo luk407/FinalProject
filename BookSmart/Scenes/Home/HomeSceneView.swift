@@ -8,7 +8,7 @@
 import UIKit
 import SwiftUI
 
-class HomeSceneView: UIViewController {
+final class HomeSceneView: UIViewController {
     
     // MARK: - Properties
     
@@ -21,6 +21,7 @@ class HomeSceneView: UIViewController {
     var homeSceneViewModel: HomeSceneViewModel
     
     // MARK: - Init
+    
     init(homeSceneViewModel: HomeSceneViewModel) {
         self.homeSceneViewModel = homeSceneViewModel
         super.init(nibName: nil, bundle: nil)
@@ -43,7 +44,7 @@ class HomeSceneView: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        homeSceneViewModel.homeSceneViewDidLoad()
+        homeSceneViewModel.homeSceneViewWillAppear()
         postsTableView.reloadData()
     }
     
@@ -65,6 +66,7 @@ class HomeSceneView: UIViewController {
     }
     
     // MARK: - Constraints
+    
     private func setupMainStackViewConstraints() {
         NSLayoutConstraint.activate([
             mainStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),

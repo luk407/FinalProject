@@ -12,7 +12,7 @@ protocol HomeSceneViewDelegate: AnyObject {
     func reloadTableView()
 }
 
-class HomeSceneViewModel {
+final class HomeSceneViewModel {
     
     // MARK: - Properties
     
@@ -31,7 +31,7 @@ class HomeSceneViewModel {
     
     // MARK: - Methods
     
-    func homeSceneViewDidLoad() {
+    func homeSceneViewWillAppear() {
         //if !viewDidLoad {
             
             dispatchGroup.enter()
