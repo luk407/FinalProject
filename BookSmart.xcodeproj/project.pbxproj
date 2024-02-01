@@ -57,6 +57,7 @@
 		A13726172B681B8000F1EA6E /* LeaderboardPodiumItemStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13726162B681B8000F1EA6E /* LeaderboardPodiumItemStackView.swift */; };
 		A137261A2B6821C200F1EA6E /* LeaderboardTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13726192B6821C200F1EA6E /* LeaderboardTableViewCell.swift */; };
 		A137261D2B6980E900F1EA6E /* AnnouncementsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A137261C2B6980E900F1EA6E /* AnnouncementsTableViewCell.swift */; };
+		A193933F2B6B81620077D7EF /* AnnouncementTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A193933E2B6B81620077D7EF /* AnnouncementTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -108,6 +109,7 @@
 		A13726162B681B8000F1EA6E /* LeaderboardPodiumItemStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardPodiumItemStackView.swift; sourceTree = "<group>"; };
 		A13726192B6821C200F1EA6E /* LeaderboardTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardTableViewCell.swift; sourceTree = "<group>"; };
 		A137261C2B6980E900F1EA6E /* AnnouncementsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementsTableViewCell.swift; sourceTree = "<group>"; };
+		A193933E2B6B81620077D7EF /* AnnouncementTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -226,6 +228,7 @@
 		A10694B72B56F29F009E5843 /* Announcement */ = {
 			isa = PBXGroup;
 			children = (
+				A19393382B6B7D4C0077D7EF /* AnnouncementDetailsScene */,
 				A137261B2B6980BC00F1EA6E /* AnnouncementsTableViewCell */,
 				A10694BA2B56F300009E5843 /* AnnouncementSceneView.swift */,
 			);
@@ -387,6 +390,22 @@
 			path = AnnouncementsTableViewCell;
 			sourceTree = "<group>";
 		};
+		A19393382B6B7D4C0077D7EF /* AnnouncementDetailsScene */ = {
+			isa = PBXGroup;
+			children = (
+				A193933D2B6B81430077D7EF /* AnnouncementTableViewCell */,
+			);
+			path = AnnouncementDetailsScene;
+			sourceTree = "<group>";
+		};
+		A193933D2B6B81430077D7EF /* AnnouncementTableViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				A193933E2B6B81620077D7EF /* AnnouncementTableViewCell.swift */,
+			);
+			path = AnnouncementTableViewCell;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -471,6 +490,7 @@
 				A106952A2B5BAF4C009E5843 /* AnnouncementPostView.swift in Sources */,
 				A13726172B681B8000F1EA6E /* LeaderboardPodiumItemStackView.swift in Sources */,
 				A106953C2B5E939E009E5843 /* PostDetailsSceneViewModel.swift in Sources */,
+				A193933F2B6B81620077D7EF /* AnnouncementTableViewCell.swift in Sources */,
 				A137260A2B62661F00F1EA6E /* EmptyStateView.swift in Sources */,
 				A10695182B584525009E5843 /* ChecklistItemView.swift in Sources */,
 				A106951A2B590EBE009E5843 /* TabBarController.swift in Sources */,

@@ -41,6 +41,10 @@ final class AnnouncementSceneView: UIViewController {
         setupUI()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        announcementsTableView.reloadData()
+    }
+    
     // MARK: - Setup Subviews, Constraints, UI
     
     private func setupSubviews() {

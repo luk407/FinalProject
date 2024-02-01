@@ -60,9 +60,6 @@ class PostTableViewCell: UITableViewCell {
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        setupSubviews()
-        setupConstraints()
-        setupUI()
     }
     
     override func prepareForReuse() {
@@ -99,6 +96,7 @@ class PostTableViewCell: UITableViewCell {
         setupAuthorInfoStackViewConstraints()
         setupAuthorImageViewConstraints()
         setupTimeLabelConstraints()
+        setupPostContentStackViewConstraints()
     }
     
     private func setupUI() {
@@ -118,16 +116,16 @@ class PostTableViewCell: UITableViewCell {
         setupShareStackViewUI()
     }
     
-    func configureCell(viewModel: PostDetailsSceneViewModel, userInfo: UserInfo, postInfo: PostInfo) {
+    func configureCell(viewModel: PostDetailsSceneViewModel, userInfo: UserInfo, authorInfo: UserInfo, postInfo: PostInfo) {
         
         let isLiked = viewModel.userInfo.likedPosts.contains(postInfo.id)
 
         self.viewModel = viewModel
-        viewModel.postCellDelegate = self
+        viewModel.storyCellDelegate = self
         
         authorImageView.image = UIImage(systemName: "person.fill")
-        nameLabel.text = userInfo.userName
-        usernameLabel.text = userInfo.userName
+        nameLabel.text = authorInfo.displayName
+        usernameLabel.text = "@\(authorInfo.userName)"
         timeLabel.text = viewModel.timeAgoString(from: postInfo.postingTime)
         headerLabel.text = postInfo.header
         bodyTextView.text = postInfo.body
@@ -166,6 +164,12 @@ class PostTableViewCell: UITableViewCell {
         NSLayoutConstraint.activate([
             timeLabel.widthAnchor.constraint(equalToConstant: 30),
             timeLabel.heightAnchor.constraint(equalToConstant: 30)
+        ])
+    }
+    
+    private func setupPostContentStackViewConstraints() {
+        NSLayoutConstraint.activate([
+            postContentStackView.heightAnchor.constraint(greaterThanOrEqualToConstant: 100)
         ])
     }
     
@@ -440,14 +444,13 @@ class PostTableViewCell: UITableViewCell {
 }
 
 // MARK: - Extensions
-extension PostTableViewCell: PostDetailsSceneViewDelegateForCells {
+extension PostTableViewCell: PostDetailsSceneViewDelegateForStory {
     
     func updateLikeButtonUI(isLiked: Bool) {
         DispatchQueue.main.async {
             let imageName = isLiked ? "heart.fill" : "heart"
             
             self.likeButtonImageView.image = UIImage(systemName: imageName)?.withTintColor(.customLikeButtonColor)
-            self.likeButtonLabel.textColor = .customLikeButtonColor
         }
     }
 }

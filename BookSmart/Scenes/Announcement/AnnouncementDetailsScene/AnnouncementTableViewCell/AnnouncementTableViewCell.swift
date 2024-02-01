@@ -1,8 +1,8 @@
 //
-//  AnnouncementsTableViewCell.swift
+//  AnnouncementTableViewCell.swift
 //  BookSmart
 //
-//  Created by Luka Gazdeliani on 30.01.24.
+//  Created by Luka Gazdeliani on 01.02.24.
 //
 
 import UIKit
@@ -10,8 +10,10 @@ import SwiftUI
 import Firebase
 import FirebaseStorage
 
-final class AnnouncementsTableViewCell: UITableViewCell {
-
+final class AnnouncementTableViewCell: UITableViewCell {
+    
+    // MARK: - Properties
+    
     private let mainStackView = UIStackView()
     
     private let announcementAuthorStackView = UIStackView()
@@ -49,19 +51,22 @@ final class AnnouncementsTableViewCell: UITableViewCell {
     private let shareButtonImageView = UIImageView()
     private let shareButtonLabel = UILabel()
     
-    var viewModel: PostsScenesViewModel?
+    var viewModel: PostDetailsSceneViewModel?
     
     var postInfo: PostInfo?
+    
+    var userInfo: UserInfo?
     
     var authorInfo: UserInfo?
     
     weak var navigationController: UINavigationController?
-    
+
     // MARK: - Init
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        setupSubViews()
+        selectionStyle = .none
+        setupSubviews()
         setupConstraints()
         setupUI()
     }
@@ -72,18 +77,18 @@ final class AnnouncementsTableViewCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
+        backgroundImageView.image = nil
         authorImageView.image = nil
         nameLabel.text = nil
         usernameLabel.text = nil
         timeLabel.text = nil
         headerLabel.text = nil
         bodyLabel.text = nil
-        spoilerLabel.text = nil
     }
-    
+
     // MARK: - Setup Subviews, Constraints, UI
     
-    private func setupSubViews() {
+    private func setupSubviews() {
         addSubview(mainStackView) // vertical
         mainStackView.addArrangedSubview(announcementAuthorStackView) // horizontal
         mainStackView.addArrangedSubview(postContentStackView) // vertical
@@ -144,21 +149,14 @@ final class AnnouncementsTableViewCell: UITableViewCell {
     }
     
     func configureCell() {
+        viewModel?.announcementCellDelegate = self
         self.backgroundColor = .clear
         self.selectionStyle = .none
-
-        DispatchQueue.main.async { [self] in
-            viewModel?.getAuthorInfo(with: postInfo!.authorID) { [self] authorInfo in
-                self.authorInfo = authorInfo
-                self.retrieveImage()
-                
-                nameLabel.text = "\(authorInfo?.displayName ?? "")"
-                usernameLabel.text = "@\(authorInfo?.userName ?? "")"
-            }
-        }
         
         let timeAgo = viewModel?.timeAgoString(from: postInfo?.postingTime ?? Date())
         
+        nameLabel.text = "\(authorInfo?.displayName ?? "")"
+        usernameLabel.text = "@\(authorInfo?.userName ?? "")"
         timeLabel.text = timeAgo
         headerLabel.text = postInfo?.header
         bodyLabel.text = postInfo?.body
@@ -176,6 +174,7 @@ final class AnnouncementsTableViewCell: UITableViewCell {
         }
         
         let isLiked = viewModel?.userInfo.likedPosts.contains(postInfo!.id)
+        self.retrieveImage()
         self.updateLikeButtonUI(isLiked: isLiked ?? false)
     }
     
@@ -245,8 +244,9 @@ final class AnnouncementsTableViewCell: UITableViewCell {
     
     private func setupPostContentStackViewConstraints() {
         NSLayoutConstraint.activate([
-            postContentStackView.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor, constant: 10),
-            postContentStackView.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor, constant: -10),
+            postContentStackView.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor, constant: 20),
+            postContentStackView.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor, constant: -20),
+            postContentStackView.heightAnchor.constraint(greaterThanOrEqualToConstant: 100)
         ])
     }
     
@@ -486,7 +486,7 @@ final class AnnouncementsTableViewCell: UITableViewCell {
     
     @objc private func likeButtonTapped(sender: UITapGestureRecognizer) {
         
-        toggleLikePost()
+        viewModel?.toggleLikePost()
         
         if sender.state == .ended {
             UIView.animate(withDuration: 0.1, animations: {
@@ -655,14 +655,14 @@ final class AnnouncementsTableViewCell: UITableViewCell {
             }
         }
     }
+}
 
-    private func updateLikeButtonUI(isLiked: Bool) {
+extension AnnouncementTableViewCell: PostDetailsSceneViewDelegateForAnnouncement {
+    func updateLikeButtonUI(isLiked: Bool) {
         DispatchQueue.main.async {
             let imageName = isLiked ? "heart.fill" : "heart"
             
-            self.likeButtonImageView.image = UIImage(systemName: imageName)
-            self.likeButtonLabel.textColor = .customLikeButtonColor
+            self.likeButtonImageView.image = UIImage(systemName: imageName)?.withTintColor(.customLikeButtonColor)
         }
     }
 }
-
