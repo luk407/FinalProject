@@ -469,18 +469,8 @@ final class AnnouncementTableViewCell: UITableViewCell {
                 UIView.animate(withDuration: 0.1) { [self] in
                     self.headerLabel.alpha = 1.0
                     self.bodyLabel.alpha = 1.0
-                    
-                    if let navigationController = self.window?.rootViewController as? UINavigationController {
-                        //fix force unwrap
-                        let commentDetailsViewController = PostDetailsSceneView(
-                            viewModel: PostDetailsSceneViewModel(
-                                userInfo: viewModel!.userInfo,
-                                postInfo: postInfo))
-                        navigationController.pushViewController(commentDetailsViewController, animated: true)
-                    }
                 }
             }
-            print("post tapped, go to post details page")
         }
     }
     
@@ -513,15 +503,6 @@ final class AnnouncementTableViewCell: UITableViewCell {
                 UIView.animate(withDuration: 0.1) { [self] in
                     self.commentButtonImageView.alpha = 1.0
                     self.commentButtonLabel.alpha = 1.0
-                    
-                    if let navigationController = self.window?.rootViewController as? UINavigationController {
-                        // fix force unwrap
-                        let commentDetailsViewController = PostDetailsSceneView(
-                            viewModel: PostDetailsSceneViewModel(
-                                userInfo: viewModel!.userInfo,
-                                postInfo: postInfo))
-                        navigationController.pushViewController(commentDetailsViewController, animated: true)
-                    }
                 }
             }
         }

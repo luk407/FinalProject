@@ -239,7 +239,9 @@ final class PostDetailsSceneViewModel {
         
         commentReference.setData(commentData)
         
-        delegate?.postUpdated()
+        DispatchQueue.main.async {
+            self.delegate?.postUpdated()
+        }
     }
     
     private func updateUserDataWithNewCommentID(commentID: UUID) {

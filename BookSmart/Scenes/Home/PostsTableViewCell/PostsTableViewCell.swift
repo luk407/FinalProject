@@ -104,11 +104,11 @@ final class PostsTableViewCell: UITableViewCell {
         setupMainStackViewConstraints()
         setupAuthorInfoStackViewConstraints()
         setupAuthorImageViewConstraints()
+        setupNamesStackViewConstraints()
         setupSpoilerTagStackViewConstraints()
         setupTimeLabelConstraints()
         setupPostContentStackViewConstraints()
         setupBodyLabelConstraints()
-        //setupLikeCommentShareStackViewConstrains()
     }
     
     private func setupUI() {
@@ -179,10 +179,17 @@ final class PostsTableViewCell: UITableViewCell {
         ])
     }
     
+    private func setupNamesStackViewConstraints() {
+        NSLayoutConstraint.activate([
+            namesStackView.widthAnchor.constraint(greaterThanOrEqualToConstant: 100),
+        ])
+    }
+    
     private func setupSpoilerTagStackViewConstraints() {
         NSLayoutConstraint.activate([
             spoilerTagStackView.widthAnchor.constraint(equalToConstant: 50),
-            spoilerTagStackView.heightAnchor.constraint(equalToConstant: 25)
+            spoilerTagStackView.heightAnchor.constraint(equalToConstant: 25),
+            spoilerLabel.widthAnchor.constraint(equalToConstant: 50)
         ])
 
     }

@@ -164,8 +164,8 @@ final class PostDetailsSceneView: UIViewController {
     // MARK: - Private Methods
     
     @objc private func submitCommentButtonTapped() {
-        
         viewModel.submitCommentButtonTapped(commentText: typeCommentTextView.text)
+        viewModel.commentInfoListener()
         typeCommentTextView.text = ""
         typeCommentTextView.resignFirstResponder()
     }
@@ -236,6 +236,8 @@ extension PostDetailsSceneView: UITableViewDelegate {
 
 extension PostDetailsSceneView: PostDetailsSceneViewDelegate {
     func postUpdated() {
-        tableView.reloadData()
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
     }
 }
