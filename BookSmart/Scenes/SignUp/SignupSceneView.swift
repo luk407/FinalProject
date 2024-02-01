@@ -271,15 +271,17 @@ class SignupSceneView: UIViewController {
     
     // MARK: - Private Methods
     @objc private func signupButtonPressed() {
-        if usernameTextField.text == "" || emailTextField.text == "" {
-            present(emptyAlert, animated: true, completion: nil)
-        } else {
-            signupSceneViewModel.register(emailText: emailTextField.text ?? "", passwordText: passwordTextField.text ?? "")
-            signupSceneViewModel.addUserData(
-                username: usernameTextField.text ?? "",
-                email: emailTextField.text ?? "",
-                password: passwordTextField.text ?? "")
-            navigationController?.popViewController(animated: true)
+        if signupSceneViewModel.isSignUpEnabled {
+            if usernameTextField.text == "" || emailTextField.text == "" || passwordTextField.text == "" {
+                present(emptyAlert, animated: true, completion: nil)
+            } else {
+                signupSceneViewModel.register(emailText: emailTextField.text ?? "", passwordText: passwordTextField.text ?? "")
+                signupSceneViewModel.addUserData(
+                    username: usernameTextField.text ?? "",
+                    email: emailTextField.text ?? "",
+                    password: passwordTextField.text ?? "")
+                navigationController?.popViewController(animated: true)
+            }
         }
     }
     
