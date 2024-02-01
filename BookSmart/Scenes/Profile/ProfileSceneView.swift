@@ -248,7 +248,7 @@ struct ProfileSceneView: View {
                 List {
                     ForEach(profileSceneViewModel.commentsInfo) { comment in
                         
-                        postListItem(comment)
+                        commentsListItem(comment)
                     }
                     .listRowBackground(
                         RoundedRectangle(cornerRadius: 8)
@@ -262,7 +262,7 @@ struct ProfileSceneView: View {
         }
     }
     
-    private func postListItem(_ comment: CommentInfo) -> some View {
+    private func commentsListItem(_ comment: CommentInfo) -> some View {
         HStack(spacing: 8) {
             Text(comment.body)
                 .font(.system(size: 12))
@@ -302,7 +302,7 @@ struct ProfileSceneView: View {
     
     private func connectionListItem(_ connection: UserInfo) -> some View {
         HStack(spacing: 16) {
-            Image(systemName: "person.fill")
+            Image(uiImage: profileSceneViewModel.getImageFromCache(userIDString: connection.id.uuidString))
                 .resizable()
                 .frame(width: 30, height: 30)
                 .clipShape(Circle())

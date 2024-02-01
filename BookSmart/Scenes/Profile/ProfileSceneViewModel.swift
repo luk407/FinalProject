@@ -59,7 +59,6 @@ class ProfileSceneViewModel: ObservableObject {
     
     func viewOnAppear() {
         fetchOwnerInfo()
-        retrieveImage()
         postsInfoListener()
         commentInfoListener()
         connectionsInfoListener()
@@ -129,14 +128,25 @@ class ProfileSceneViewModel: ObservableObject {
     
     // MARK: - Posts
     private func fetchOwnerInfo() {
-        fetchOwnerInfoOnce(with: profileOwnerInfoID) { userInfo, error in
+        fetchOwnerInfo(with: profileOwnerInfoID) { userInfo, error in
             if let userInfo = userInfo {
                 self.fetchedOwnerInfo = userInfo
                 self.fetchedOwnerDisplayName = userInfo.displayName
                 self.fetchedOwnerUsername = "@\(userInfo.userName)"
                 self.fetchedOwnerBio = userInfo.bio
+                self.fetchOwnerImage()
             } else if let error = error {
                 print("Error fetching connection info: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    private func fetchOwnerImage() {
+        guard let fetchedOwnerInfo = fetchedOwnerInfo else { return }
+        
+        retrieveImage(for: fetchedOwnerInfo) { image in
+            DispatchQueue.main.async {
+                self.fetchedOwnerImage = image ?? UIImage(systemName: "person.fill")!
             }
         }
     }
@@ -429,7 +439,7 @@ class ProfileSceneViewModel: ObservableObject {
         return quotes
     }
     
-    private func fetchOwnerInfoOnce(with userID: UUID, completion: @escaping (UserInfo?, Error?) -> Void) {
+    private func fetchOwnerInfo(with userID: UUID, completion: @escaping (UserInfo?, Error?) -> Void) {
         
         let userDocumentReference = Firestore.firestore().collection("UserInfo").document(userID.uuidString)
         
@@ -452,29 +462,55 @@ class ProfileSceneViewModel: ObservableObject {
     }
     
     private func addConnection() {
-        let userDocumentReference = Firestore.firestore().collection("UserInfo").document(profileOwnerInfoID.uuidString)
+        let userDocumentReference = Firestore.firestore().collection("UserInfo").document(userInfo.id.uuidString)
         
-        userDocumentReference.updateData(["connections": FieldValue.arrayUnion([userInfo.id.uuidString])]) { error in
+        userDocumentReference.updateData(["connections": FieldValue.arrayUnion([profileOwnerInfoID.uuidString])]) { [weak self] error in
             if let error = error {
                 print("Error adding connection: \(error.localizedDescription)")
             } else {
                 print("Connection added successfully.")
+                self?.updateProfileOwnerConnectionAddition()
             }
         }
     }
     
-    private func removeConnection() {
-        let userDocumentReference = Firestore.firestore().collection("UserInfo").document(profileOwnerInfoID.uuidString)
+    private func updateProfileOwnerConnectionAddition() {
+        let profileOwnerDocumentReference = Firestore.firestore().collection("UserInfo").document(profileOwnerInfoID.uuidString)
         
-        userDocumentReference.updateData(["connections": FieldValue.arrayRemove([userInfo.id.uuidString])]) { error in
+        profileOwnerDocumentReference.updateData(["connections": FieldValue.arrayUnion([userInfo.id.uuidString])]) { error in
+            if let error = error {
+                print("Error updating profile owner's connections: \(error.localizedDescription)")
+            } else {
+                print("Profile owner's connections updated successfully.")
+            }
+        }
+    }
+
+    private func removeConnection() {
+        let userDocumentReference = Firestore.firestore().collection("UserInfo").document(userInfo.id.uuidString)
+        
+        userDocumentReference.updateData(["connections": FieldValue.arrayRemove([profileOwnerInfoID.uuidString])]) { [weak self] error in
             if let error = error {
                 print("Error removing connection: \(error.localizedDescription)")
             } else {
                 print("Connection removed successfully.")
+                self?.updateProfileOwnerConnectionRemoval()
             }
         }
     }
-    
+
+    private func updateProfileOwnerConnectionRemoval() {
+        let profileOwnerDocumentReference = Firestore.firestore().collection("UserInfo").document(profileOwnerInfoID.uuidString)
+        
+        profileOwnerDocumentReference.updateData(["connections": FieldValue.arrayRemove([userInfo.id.uuidString])]) { error in
+            if let error = error {
+                print("Error updating profile owner's connections: \(error.localizedDescription)")
+            } else {
+                print("Profile owner's connections updated successfully.")
+            }
+        }
+    }
+
     private func uploadImage() {
         
         let storageReference = Storage.storage().reference()
@@ -511,20 +547,43 @@ class ProfileSceneViewModel: ObservableObject {
         }
     }
     
-    private func retrieveImage() {
-        fetchedOwnerImage = UIImage(systemName: "person.fill")!
+    func retrieveImage(for user: UserInfo, completion: @escaping (UIImage?) -> Void) {
+        var fetchedImage = UIImage(systemName: "person.fill")!
         
-        if let cachedImage = CacheManager.instance.get(name: profileOwnerInfoID.uuidString) {
-            fetchedOwnerImage = cachedImage
+        if let cachedImage = CacheManager.instance.get(name: user.id.uuidString) {
+            fetchedImage = cachedImage
+            if user.id == self.profileOwnerInfoID {
+                completion(fetchedImage)
+            } else {
+                completion(nil)
+            }
         } else {
-            let database = Firestore.firestore()
-            database.collection("UserInfo").document(profileOwnerInfoID.uuidString).getDocument { document, error in
-                if error == nil && document != nil {
-                    let imagePath = document?.data()?["image"] as? String
-                    self.fetchImage(imagePath ?? "")
+            let storageReference = Storage.storage().reference()
+            let imagePath = "profileImages/\(user.id.uuidString).jpg"
+            let fileReference = storageReference.child(imagePath)
+            
+            fileReference.getData(maxSize: 5 * 1024 * 1024) { data, error in
+                if let data = data, error == nil, let newImage = UIImage(data: data) {
+                    print("Image fetched successfully.")
+                    fetchedImage = newImage
+                    
+                    CacheManager.instance.add(image: fetchedImage, name: user.id.uuidString)
+                    
+                    if user.id == self.profileOwnerInfoID {
+                        completion(fetchedImage)
+                    } else {
+                        completion(nil)
+                    }
+                } else {
+                    print("Error fetching image:", error?.localizedDescription ?? "Unknown error")
+                    completion(nil)
                 }
             }
         }
+    }
+    
+    func getImageFromCache(userIDString: String) -> UIImage {
+        return CacheManager.instance.get(name: userIDString) ?? UIImage(systemName: "person.fill")!
     }
     
     private func fetchImage(_ imagePath: String) {

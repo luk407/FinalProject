@@ -459,8 +459,6 @@ final class AnnouncementTableViewCell: UITableViewCell {
     
     @objc private func postHeaderOrBodyTapped(sender: UITapGestureRecognizer) {
         
-        guard let postInfo else { return }
-        
         if sender.state == .ended {
             UIView.animate(withDuration: 0.1, animations: {
                 self.headerLabel.alpha = 0.5
@@ -492,8 +490,6 @@ final class AnnouncementTableViewCell: UITableViewCell {
     }
     
     @objc private func commentButtonTapped(sender: UITapGestureRecognizer) {
-        
-        guard let postInfo else { return }
         
         if sender.state == .ended {
             UIView.animate(withDuration: 0.1, animations: {
