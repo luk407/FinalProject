@@ -271,6 +271,9 @@ class SignupSceneView: UIViewController {
     
     // MARK: - Private Methods
     @objc private func signupButtonPressed() {
+        
+        buttonAnimation(signupButton)
+        
         if signupSceneViewModel.isSignUpEnabled {
             if usernameTextField.text == "" || emailTextField.text == "" || passwordTextField.text == "" {
                 present(emptyAlert, animated: true, completion: nil)
@@ -310,6 +313,16 @@ class SignupSceneView: UIViewController {
             } else {
                 self.signupButton.isEnabled = true
                 self.signupButton.backgroundColor = .customAccentColor
+            }
+        }
+    }
+    
+    private func buttonAnimation(_ buttonToAnimate: UIButton) {
+        UIView.animate(withDuration: 0.1, animations: {
+            buttonToAnimate.alpha = 0.5
+        }) { _ in
+            UIView.animate(withDuration: 0.1) {
+                buttonToAnimate.alpha = 1.0
             }
         }
     }
