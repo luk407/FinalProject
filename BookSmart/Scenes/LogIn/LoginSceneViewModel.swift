@@ -10,6 +10,7 @@ import Firebase
 
 protocol LoginSceneViewDelegate: AnyObject {
     func navigateToTabBarController()
+    func loginError()
 }
 
 final class LoginSceneViewModel: ObservableObject {
@@ -18,7 +19,6 @@ final class LoginSceneViewModel: ObservableObject {
     
     @Published var fetchedUserData: UserInfo?
     private var dispatchGroup = DispatchGroup()
-    private var userDispatchGroup = DispatchGroup()
 
     weak var delegate: LoginSceneViewDelegate?
     
@@ -33,34 +33,38 @@ final class LoginSceneViewModel: ObservableObject {
     func loginAndNavigate(email: String, password: String) {
         
         dispatchGroup.enter()
-        loginToFirebase(email: email, password: password)
+        loginToFirebase(email: email, password: password) {
+            self.dispatchGroup.leave()
+        }
         
         dispatchGroup.enter()
-        userInfoListener(email: email, password: password)
+        getUserInfo(email: email, password: password) {
+            self.dispatchGroup.leave()
+        }
         
         dispatchGroup.notify(queue: .main) { [ weak self ] in
             self?.delegate?.navigateToTabBarController()
         }
     }
     
-    private func loginToFirebase(email: String, password: String) {
-        
+    private func loginToFirebase(email: String, password: String, completion: @escaping () -> Void) {
+    
         Auth.auth().signIn(withEmail: email, password: password) { result, error in
             if error != nil {
-                print(error?.localizedDescription as Any)
+                self.delegate?.loginError()
             }
+            completion()
         }
-        dispatchGroup.leave()
     }
 
     // MARK: - Firebase Methods
     
-    func userInfoListener(email: String, password: String) {
-        
+    private func getUserInfo(email: String, password: String, completion: @escaping () -> Void) {
+
         let database = Firestore.firestore()
         let reference = database.collection("UserInfo")
         
-        reference.addSnapshotListener(includeMetadataChanges: true) { [weak self] snapshot, error in
+        reference.getDocuments { [weak self] snapshot, error in
             guard let self = self else { return }
             
             if let error = error {
@@ -119,13 +123,12 @@ final class LoginSceneViewModel: ObservableObject {
                         booksFinished: booksFinished,
                         quotesUsed: quotesUsed
                     )
-                    
                     // only works second time. needs fix.
                     self.fetchedUserData = userInfo
+                    completion()
                 }
             }
         }
-        dispatchGroup.leave()
     }
     
     private func parseBooksFinishedArray(_ booksFinishedArray: [[String: Any]]) -> [Book] {
@@ -139,7 +142,6 @@ final class LoginSceneViewModel: ObservableObject {
                 booksFinished.append(book)
             }
         }
-        
         return booksFinished
     }
     
@@ -170,7 +172,6 @@ final class LoginSceneViewModel: ObservableObject {
                 quotes.append(quote)
             }
         }
-
         return quotes
     }
 }

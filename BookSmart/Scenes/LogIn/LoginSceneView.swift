@@ -34,6 +34,8 @@ final class LoginSceneView: UIViewController {
     
     private var loginButton = UIButton()
     
+    private var loginErrorAlert = UIAlertController(title: "Login Error", message: "Please try again", preferredStyle: .alert)
+    
     private var emptyAlert = UIAlertController(title: "Email or Password field is empty", message: "Please fill in all fields to log in", preferredStyle: .alert)
     
     var loginSceneViewModel = LoginSceneViewModel()
@@ -87,7 +89,7 @@ final class LoginSceneView: UIViewController {
         setupDontHaveAccountLabelUI()
         setupSignUpButtonUI()
         setupLoginButtonUI()
-        setupEmptyAlertUI()
+        setupAlertsUI()
     }
     
     // MARK: - Constraints
@@ -235,28 +237,35 @@ final class LoginSceneView: UIViewController {
         loginButton.addTarget(self, action: #selector(loginButtonPressed), for: .touchUpInside)
     }
     
-    private func setupEmptyAlertUI() {
+    private func setupAlertsUI() {
         emptyAlert.addAction(UIAlertAction(title: "OK", style: .cancel))
+        loginErrorAlert.addAction(UIAlertAction(title: "OK", style: .cancel))
     }
     
     // MARK: - Private Methods
     
     @objc private func signupButtonPressed() {
+        
+        buttonAnimation(signUpButton)
+        
         let signupScene = SignupSceneView()
         navigationController?.pushViewController(signupScene, animated: true)
     }
     
     @objc private func loginButtonPressed() {
         
+        buttonAnimation(loginButton)
+        
         if emailTextField.text == "" || passwordTextField.text == "" {
             //present(emptyAlert, animated: true, completion: nil)
             //change after finishing project
             emailTextField.text = "luk@gmail.com"
-            passwordTextField.text = "Luka!2345"            
-        } else {  
+            passwordTextField.text = "Luka!2345"
+        } else {
             loginSceneViewModel.loginAndNavigate(
                 email: emailTextField.text ?? "",
                 password: passwordTextField.text ?? "")
+            
         }
     }
     
@@ -272,15 +281,30 @@ final class LoginSceneView: UIViewController {
         view.addSubview(imageView)
         self.view.sendSubviewToBack(imageView)
     }
+    
+    private func buttonAnimation(_ buttonToAnimate: UIButton) {
+        UIView.animate(withDuration: 0.1, animations: {
+            buttonToAnimate.alpha = 0.5
+        }) { _ in
+            UIView.animate(withDuration: 0.1) {
+                buttonToAnimate.alpha = 1.0
+            }
+        }
+    }
 }
 
 // MARK: - Extensions
 
 extension LoginSceneView: LoginSceneViewDelegate {
+    
     func navigateToTabBarController() {
         guard let fetchedUserData = loginSceneViewModel.fetchedUserData else { return }
         
         let tabbarController = TabBarController(userInfo: fetchedUserData)
         navigationController?.pushViewController(tabbarController, animated: true)
+    }
+    
+    func loginError() {
+        present(loginErrorAlert, animated: true)
     }
 }
