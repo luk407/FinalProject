@@ -30,22 +30,18 @@ class TabBarController: UITabBarController {
     // MARK: - LifeCycle
     
     override func viewDidLoad() {
-        
         super.viewDidLoad()
-        
         self.delegate = self
-        
         navigationItem.hidesBackButton = true
         
         setupAppNameLabelUI()
-        
         navigationItem.titleView = appNameLabel
-    
-        let homeViewController =  HomeSceneView(
-            homeSceneViewModel: HomeSceneViewModel(
-                userInfo: userInfo))
         
-        let announcementsViewController = AnnouncementSceneView()
+        let postsScenesViewModel = PostsScenesViewModel(userInfo: userInfo)
+    
+        let homeViewController =  HomeSceneView(homeSceneViewModel: postsScenesViewModel)
+        
+        let announcementsViewController = AnnouncementSceneView(announcementSceneViewModel: postsScenesViewModel)
         
         let createPostViewController = UIHostingController(
             rootView: CreatePostSceneView(

@@ -19,8 +19,7 @@
 		A10694AF2B56F185009E5843 /* SignupSceneViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10694AE2B56F185009E5843 /* SignupSceneViewModel.swift */; };
 		A10694B12B56F1C3009E5843 /* SignupSceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10694B02B56F1C3009E5843 /* SignupSceneView.swift */; };
 		A10694B42B56F236009E5843 /* HomeSceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10694B32B56F236009E5843 /* HomeSceneView.swift */; };
-		A10694B62B56F247009E5843 /* HomeSceneViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10694B52B56F247009E5843 /* HomeSceneViewModel.swift */; };
-		A10694B92B56F2B9009E5843 /* AnnouncementSceneViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10694B82B56F2B9009E5843 /* AnnouncementSceneViewModel.swift */; };
+		A10694B62B56F247009E5843 /* PostsScenesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10694B52B56F247009E5843 /* PostsScenesViewModel.swift */; };
 		A10694BB2B56F300009E5843 /* AnnouncementSceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10694BA2B56F300009E5843 /* AnnouncementSceneView.swift */; };
 		A10694C32B56F40F009E5843 /* LeaderboardSceneViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10694C22B56F40F009E5843 /* LeaderboardSceneViewModel.swift */; };
 		A10694C52B56F425009E5843 /* LeaderboardSceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10694C42B56F425009E5843 /* LeaderboardSceneView.swift */; };
@@ -57,6 +56,8 @@
 		A13726152B66787F00F1EA6E /* BadgeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13726142B66787F00F1EA6E /* BadgeManager.swift */; };
 		A13726172B681B8000F1EA6E /* LeaderboardPodiumItemStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13726162B681B8000F1EA6E /* LeaderboardPodiumItemStackView.swift */; };
 		A137261A2B6821C200F1EA6E /* LeaderboardTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13726192B6821C200F1EA6E /* LeaderboardTableViewCell.swift */; };
+		A137261D2B6980E900F1EA6E /* AnnouncementsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A137261C2B6980E900F1EA6E /* AnnouncementsTableViewCell.swift */; };
+		A193933F2B6B81620077D7EF /* AnnouncementTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A193933E2B6B81620077D7EF /* AnnouncementTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -74,8 +75,7 @@
 		A10694AE2B56F185009E5843 /* SignupSceneViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupSceneViewModel.swift; sourceTree = "<group>"; };
 		A10694B02B56F1C3009E5843 /* SignupSceneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupSceneView.swift; sourceTree = "<group>"; };
 		A10694B32B56F236009E5843 /* HomeSceneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSceneView.swift; sourceTree = "<group>"; };
-		A10694B52B56F247009E5843 /* HomeSceneViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSceneViewModel.swift; sourceTree = "<group>"; };
-		A10694B82B56F2B9009E5843 /* AnnouncementSceneViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementSceneViewModel.swift; sourceTree = "<group>"; };
+		A10694B52B56F247009E5843 /* PostsScenesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsScenesViewModel.swift; sourceTree = "<group>"; };
 		A10694BA2B56F300009E5843 /* AnnouncementSceneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementSceneView.swift; sourceTree = "<group>"; };
 		A10694C22B56F40F009E5843 /* LeaderboardSceneViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardSceneViewModel.swift; sourceTree = "<group>"; };
 		A10694C42B56F425009E5843 /* LeaderboardSceneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardSceneView.swift; sourceTree = "<group>"; };
@@ -108,6 +108,8 @@
 		A13726142B66787F00F1EA6E /* BadgeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgeManager.swift; sourceTree = "<group>"; };
 		A13726162B681B8000F1EA6E /* LeaderboardPodiumItemStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardPodiumItemStackView.swift; sourceTree = "<group>"; };
 		A13726192B6821C200F1EA6E /* LeaderboardTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardTableViewCell.swift; sourceTree = "<group>"; };
+		A137261C2B6980E900F1EA6E /* AnnouncementsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementsTableViewCell.swift; sourceTree = "<group>"; };
+		A193933E2B6B81620077D7EF /* AnnouncementTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -218,7 +220,7 @@
 				A10695382B5E9356009E5843 /* PostDetailsScene */,
 				A106951B2B5A7905009E5843 /* PostsTableViewCell */,
 				A10694B32B56F236009E5843 /* HomeSceneView.swift */,
-				A10694B52B56F247009E5843 /* HomeSceneViewModel.swift */,
+				A10694B52B56F247009E5843 /* PostsScenesViewModel.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -226,8 +228,9 @@
 		A10694B72B56F29F009E5843 /* Announcement */ = {
 			isa = PBXGroup;
 			children = (
+				A19393382B6B7D4C0077D7EF /* AnnouncementDetailsScene */,
+				A137261B2B6980BC00F1EA6E /* AnnouncementsTableViewCell */,
 				A10694BA2B56F300009E5843 /* AnnouncementSceneView.swift */,
-				A10694B82B56F2B9009E5843 /* AnnouncementSceneViewModel.swift */,
 			);
 			path = Announcement;
 			sourceTree = "<group>";
@@ -379,6 +382,30 @@
 			path = LeaderboardTableViewCell;
 			sourceTree = "<group>";
 		};
+		A137261B2B6980BC00F1EA6E /* AnnouncementsTableViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				A137261C2B6980E900F1EA6E /* AnnouncementsTableViewCell.swift */,
+			);
+			path = AnnouncementsTableViewCell;
+			sourceTree = "<group>";
+		};
+		A19393382B6B7D4C0077D7EF /* AnnouncementDetailsScene */ = {
+			isa = PBXGroup;
+			children = (
+				A193933D2B6B81430077D7EF /* AnnouncementTableViewCell */,
+			);
+			path = AnnouncementDetailsScene;
+			sourceTree = "<group>";
+		};
+		A193933D2B6B81430077D7EF /* AnnouncementTableViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				A193933E2B6B81620077D7EF /* AnnouncementTableViewCell.swift */,
+			);
+			path = AnnouncementTableViewCell;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -463,6 +490,7 @@
 				A106952A2B5BAF4C009E5843 /* AnnouncementPostView.swift in Sources */,
 				A13726172B681B8000F1EA6E /* LeaderboardPodiumItemStackView.swift in Sources */,
 				A106953C2B5E939E009E5843 /* PostDetailsSceneViewModel.swift in Sources */,
+				A193933F2B6B81620077D7EF /* AnnouncementTableViewCell.swift in Sources */,
 				A137260A2B62661F00F1EA6E /* EmptyStateView.swift in Sources */,
 				A10695182B584525009E5843 /* ChecklistItemView.swift in Sources */,
 				A106951A2B590EBE009E5843 /* TabBarController.swift in Sources */,
@@ -476,6 +504,7 @@
 				A10694AF2B56F185009E5843 /* SignupSceneViewModel.swift in Sources */,
 				A10694D52B56FFD8009E5843 /* Quote.swift in Sources */,
 				A106948A2B56EC73009E5843 /* AppDelegate.swift in Sources */,
+				A137261D2B6980E900F1EA6E /* AnnouncementsTableViewCell.swift in Sources */,
 				A13726132B6667A400F1EA6E /* BadgeView.swift in Sources */,
 				A106948C2B56EC73009E5843 /* SceneDelegate.swift in Sources */,
 				A106952E2B5C03B3009E5843 /* AnnouncementPostViewModel.swift in Sources */,
@@ -483,12 +512,11 @@
 				A106951F2B5A7995009E5843 /* PostsTableViewCell.swift in Sources */,
 				A10694C52B56F425009E5843 /* LeaderboardSceneView.swift in Sources */,
 				A10694A42B56F069009E5843 /* CommentInfo.swift in Sources */,
-				A10694B92B56F2B9009E5843 /* AnnouncementSceneViewModel.swift in Sources */,
 				A10695162B583B90009E5843 /* PasswordStrengthChecklistUIView.swift in Sources */,
 				A10694C32B56F40F009E5843 /* LeaderboardSceneViewModel.swift in Sources */,
 				A10694C82B56F478009E5843 /* ProfileSceneView.swift in Sources */,
 				A10694D32B56FE8B009E5843 /* BooksData.swift in Sources */,
-				A10694B62B56F247009E5843 /* HomeSceneViewModel.swift in Sources */,
+				A10694B62B56F247009E5843 /* PostsScenesViewModel.swift in Sources */,
 				A10694A62B56F07E009E5843 /* BadgeInfo.swift in Sources */,
 				A10695232B5A848C009E5843 /* UIStackView+Extension.swift in Sources */,
 				A10694CA2B56F497009E5843 /* ProfileSceneViewModel.swift in Sources */,

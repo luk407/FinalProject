@@ -9,7 +9,11 @@ import Foundation
 import Firebase
 
 
-protocol PostDetailsSceneViewDelegateForCells: AnyObject {
+protocol PostDetailsSceneViewDelegateForStory: AnyObject {
+    func updateLikeButtonUI(isLiked: Bool)
+}
+
+protocol PostDetailsSceneViewDelegateForAnnouncement: AnyObject {
     func updateLikeButtonUI(isLiked: Bool)
 }
 
@@ -29,7 +33,9 @@ final class PostDetailsSceneViewModel {
     
     weak var delegate: PostDetailsSceneViewDelegate?
     
-    weak var postCellDelegate: PostDetailsSceneViewDelegateForCells?
+    weak var storyCellDelegate: PostDetailsSceneViewDelegateForStory?
+    
+    weak var announcementCellDelegate: PostDetailsSceneViewDelegateForAnnouncement?
     
     private var dispatchGroup = DispatchGroup()
     
@@ -83,7 +89,8 @@ final class PostDetailsSceneViewModel {
         
         let isLiked = userInfo.likedPosts.contains(postInfo.id)
         
-        postCellDelegate?.updateLikeButtonUI(isLiked: !isLiked)
+        storyCellDelegate?.updateLikeButtonUI(isLiked: !isLiked)
+        announcementCellDelegate?.updateLikeButtonUI(isLiked: !isLiked)
         
         if isLiked {
             userReference.updateData([
@@ -232,7 +239,9 @@ final class PostDetailsSceneViewModel {
         
         commentReference.setData(commentData)
         
-        delegate?.postUpdated()
+        DispatchQueue.main.async {
+            self.delegate?.postUpdated()
+        }
     }
     
     private func updateUserDataWithNewCommentID(commentID: UUID) {
@@ -254,80 +263,74 @@ final class PostDetailsSceneViewModel {
         return commentsInfo?.first { $0.id == commentID }
     }
     
-    func getAuthorInfo(with authorID: UserInfo.ID) -> UserInfo? {
-        
-        var authorInfo: UserInfo?
-        
+    func getAuthorInfo(with authorID: UserInfo.ID, completion: @escaping (UserInfo?) -> Void)  {
+
         let database = Firestore.firestore()
-        let reference = database.collection("UserInfo")
+        let reference = database.collection("UserInfo").document(authorID.uuidString)
         
-        reference.getDocuments { [weak self] snapshot, error in
-            
-            guard let self = self else { return }
+        reference.getDocument { document, error in
             
             if let error = error {
                 print("Error fetching user information: \(error.localizedDescription)")
                 return
             }
             
-            guard let snapshot = snapshot else {
+            guard let document = document, document.exists else {
+                print("User not found.")
                 return
             }
             
-            for document in snapshot.documents {
-                let data = document.data()
-                
-                guard
-                    let id = data["id"] as? String,
-                    let username = data["username"] as? String,
-                    let email = data["email"] as? String,
-                    let password = data["password"] as? String,
-                    let displayName = data["displayName"] as? String,
-                    let registrationDateTimestamp = data["registrationDate"] as? Timestamp,
-                    let bio = data["bio"] as? String,
-                    let image = data["image"] as? String,
-                    let badgesData = data["badges"] as? [[String: String]],
-                    let posts = data["posts"] as? [String],
-                    let comments = data["comments"] as? [String],
-                    let likedPosts = data["likedPosts"] as? [String],
-                    let connections = data["connections"] as? [String],
-                    let booksFinishedArray = data["booksFinished"] as? [[String: Any]],
-                    let quotesUsedData = data["quotesUsed"] as? [[String: String]]
-                else {
-                    print("Error parsing user dat")
-                    continue
-                }
-                
-                let badges = self.parseBadgesArray(badgesData)
-                let quotesUsed = self.parseQuotesArray(quotesUsedData)
-                let booksFinished = self.parseBooksFinishedArray(booksFinishedArray)
-                
-                let userInfo = UserInfo(
-                    id: UUID(uuidString: id) ?? UUID(),
-                    userName: username,
-                    email: email,
-                    password: password,
-                    displayName: displayName,
-                    registrationDate: registrationDateTimestamp.dateValue(),
-                    bio: bio,
-                    image: image,
-                    badges: badges,
-                    posts: posts.map { UUID(uuidString: $0) ?? UUID() },
-                    comments: comments.map { UUID(uuidString: $0) ?? UUID() },
-                    likedPosts: likedPosts.map { UUID(uuidString: $0) ?? UUID() },
-                    connections: connections.map { UUID(uuidString: $0) ?? UUID() },
-                    booksFinished: booksFinished,
-                    quotesUsed: quotesUsed
-                )
-                authorInfo = userInfo
+            let data = document.data()
+            
+            guard
+                let id = data?["id"] as? String,
+                let username = data?["username"] as? String,
+                let email = data?["email"] as? String,
+                let password = data?["password"] as? String,
+                let displayName = data?["displayName"] as? String,
+                let registrationDateTimestamp = data?["registrationDate"] as? Timestamp,
+                let bio = data?["bio"] as? String,
+                let image = data?["image"] as? String,
+                let badgesData = data?["badges"] as? [[String: String]],
+                let posts = data?["posts"] as? [String],
+                let comments = data?["comments"] as? [String],
+                let likedPosts = data?["likedPosts"] as? [String],
+                let connections = data?["connections"] as? [String],
+                let booksFinishedArray = data?["booksFinished"] as? [[String: Any]],
+                let quotesUsedData = data?["quotesUsed"] as? [[String: String]]
+            else {
+                print("Error parsing user dat")
+                return
             }
+            
+            let badges = self.parseBadgesArray(badgesData)
+            let quotesUsed = self.parseQuotesArray(quotesUsedData)
+            let booksFinished = self.parseBooksFinishedArray(booksFinishedArray)
+            
+            let userInfo = UserInfo(
+                id: UUID(uuidString: id) ?? UUID(),
+                userName: username,
+                email: email,
+                password: password,
+                displayName: displayName,
+                registrationDate: registrationDateTimestamp.dateValue(),
+                bio: bio,
+                image: image,
+                badges: badges,
+                posts: posts.map { UUID(uuidString: $0) ?? UUID() },
+                comments: comments.map { UUID(uuidString: $0) ?? UUID() },
+                likedPosts: likedPosts.map { UUID(uuidString: $0) ?? UUID() },
+                connections: connections.map { UUID(uuidString: $0) ?? UUID() },
+                booksFinished: booksFinished,
+                quotesUsed: quotesUsed
+            )
+            completion(userInfo)
         }
-        return authorInfo
     }
     
     private func parseBooksFinishedArray(_ booksFinishedArray: [[String: Any]]) -> [Book] {
         var booksFinished: [Book] = []
-
+        
         for bookInfo in booksFinishedArray {
             if let title = bookInfo["title"] as? String,
                let authorName = bookInfo["authorName"] as? [String] {
@@ -358,16 +361,14 @@ final class PostDetailsSceneViewModel {
     
     private func parseQuotesArray(_ quotesData: [[String: String]]) -> [Quote] {
         var quotes: [Quote] = []
-
+        
         for quoteData in quotesData {
             if let text = quoteData["text"], let author = quoteData["author"] {
                 let quote = Quote(text: text, author: author)
                 quotes.append(quote)
             }
         }
-
+        
         return quotes
     }
 }
-
-

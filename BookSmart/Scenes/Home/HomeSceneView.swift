@@ -8,7 +8,7 @@
 import UIKit
 import SwiftUI
 
-class HomeSceneView: UIViewController {
+final class HomeSceneView: UIViewController {
     
     // MARK: - Properties
     
@@ -18,10 +18,11 @@ class HomeSceneView: UIViewController {
     
     private let refreshControl = UIRefreshControl()
     
-    var homeSceneViewModel: HomeSceneViewModel
+    var homeSceneViewModel: PostsScenesViewModel
     
     // MARK: - Init
-    init(homeSceneViewModel: HomeSceneViewModel) {
+    
+    init(homeSceneViewModel: PostsScenesViewModel) {
         self.homeSceneViewModel = homeSceneViewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -43,7 +44,7 @@ class HomeSceneView: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        homeSceneViewModel.homeSceneViewDidLoad()
+        homeSceneViewModel.homeSceneViewWillAppear()
         postsTableView.reloadData()
     }
     
@@ -65,6 +66,7 @@ class HomeSceneView: UIViewController {
     }
     
     // MARK: - Constraints
+    
     private func setupMainStackViewConstraints() {
         NSLayoutConstraint.activate([
             mainStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -116,15 +118,15 @@ class HomeSceneView: UIViewController {
 // MARK: Extensions
 extension HomeSceneView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        homeSceneViewModel.fetchedPostsInfo.count
+        homeSceneViewModel.storyPosts.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let postInfo = homeSceneViewModel.fetchedPostsInfo[indexPath.row]
+        let storyPostInfo = homeSceneViewModel.storyPosts[indexPath.row]
         if let cell = postsTableView.dequeueReusableCell(withIdentifier: "postCell", for: indexPath) as? PostsTableViewCell {
             cell.navigationController = navigationController
             cell.viewModel = homeSceneViewModel
-            cell.postInfo = postInfo
+            cell.postInfo = storyPostInfo
             cell.configureCell()
             cell.contentView.isUserInteractionEnabled = false
             cell.layoutIfNeeded()
@@ -142,7 +144,7 @@ extension HomeSceneView: UITableViewDelegate {
     }
 }
 
-extension HomeSceneView: HomeSceneViewDelegate {
+extension HomeSceneView: PostsScenesViewModelDelegate {
     func reloadTableView() {
         DispatchQueue.main.async {
             self.postsTableView.reloadData()

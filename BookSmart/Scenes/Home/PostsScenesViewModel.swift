@@ -8,20 +8,23 @@
 import Foundation
 import Firebase
 
-protocol HomeSceneViewDelegate: AnyObject {
+protocol PostsScenesViewModelDelegate: AnyObject {
     func reloadTableView()
 }
 
-class HomeSceneViewModel {
+final class PostsScenesViewModel {
     
     // MARK: - Properties
     
     var fetchedPostsInfo: [PostInfo] = []
+    var storyPosts: [PostInfo] = []
+    var announcementPosts: [PostInfo] = []
+
     var userInfo: UserInfo
 
     private let dispatchGroup = DispatchGroup()
     
-    weak var delegate: HomeSceneViewDelegate?
+    weak var delegate: PostsScenesViewModelDelegate?
     
     // MARK: - Init
     
@@ -31,7 +34,7 @@ class HomeSceneViewModel {
     
     // MARK: - Methods
     
-    func homeSceneViewDidLoad() {
+    func homeSceneViewWillAppear() {
         //if !viewDidLoad {
             
             dispatchGroup.enter()
@@ -86,6 +89,8 @@ class HomeSceneViewModel {
             }
             
             self.fetchedPostsInfo.removeAll()
+            self.storyPosts.removeAll()
+            self.announcementPosts.removeAll()
             
             for document in snapshot.documents {
                 let data = document.data()
@@ -123,8 +128,19 @@ class HomeSceneViewModel {
                         announcementType: announcementType
                     )
                     self.fetchedPostsInfo.append(postInfo)
+                    
+                    switch type {
+                    case .story:
+                        self.storyPosts.append(postInfo)
+                    case .announcement:
+                        self.announcementPosts.append(postInfo)
+                    }
                 }
             }
+            
+            self.fetchedPostsInfo.sort(by: { $0.postingTime > $1.postingTime })
+            self.storyPosts.sort(by: { $0.postingTime > $1.postingTime })
+            self.announcementPosts.sort(by: { $0.postingTime > $1.postingTime })
         }
         dispatchGroup.leave()
     }

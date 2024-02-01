@@ -136,6 +136,7 @@ final class PostDetailsSceneView: UIViewController {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.register(PostTableViewCell.self, forCellReuseIdentifier: "postCell")
         tableView.register(CommentTableViewCell.self, forCellReuseIdentifier: "commentCell")
+        tableView.register(AnnouncementTableViewCell.self, forCellReuseIdentifier: "announcementCell")
         tableView.dataSource = self
         tableView.delegate = self
     }
@@ -163,8 +164,8 @@ final class PostDetailsSceneView: UIViewController {
     // MARK: - Private Methods
     
     @objc private func submitCommentButtonTapped() {
-        
         viewModel.submitCommentButtonTapped(commentText: typeCommentTextView.text)
+        viewModel.commentInfoListener()
         typeCommentTextView.text = ""
         typeCommentTextView.resignFirstResponder()
     }
@@ -180,15 +181,36 @@ extension PostDetailsSceneView: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.row == 0 {
-            if let cell = tableView.dequeueReusableCell(withIdentifier: "postCell", for: indexPath) as? PostTableViewCell {
-                cell.navigationController = navigationController
-                cell.configureCell(viewModel: viewModel, userInfo: viewModel.userInfo, postInfo: viewModel.postInfo)
-                cell.backgroundColor = .customBackgroundColor
-                cell.contentView.isUserInteractionEnabled = false
-                return cell
-            } else {
-                return UITableViewCell()
-            }
+            switch viewModel.postInfo.type {
+            case .story:
+                if let cell = tableView.dequeueReusableCell(withIdentifier: "postCell", for: indexPath) as? PostTableViewCell {
+                    viewModel.getAuthorInfo(with: viewModel.postInfo.authorID) { [self] authorInfo in
+                        cell.navigationController = navigationController
+                        cell.configureCell(viewModel: viewModel, userInfo: viewModel.userInfo, authorInfo: authorInfo ?? viewModel.userInfo, postInfo: viewModel.postInfo)
+                        cell.backgroundColor = .customBackgroundColor
+                        cell.contentView.isUserInteractionEnabled = false
+                    }
+                    return cell
+                } else {
+                    return UITableViewCell()
+                }
+            case .announcement:
+                if let cell = tableView.dequeueReusableCell(withIdentifier: "announcementCell", for: indexPath) as? AnnouncementTableViewCell {
+                    viewModel.getAuthorInfo(with: viewModel.postInfo.authorID) { [ weak self ] authorInfo in
+                        cell.viewModel = self?.viewModel
+                        cell.userInfo = self?.viewModel.userInfo
+                        cell.postInfo = self?.viewModel.postInfo
+                        cell.authorInfo = authorInfo
+                        cell.navigationController = self?.navigationController
+                        cell.configureCell()
+                        cell.backgroundColor = .customBackgroundColor
+                        cell.contentView.isUserInteractionEnabled = false
+                    }
+                    return cell
+                } else {
+                    return UITableViewCell()
+                }
+            }            
         } else {
             if let cell = tableView.dequeueReusableCell(withIdentifier: "commentCell", for: indexPath) as? CommentTableViewCell {
                 guard let commentInfo = viewModel.commentsInfo?[indexPath.row - 1] else { return UITableViewCell() }
@@ -214,6 +236,8 @@ extension PostDetailsSceneView: UITableViewDelegate {
 
 extension PostDetailsSceneView: PostDetailsSceneViewDelegate {
     func postUpdated() {
-        tableView.reloadData()
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
     }
 }
