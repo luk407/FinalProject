@@ -169,7 +169,8 @@ class PostTableViewCell: UITableViewCell {
     
     private func setupPostContentStackViewConstraints() {
         NSLayoutConstraint.activate([
-            postContentStackView.heightAnchor.constraint(greaterThanOrEqualToConstant: 100)
+            postContentStackView.heightAnchor.constraint(greaterThanOrEqualToConstant: 80),
+            postContentStackView.widthAnchor.constraint(equalTo: mainStackView.widthAnchor)
         ])
     }
     
@@ -238,11 +239,14 @@ class PostTableViewCell: UITableViewCell {
         postContentStackView.spacing = 16
         postContentStackView.alignment = .leading
         postContentStackView.distribution = .fillProportionally
+        postContentStackView.isLayoutMarginsRelativeArrangement = true
+        postContentStackView.layoutMargins = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
     }
     
     private func setupHeaderLabelUI() {
         headerLabel.font = .boldSystemFont(ofSize: 16)
         headerLabel.textColor = .white
+        headerLabel.textAlignment = NSTextAlignment(.left)
     }
     
     private func setupBodyTextViewUI() {
@@ -251,6 +255,7 @@ class PostTableViewCell: UITableViewCell {
         bodyTextView.backgroundColor = .clear
         bodyTextView.textColor = .white
         bodyTextView.isScrollEnabled = false
+        bodyTextView.textAlignment = NSTextAlignment(.left)
     }
 
     private func setupLikeCommentShareStackViewUI() {

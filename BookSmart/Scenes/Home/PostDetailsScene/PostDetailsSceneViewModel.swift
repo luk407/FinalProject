@@ -195,11 +195,23 @@ final class PostDetailsSceneViewModel {
                     
                     fetchedComments.append(commentInfo)
                 }
-                self.commentsInfo = fetchedComments
+                self.commentsInfo = fetchedComments.sorted(by: { $0.commentTime > $1.commentTime })
             }
     }
     
     func submitCommentButtonTapped(commentText: String) {
+        addCommentToFirebase(commentText: commentText) {
+            self.dispatchGroup.enter()
+            self.commentInfoListener()
+            self.dispatchGroup.leave()
+            
+            self.dispatchGroup.notify(queue: .main) {
+                self.delegate?.postUpdated()
+            }
+        }
+    }
+    
+    private func addCommentToFirebase(commentText: String, completion: @escaping () -> Void) {
         let database = Firestore.firestore()
         let postReference = database.collection("PostInfo").document(postInfo.id.uuidString)
         
@@ -210,6 +222,8 @@ final class PostDetailsSceneViewModel {
             body: commentText,
             likedBy: [],
             comments: [])
+        
+        postInfo.comments.append(newComment.id)
         
         postReference.updateData([
             "comments": FieldValue.arrayUnion([newComment.id.uuidString])
@@ -239,9 +253,7 @@ final class PostDetailsSceneViewModel {
         
         commentReference.setData(commentData)
         
-        DispatchQueue.main.async {
-            self.delegate?.postUpdated()
-        }
+        completion()
     }
     
     private func updateUserDataWithNewCommentID(commentID: UUID) {

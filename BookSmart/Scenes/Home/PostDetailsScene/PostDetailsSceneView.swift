@@ -161,11 +161,11 @@ final class PostDetailsSceneView: UIViewController {
         submitCommentButton.tintColor = .customAccentColor
         submitCommentButton.addTarget(self, action: #selector(submitCommentButtonTapped), for: .touchUpInside)
     }
+    
     // MARK: - Private Methods
     
     @objc private func submitCommentButtonTapped() {
         viewModel.submitCommentButtonTapped(commentText: typeCommentTextView.text)
-        viewModel.commentInfoListener()
         typeCommentTextView.text = ""
         typeCommentTextView.resignFirstResponder()
     }
