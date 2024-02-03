@@ -14,6 +14,7 @@ final class AnnouncementPostViewModel: ObservableObject {
     
     // MARK: - Properties
     
+    private var cancellable: AnyCancellable?
     private var disposeBag = Set<AnyCancellable>()
 
     @Published var searchText: String = ""
@@ -61,10 +62,10 @@ final class AnnouncementPostViewModel: ObservableObject {
     
     private func debounceTextChanges() {
         $searchText
-            .debounce(for: 2, scheduler: RunLoop.main)
-        
-            .sink {
-                self.fetchBooksData(with: $0)
+            .debounce(for: 0.5, scheduler: RunLoop.main)
+            .sink { searchText in
+                print("Search Text:", searchText)
+                self.fetchBooksData(with: searchText)
             }
             .store(in: &disposeBag)
     }

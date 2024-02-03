@@ -36,7 +36,7 @@ struct AnnouncementPostView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color(uiColor: .customBackgroundColor))
         }
-        .searchable(text: $viewModel.searchText, prompt: "Enter book name")
+        .searchable(text: $viewModel.searchText, prompt: "Enter book name...")
         .textInputAutocapitalization(.never)
         .foregroundStyle(Color(uiColor: .customAccentColor))
     }
@@ -51,6 +51,7 @@ struct AnnouncementPostView: View {
                     .listRowBackground(Color(uiColor: .customBackgroundColor))
                     .onTapGesture {
                         viewModel.selectedBook = result
+                        viewModel.searchText = ""
                     }
             }
         }
