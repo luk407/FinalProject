@@ -168,6 +168,8 @@ class ProfileSceneViewModel: ObservableObject {
                 return
             }
             
+            var posts: [PostInfo] = []
+            
             for document in snapshot.documents {
                 let data = document.data()
                 
@@ -204,9 +206,10 @@ class ProfileSceneViewModel: ObservableObject {
                         spoilersAllowed: spoilersAllowed,
                         announcementType: announcementType
                     )
-                    self.postsInfo.append(postInfo)
+                    posts.append(postInfo)
                 }
             }
+            self.postsInfo = posts.sorted(by: { $0.postingTime > $1.postingTime })
         }
     }
     
@@ -259,7 +262,7 @@ class ProfileSceneViewModel: ObservableObject {
                     )
                     fetchedComments.append(commentInfo)
                 }
-                self.commentsInfo = fetchedComments
+                self.commentsInfo = fetchedComments.sorted(by: { $0.commentTime > $1.commentTime })
             }
     }
     
@@ -292,16 +295,11 @@ class ProfileSceneViewModel: ObservableObject {
                 connectionGroup.enter()
                 self.fetchUserInfo(with: connectionID) { (userInfo, error) in
                     
-//                    self.fetchGroup.enter()
                     if let userInfo = userInfo {
                         fetchedConnections.append(userInfo)
                     } else if let error = error {
                         print("Error fetching connection info: \(error.localizedDescription)")
                     }
-                    
-//                    self.fetchGroup.notify(queue: .main) {
-//                        self.connectionGroup.leave()
-//                    }
                 }
                 connectionGroup.leave()
             }
@@ -334,8 +332,6 @@ class ProfileSceneViewModel: ObservableObject {
             } else {
                 completion(nil, NSError(domain: "User Document Not Found", code: 0, userInfo: nil))
             }
-            
-            //self.fetchGroup.leave()
         }
     }
 
