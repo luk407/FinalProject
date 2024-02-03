@@ -11,7 +11,6 @@ struct BooksData: Decodable {
     let docs: [Book]
 }
 
-// MARK: - Doc
 struct Book: Decodable, Hashable {
     let title: String
     let authorName: [String]?

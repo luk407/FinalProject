@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 struct AnnouncementPostView: View {
     
     // MARK: - Properties
@@ -33,6 +34,9 @@ struct AnnouncementPostView: View {
                 addPostButton
                     .padding()
             }
+            .onReceive(viewModel.objectWillChange, perform: { _ in
+                
+            })
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color(uiColor: .customBackgroundColor))
         }
@@ -44,18 +48,24 @@ struct AnnouncementPostView: View {
     // MARK: - Views
     
     private var searchList: some View {
-        List {
-            ForEach(viewModel.searchResults, id: \.self) { result in
-                Text(result.title)
-                    .foregroundStyle(.white)
-                    .listRowBackground(Color(uiColor: .customBackgroundColor))
-                    .onTapGesture {
-                        viewModel.selectedBook = result
-                        viewModel.searchText = ""
+        if viewModel.searchText.isEmpty {
+            return AnyView(Spacer())
+        } else {
+            return AnyView(
+                List {
+                    ForEach(viewModel.booksArray, id: \.self) { result in
+                        Text(result.title)
+                            .foregroundStyle(.white)
+                            .listRowBackground(Color(uiColor: .customBackgroundColor))
+                            .onTapGesture {
+                                viewModel.selectedBook = result
+                                viewModel.searchText = ""
+                            }
                     }
-            }
+                }
+                .listStyle(.plain)
+            )
         }
-        .listStyle(.plain)
     }
     
     private var selectedBookInfo: some View {

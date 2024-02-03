@@ -5,6 +5,7 @@
 //  Created by Luka Gazdeliani on 20.01.24.
 //
 
+import SwiftUI
 import Foundation
 import Firebase
 import GenericNetworkLayer
@@ -14,7 +15,7 @@ final class AnnouncementPostViewModel: ObservableObject {
     
     // MARK: - Properties
     
-    private var cancellable: AnyCancellable?
+    private var searchTextCancellable: AnyCancellable?
     private var disposeBag = Set<AnyCancellable>()
 
     @Published var searchText: String = ""
@@ -24,13 +25,9 @@ final class AnnouncementPostViewModel: ObservableObject {
     
     var userInfo: UserInfo
     
-    var booksArray: [Book] = []
-    
-    var searchResults: [Book] {
-        if searchText.isEmpty {
-            return []
-        } else {
-            return booksArray.filter { $0.title.contains(searchText) }
+    @Published var booksArray: [Book] = [] {
+        didSet {
+            objectWillChange.send()
         }
     }
     
@@ -55,19 +52,21 @@ final class AnnouncementPostViewModel: ObservableObject {
     
     init(userInfo: UserInfo) {
         self.userInfo = userInfo
-        debounceTextChanges()
+        setupDebouncedTextChanges()
     }
     
     // MARK: - Methods
     
-    private func debounceTextChanges() {
-        $searchText
-            .debounce(for: 0.5, scheduler: RunLoop.main)
-            .sink { searchText in
+    private func setupDebouncedTextChanges() {
+        searchTextCancellable = $searchText
+            .debounce(for: 1.0, scheduler: RunLoop.main)
+            .removeDuplicates()
+            .sink { [weak self] searchText in
                 print("Search Text:", searchText)
-                self.fetchBooksData(with: searchText)
+                if searchText.count > 3 {
+                    self?.fetchBooksData(with: searchText)
+                }
             }
-            .store(in: &disposeBag)
     }
 
     func addPost() {
@@ -160,12 +159,15 @@ final class AnnouncementPostViewModel: ObservableObject {
     }
 
     func fetchBooksData(with titleString: String) {
-        guard let url = URL(string: "https://openlibrary.org/search.json?title=\(titleString)#") else { return }
+        guard let url = URL(string: "https://openlibrary.org/search.json?title=\(titleString)") else { return }
         
         NetworkManager().request(with: url) { [ weak self ] (result: Result<BooksData, Error>) in
             switch result {
             case .success(let books):
-                self?.booksArray = books.docs
+                DispatchQueue.main.async {
+                    self?.booksArray = books.docs
+                    print(books.docs)
+                }
             case .failure(let error):
                 print(error.localizedDescription)
             }
