@@ -7,14 +7,26 @@
 
 import UIKit
 import SwiftUI
+import Firebase
 
 class TabBarController: UITabBarController {
     
     // MARK: - Properties
     
-    var userInfo: UserInfo
-    
     private var appNameLabel = UILabel()
+    
+    private lazy var searchBar: UISearchBar = {
+        let searchBar = UISearchBar(frame: CGRect(x: 0, y: 0, width: 200, height: 20))
+        searchBar.placeholder = "Search..."
+        searchBar.delegate = self
+        return searchBar
+    }()
+    
+    private var searchButton: UIBarButtonItem!
+    
+    private var logoutButton: UIBarButtonItem!
+
+    var userInfo: UserInfo
     
     // MARK: - Init
     
@@ -33,13 +45,12 @@ class TabBarController: UITabBarController {
         super.viewDidLoad()
         self.delegate = self
         navigationItem.hidesBackButton = true
-        
-        setupAppNameLabelUI()
-        navigationItem.titleView = appNameLabel
+        setupLogoutButton()
+        setupSearchButtonAndBar()
         
         let postsScenesViewModel = PostsScenesViewModel(userInfo: userInfo)
     
-        let homeViewController =  HomeSceneView(homeSceneViewModel: postsScenesViewModel)
+        let homeViewController = HomeSceneView(homeSceneViewModel: postsScenesViewModel)
         
         let announcementsViewController = AnnouncementSceneView(announcementSceneViewModel: postsScenesViewModel)
         
@@ -58,10 +69,19 @@ class TabBarController: UITabBarController {
                     userInfo: userInfo)).background(Color(uiColor: .customBackgroundColor)))
         
         homeViewController.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house.fill"), selectedImage: nil)
+        homeViewController.tabBarItem.tag = 0
+        
         announcementsViewController.tabBarItem = UITabBarItem(title: "Announcements", image: UIImage(systemName: "megaphone.fill"), selectedImage: nil)
+        announcementsViewController.tabBarItem.tag = 1
+        
         createPostViewController.tabBarItem = UITabBarItem(title: "Create Post", image: UIImage(systemName: "plus.circle"), selectedImage: nil)
+        createPostViewController.tabBarItem.tag = 2
+        
         leaderboardViewController.tabBarItem = UITabBarItem(title: "Leaderboard", image: UIImage(systemName: "flag.2.crossed.fill"), selectedImage: nil)
+        leaderboardViewController.tabBarItem.tag = 3
+        
         profileViewController.tabBarItem = UITabBarItem(title: "Profile", image: UIImage(systemName: "person.fill"), selectedImage: nil)
+        profileViewController.tabBarItem.tag = 4
         
         UITabBar.appearance().tintColor = UIColor.customAccentColor
         UITabBar.appearance().unselectedItemTintColor = UIColor.white
@@ -69,14 +89,54 @@ class TabBarController: UITabBarController {
         viewControllers = [homeViewController, announcementsViewController, createPostViewController, leaderboardViewController, profileViewController]
     }
     
+    private func setupSearchButtonAndBar() {
+        searchButton = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(searchButtonPressed))
+        //navigationItem.rightBarButtonItem = searchButton
+        navigationItem.titleView = searchBar
+        searchBar.isHidden = true
+        navigationItem.rightBarButtonItem = searchButton
+    }
+
+    @objc private func searchButtonPressed() {
+        searchBar.isHidden.toggle()
+        if !searchBar.isHidden {
+            searchBar.becomeFirstResponder()
+        }
+    }
+    
+    private func setupLogoutButton() {
+        logoutButton = UIBarButtonItem(
+            image: UIImage(systemName: "rectangle.portrait.and.arrow.right"),
+            style: .plain,
+            target: self,
+            action: #selector(logoutButtonPressed))
+        logoutButton.isHidden = false
+    }
+    
+    @objc private func logoutButtonPressed() {
+        do {
+            try Auth.auth().signOut()
+            
+            if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate,
+               let rootNavigationController = sceneDelegate.window?.rootViewController as? UINavigationController {
+                rootNavigationController.popToRootViewController(animated: true)
+            } else {
+                print("Error accessing the root navigation controller.")
+            }
+        } catch {
+            print("Error signing out: \(error.localizedDescription)")
+        }
+    }
+
     private func setupAppNameLabelUI() {
-        
         appNameLabel.text = "BookSmart"
         appNameLabel.font = .systemFont(ofSize: 20)
         appNameLabel.textColor = .customAccentColor
         appNameLabel.sizeToFit()
     }
 }
+
+// MARK: - Extensions
 
 extension TabBarController: UITabBarControllerDelegate {
     
@@ -90,3 +150,22 @@ extension TabBarController: UITabBarControllerDelegate {
     }
 }
 
+extension TabBarController {
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        if viewController.tabBarItem.tag == 0 {
+            navigationItem.rightBarButtonItem = searchButton
+        } else if viewController.tabBarItem.tag == 4 {
+            navigationItem.rightBarButtonItem = logoutButton
+        } else {
+            navigationItem.rightBarButtonItem = .none
+        }
+    }
+}
+
+extension TabBarController: UISearchBarDelegate {
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.isHidden = true
+        searchButton.isEnabled = true
+        searchButtonPressed()
+    }
+}
