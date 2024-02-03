@@ -105,9 +105,18 @@ class TabBarController: UITabBarController {
 
     @objc private func searchButtonPressed() {
         searchBar.isHidden.toggle()
+        
+        if searchBar.isHidden {
+            if let homeViewController = viewControllers?.first as? HomeSceneView {
+                searchBar.text = ""
+                homeViewController.homeSceneViewModel.filterStoryPosts(with: "")
+            }
+        }
+        
         if !searchBar.isHidden {
             searchBar.becomeFirstResponder()
         }
+        
     }
     
     private func setupLogoutButton() {
@@ -161,9 +170,21 @@ extension TabBarController {
         if viewController.tabBarItem.tag == 0 {
             navigationItem.rightBarButtonItem = searchButton
         } else if viewController.tabBarItem.tag == 4 {
+            if let homeViewController = viewControllers?.first as? HomeSceneView {
+                searchBar.text = ""
+                homeViewController.homeSceneViewModel.filterStoryPosts(with: "")
+            }
             navigationItem.rightBarButtonItem = logoutButton
+            searchBar.resignFirstResponder()
+            searchBar.isHidden = true
         } else {
+            if let homeViewController = viewControllers?.first as? HomeSceneView {
+                searchBar.text = ""
+                homeViewController.homeSceneViewModel.filterStoryPosts(with: "")
+            }
             navigationItem.rightBarButtonItem = .none
+            searchBar.resignFirstResponder()
+            searchBar.isHidden = true
         }
     }
 }
@@ -181,6 +202,7 @@ extension TabBarController: UISearchBarDelegate {
         searchButton.isEnabled = true
         searchButtonPressed()
         if let homeViewController = viewControllers?.first as? HomeSceneView {
+            searchBar.text = ""
             homeViewController.homeSceneViewModel.filterStoryPosts(with: "")
         }
     }

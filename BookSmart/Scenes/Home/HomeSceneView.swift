@@ -35,7 +35,7 @@ final class HomeSceneView: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        homeSceneViewModel.delegate = self
+        homeSceneViewModel.storyDelegate = self
         view.backgroundColor = .customBackgroundColor
         setupSubviews()
         setupConstraints()
@@ -45,7 +45,6 @@ final class HomeSceneView: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         homeSceneViewModel.homeSceneViewWillAppear()
-        postsTableView.reloadData()
     }
     
     // MARK: - Setup Subviews, Constraints, UI
@@ -144,7 +143,7 @@ extension HomeSceneView: UITableViewDelegate {
     }
 }
 
-extension HomeSceneView: PostsScenesViewModelDelegate {
+extension HomeSceneView: PostsScenesViewModelDelegateForStory {
     func reloadTableView() {
         DispatchQueue.main.async {
             self.postsTableView.reloadData()

@@ -8,7 +8,11 @@
 import Foundation
 import Firebase
 
-protocol PostsScenesViewModelDelegate: AnyObject {
+protocol PostsScenesViewModelDelegateForAnnouncement: AnyObject {
+    func reloadTableView()
+}
+
+protocol PostsScenesViewModelDelegateForStory: AnyObject {
     func reloadTableView()
 }
 
@@ -26,7 +30,9 @@ final class PostsScenesViewModel {
 
     private let dispatchGroup = DispatchGroup()
     
-    weak var delegate: PostsScenesViewModelDelegate?
+    weak var storyDelegate: PostsScenesViewModelDelegateForStory?
+    
+    weak var announcementDelegate: PostsScenesViewModelDelegateForAnnouncement?
     
     // MARK: - Init
     
@@ -44,7 +50,8 @@ final class PostsScenesViewModel {
         postsInfoListener()
         
         dispatchGroup.notify(queue: .main) { [weak self] in
-            self?.delegate?.reloadTableView()
+            self?.storyDelegate?.reloadTableView()
+            self?.announcementDelegate?.reloadTableView()
         }
     }
     
@@ -69,7 +76,7 @@ final class PostsScenesViewModel {
     }
     
     func filterStoryPosts(with searchText: String) {
-        if searchText.isEmpty {
+        if searchText == "" {
             filteredStoryPosts = storyPosts
         } else {
             filteredStoryPosts = storyPosts.filter { postInfo in
@@ -78,7 +85,8 @@ final class PostsScenesViewModel {
                 return headerMatch || bodyMatch
             }
         }
-        delegate?.reloadTableView()
+        filteredStoryPosts.sort(by: { $0.postingTime > $1.postingTime })
+        storyDelegate?.reloadTableView()
     }
 
     // MARK: - Firebase Methods
@@ -102,6 +110,7 @@ final class PostsScenesViewModel {
             self.fetchedPostsInfo.removeAll()
             self.storyPosts.removeAll()
             self.announcementPosts.removeAll()
+            self.filteredStoryPosts.removeAll()
             
             for document in snapshot.documents {
                 let data = document.data()
@@ -150,6 +159,7 @@ final class PostsScenesViewModel {
                 }
             }
             
+            self.filteredStoryPosts.sort(by: { $0.postingTime > $1.postingTime })
             self.fetchedPostsInfo.sort(by: { $0.postingTime > $1.postingTime })
             self.storyPosts.sort(by: { $0.postingTime > $1.postingTime })
             self.announcementPosts.sort(by: { $0.postingTime > $1.postingTime })

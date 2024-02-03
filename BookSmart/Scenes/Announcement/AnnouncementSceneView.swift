@@ -34,7 +34,7 @@ final class AnnouncementSceneView: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        announcementSceneViewModel.delegate = self
+        announcementSceneViewModel.announcementDelegate = self
         view.backgroundColor = .customBackgroundColor
         setupSubviews()
         setupConstraints()
@@ -141,7 +141,7 @@ extension AnnouncementSceneView: UITableViewDelegate {
     }
 }
 
-extension AnnouncementSceneView: PostsScenesViewModelDelegate {
+extension AnnouncementSceneView: PostsScenesViewModelDelegateForAnnouncement {
     func reloadTableView() {
         DispatchQueue.main.async {
             self.announcementsTableView.reloadData()
