@@ -118,11 +118,11 @@ final class HomeSceneView: UIViewController {
 // MARK: Extensions
 extension HomeSceneView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        homeSceneViewModel.storyPosts.count
+        homeSceneViewModel.filteredStoryPosts.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let storyPostInfo = homeSceneViewModel.storyPosts[indexPath.row]
+        let storyPostInfo = homeSceneViewModel.filteredStoryPosts[indexPath.row]
         if let cell = postsTableView.dequeueReusableCell(withIdentifier: "postCell", for: indexPath) as? PostsTableViewCell {
             cell.navigationController = navigationController
             cell.viewModel = homeSceneViewModel

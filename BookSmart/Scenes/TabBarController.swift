@@ -45,6 +45,7 @@ class TabBarController: UITabBarController {
         super.viewDidLoad()
         self.delegate = self
         navigationItem.hidesBackButton = true
+        setupAppNameLabelUI()
         setupLogoutButton()
         setupSearchButtonAndBar()
         
@@ -91,10 +92,15 @@ class TabBarController: UITabBarController {
     
     private func setupSearchButtonAndBar() {
         searchButton = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(searchButtonPressed))
-        //navigationItem.rightBarButtonItem = searchButton
         navigationItem.titleView = searchBar
         searchBar.isHidden = true
         navigationItem.rightBarButtonItem = searchButton
+        
+        searchBar.barTintColor = .customBackgroundColor
+        searchBar.tintColor = .white
+        if let textFieldInsideSearchBar = searchBar.value(forKey: "searchField") as? UITextField {
+            textFieldInsideSearchBar.textColor = .white
+        }
     }
 
     @objc private func searchButtonPressed() {
@@ -163,9 +169,19 @@ extension TabBarController {
 }
 
 extension TabBarController: UISearchBarDelegate {
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if let homeViewController = viewControllers?.first as? HomeSceneView {
+            homeViewController.homeSceneViewModel.filterStoryPosts(with: searchText)
+        }
+    }
+    
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchBar.isHidden = true
         searchButton.isEnabled = true
         searchButtonPressed()
+        if let homeViewController = viewControllers?.first as? HomeSceneView {
+            homeViewController.homeSceneViewModel.filterStoryPosts(with: "")
+        }
     }
 }

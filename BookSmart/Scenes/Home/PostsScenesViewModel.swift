@@ -19,6 +19,8 @@ final class PostsScenesViewModel {
     var fetchedPostsInfo: [PostInfo] = []
     var storyPosts: [PostInfo] = []
     var announcementPosts: [PostInfo] = []
+    
+    var filteredStoryPosts: [PostInfo] = []
 
     var userInfo: UserInfo
 
@@ -35,19 +37,15 @@ final class PostsScenesViewModel {
     // MARK: - Methods
     
     func homeSceneViewWillAppear() {
-        //if !viewDidLoad {
-            
-            dispatchGroup.enter()
-            userInfoListener()
-            
-            dispatchGroup.enter()
-            postsInfoListener()
-            
-            dispatchGroup.notify(queue: .main) { [weak self] in
-                self?.delegate?.reloadTableView()
-                //self?.viewDidLoad = true
-            }
-        //}
+        dispatchGroup.enter()
+        userInfoListener()
+        
+        dispatchGroup.enter()
+        postsInfoListener()
+        
+        dispatchGroup.notify(queue: .main) { [weak self] in
+            self?.delegate?.reloadTableView()
+        }
     }
     
     func timeAgoString(from date: Date) -> String {
@@ -70,6 +68,19 @@ final class PostsScenesViewModel {
         }
     }
     
+    func filterStoryPosts(with searchText: String) {
+        if searchText.isEmpty {
+            filteredStoryPosts = storyPosts
+        } else {
+            filteredStoryPosts = storyPosts.filter { postInfo in
+                let headerMatch = postInfo.header.localizedCaseInsensitiveContains(searchText)
+                let bodyMatch = postInfo.body.localizedCaseInsensitiveContains(searchText)
+                return headerMatch || bodyMatch
+            }
+        }
+        delegate?.reloadTableView()
+    }
+
     // MARK: - Firebase Methods
     
     private func postsInfoListener() {
@@ -132,6 +143,7 @@ final class PostsScenesViewModel {
                     switch type {
                     case .story:
                         self.storyPosts.append(postInfo)
+                        self.filteredStoryPosts.append(postInfo)
                     case .announcement:
                         self.announcementPosts.append(postInfo)
                     }
