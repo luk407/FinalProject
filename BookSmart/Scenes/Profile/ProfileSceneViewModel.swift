@@ -103,15 +103,37 @@ class ProfileSceneViewModel: ObservableObject {
     }
     
     func addRemoveConnections() {
-        if isInConnections {
-            removeConnection()
-            isInConnections = false
+        if self.isInConnections {
+            DispatchQueue.main.async {
+                self.removeConnection()
+                self.isInConnections = false
+                self.scheduleNotification(message: "You are no longer connected with \(self.fetchedOwnerDisplayName)")
+            }
         } else {
-            addConnection()
-            isInConnections = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                self.addConnection()
+                self.isInConnections = true
+                self.scheduleNotification(message: "You are now connected with \(self.fetchedOwnerDisplayName)")
+            }
         }
     }
-    
+
+    func scheduleNotification(message: String) {
+        let content = UNMutableNotificationContent()
+        content.title = "BookSmart"
+        content.body = message
+        content.sound = UNNotificationSound.default
+
+        let request = UNNotificationRequest(identifier: "connectionNotification", content: content, trigger: nil)
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Error scheduling notification: \(error.localizedDescription)")
+            } else {
+                print("Notification scheduled successfully.")
+            }
+        }
+    }
+
     func editProfile() {
         if isEditable {
             isEditable = false
