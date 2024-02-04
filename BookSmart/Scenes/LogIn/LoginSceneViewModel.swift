@@ -25,7 +25,6 @@ final class LoginSceneViewModel: ObservableObject {
     // MARK: - Init
     
     init() {
-        FirebaseApp.configure()
     }
     
     // MARK: - Methods
