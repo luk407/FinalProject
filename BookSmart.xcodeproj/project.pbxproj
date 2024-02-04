@@ -188,7 +188,6 @@
 		A10694A72B56F0C9009E5843 /* Scenes */ = {
 			isa = PBXGroup;
 			children = (
-				A19393442B6FA7680077D7EF /* Onboarding */,
 				A10695192B590EBE009E5843 /* TabBarController.swift */,
 				A10694C62B56F462009E5843 /* Profile */,
 				A10694C12B56F3EC009E5843 /* Leaderboard */,
@@ -197,6 +196,7 @@
 				A10694B22B56F219009E5843 /* Home */,
 				A10694AD2B56F14B009E5843 /* SignUp */,
 				A10694A82B56F0D7009E5843 /* LogIn */,
+				A19393442B6FA7680077D7EF /* Onboarding */,
 			);
 			path = Scenes;
 			sourceTree = "<group>";

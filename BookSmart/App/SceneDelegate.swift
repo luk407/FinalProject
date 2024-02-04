@@ -11,7 +11,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let scene = (scene as? UIWindowScene) else { return }
         
         window = UIWindow(windowScene: scene)
-        window?.rootViewController = UINavigationController(rootViewController: OnboardingSceneView(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil))
+        
+        let onboardingCompleted = UserDefaults.standard.bool(forKey: "onboardingCompleted")
+        
+        if onboardingCompleted {
+            window?.rootViewController = UINavigationController(rootViewController: LoginSceneView())
+        } else {
+            window?.rootViewController = UINavigationController(rootViewController: OnboardingSceneView(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil))
+        }
+
         window?.makeKeyAndVisible()
     }
 

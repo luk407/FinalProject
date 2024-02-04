@@ -26,6 +26,13 @@ final class OnboardingSceneView: UIPageViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let onboardingCompleted = UserDefaults.standard.bool(forKey: "onboardingCompleted")
+        
+        if onboardingCompleted {
+            goToLoginScene()
+        }
+
         view.backgroundColor = .customBackgroundColor
         setupPageControl()
         setupSubviews()
@@ -108,6 +115,11 @@ final class OnboardingSceneView: UIPageViewController {
     
     // MARK: - Methods
     
+    private func setOnboardingCompleted() {
+        UserDefaults.standard.set(true, forKey: "onboardingCompleted")
+        UserDefaults.standard.synchronize()
+    }
+
     // MARK: - Button Actions
     
     @objc private func pageControlTapped(_ sender: UIPageControl) {
@@ -120,12 +132,18 @@ final class OnboardingSceneView: UIPageViewController {
         pageControl.currentPage = lastPageIndex
         
         goToSpecificPage(index: lastPageIndex, ofViewControllers: pages)
+        setOnboardingCompleted()
         animateControlsIfNeeded()
     }
     
     @objc private func nextTapped(_ sender: UIButton) {
         pageControl.currentPage += 1
         goToNextPage()
+        
+        if pageControl.currentPage == pages.count - 2 {
+            setOnboardingCompleted()
+        }
+        
         animateControlsIfNeeded()
     }
     
@@ -147,6 +165,12 @@ final class OnboardingSceneView: UIPageViewController {
     
     private func goToSpecificPage(index: Int, ofViewControllers pages: [UIViewController]) {
         setViewControllers([pages[index]], direction: .forward, animated: true, completion: nil)
+    }
+    
+    private func goToLoginScene() {
+        let loginScene = LoginSceneView()
+        loginScene.navigationItem.hidesBackButton = true
+        navigationController?.pushViewController(loginScene, animated: true)
     }
 }
 
@@ -186,6 +210,10 @@ extension OnboardingSceneView: UIPageViewControllerDelegate {
         
         pageControl.currentPage = currentIndex
         animateControlsIfNeeded()
+        
+        if currentIndex == pages.count - 1 && completed {
+            setOnboardingCompleted()
+        }
     }
     
     private func animateControlsIfNeeded() {
