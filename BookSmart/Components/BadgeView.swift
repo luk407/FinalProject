@@ -11,11 +11,27 @@ struct BadgeView: View {
     
     // MARK: - Properties
     
+    @State private var isShowingBadgeInfo = false
     var badge: BadgeInfo
     
     // MARK: - Body
     
     var body: some View {
+        Button(action: {
+            isShowingBadgeInfo.toggle()
+        }) {
+            badgeView
+        }
+        .alert(isPresented: $isShowingBadgeInfo) {
+            Alert(
+                title: Text(badge.category.rawValue),
+                message: Text("Badge Type: \(badge.type.rawValue)"),
+                dismissButton: .default(Text("OK")))
+        }
+    }
+    
+    private var badgeView: some View {
+        
         ZStack {
             
             Circle()
