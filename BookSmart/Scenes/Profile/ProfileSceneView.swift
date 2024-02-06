@@ -214,10 +214,14 @@ struct ProfileSceneView: View {
                 List {
                     ForEach(profileSceneViewModel.postsInfo) { post in
                        postListItem(post)
-                    }
-                    .onDelete { indexSet in
-                        let postToDelete = profileSceneViewModel.postsInfo[indexSet.first!]
-                        profileSceneViewModel.deletePost(postToDelete)
+                            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                                Button {
+                                    profileSceneViewModel.deletePost(post)
+                                } label: {
+                                    Text("Delete")
+                                }
+                                .tint(.clear)
+                            }
                     }
                     .listRowBackground(
                         RoundedRectangle(cornerRadius: 8)
@@ -233,7 +237,9 @@ struct ProfileSceneView: View {
     
     private func postListItem(_ post: PostInfo) -> some View {
         NavigationLink(destination: PostDetailsSceneViewRepresentable(userInfo: profileSceneViewModel.userInfo, postInfo: post).ignoresSafeArea()) {
+            
             HStack(spacing: 8) {
+                
                 Text(post.header)
                     .font(.system(size: 12))
                     .foregroundStyle(.black)
@@ -259,10 +265,14 @@ struct ProfileSceneView: View {
                 List {
                     ForEach(profileSceneViewModel.commentsInfo) { comment in
                         commentsListItem(comment)
-                    }
-                    .onDelete { indexSet in
-                        let commentToDelete = profileSceneViewModel.commentsInfo[indexSet.first!]
-                        profileSceneViewModel.deleteComment(commentToDelete)
+                            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                                Button {
+                                    profileSceneViewModel.deleteComment(comment)
+                                } label: {
+                                    Text("Delete")
+                                }
+                                .tint(.clear)
+                            }
                     }
                     .listRowBackground(
                         RoundedRectangle(cornerRadius: 8)
