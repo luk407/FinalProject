@@ -212,19 +212,20 @@ extension PostDetailsSceneView: UITableViewDataSource {
                 }
             }            
         } else {
-            if let cell = tableView.dequeueReusableCell(withIdentifier: "commentCell", for: indexPath) as? CommentTableViewCell {
-                guard let commentInfo = viewModel.commentsInfo?[indexPath.row - 1] else { return UITableViewCell() }
-                cell.navigationController = navigationController
-                cell.configureCell(
-                    viewModel: viewModel,
-                    commentInfo: commentInfo)
-                cell.backgroundColor = .customBackgroundColor
-                cell.contentView.isUserInteractionEnabled = false
-                return cell
-            } else {
-                return UITableViewCell()
+            if let commentsInfo = viewModel.commentsInfo, indexPath.row - 1 < commentsInfo.count {
+                if let cell = tableView.dequeueReusableCell(withIdentifier: "commentCell", for: indexPath) as? CommentTableViewCell {
+                    let commentInfo = commentsInfo[indexPath.row - 1]
+                    cell.navigationController = navigationController
+                    cell.configureCell(viewModel: viewModel, commentInfo: commentInfo)
+                    cell.backgroundColor = .customBackgroundColor
+                    cell.contentView.isUserInteractionEnabled = false
+                    return cell
+                }
             }
         }
+        let emptyCell = UITableViewCell()
+        emptyCell.backgroundColor = .customBackgroundColor
+        return emptyCell
     }
 }
 
