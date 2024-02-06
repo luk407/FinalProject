@@ -215,6 +215,10 @@ struct ProfileSceneView: View {
                     ForEach(profileSceneViewModel.postsInfo) { post in
                        postListItem(post)
                     }
+                    .onDelete { indexSet in
+                        let postToDelete = profileSceneViewModel.postsInfo[indexSet.first!]
+                        profileSceneViewModel.deletePost(postToDelete)
+                    }
                     .listRowBackground(
                         RoundedRectangle(cornerRadius: 8)
                             .foregroundStyle(Color(uiColor: .customAccentColor.withAlphaComponent(0.7)))
@@ -228,21 +232,23 @@ struct ProfileSceneView: View {
     }
     
     private func postListItem(_ post: PostInfo) -> some View {
-        HStack(spacing: 8) {
-            Text(post.body)
-                .font(.system(size: 12))
-                .foregroundStyle(.black)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .lineLimit(5)
-            
-            VStack(spacing: 8) {
-                Text(profileSceneViewModel.timeAgoString(from: post.postingTime))
-                    .font(.system(size: 10))
+        NavigationLink(destination: PostDetailsSceneViewRepresentable(userInfo: profileSceneViewModel.userInfo, postInfo: post).ignoresSafeArea()) {
+            HStack(spacing: 8) {
+                Text(post.header)
+                    .font(.system(size: 12))
                     .foregroundStyle(.black)
-                Spacer()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .lineLimit(5)
+                
+                VStack(spacing: 8) {
+                    Text(profileSceneViewModel.timeAgoString(from: post.postingTime))
+                        .font(.system(size: 10))
+                        .foregroundStyle(.black)
+                    Spacer()
+                }
             }
+            .padding(.vertical, 10)
         }
-        .padding(.vertical, 10)
     }
     
     private var commentsList: some View {
@@ -252,8 +258,11 @@ struct ProfileSceneView: View {
             return AnyView(
                 List {
                     ForEach(profileSceneViewModel.commentsInfo) { comment in
-                        
                         commentsListItem(comment)
+                    }
+                    .onDelete { indexSet in
+                        let commentToDelete = profileSceneViewModel.commentsInfo[indexSet.first!]
+                        profileSceneViewModel.deleteComment(commentToDelete)
                     }
                     .listRowBackground(
                         RoundedRectangle(cornerRadius: 8)
@@ -268,21 +277,28 @@ struct ProfileSceneView: View {
     }
     
     private func commentsListItem(_ comment: CommentInfo) -> some View {
-        HStack(spacing: 8) {
-            Text(comment.body)
-                .font(.system(size: 12))
-                .foregroundStyle(.black)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .lineLimit(5)
-            
-            VStack {
-                Text(profileSceneViewModel.timeAgoString(from: comment.commentTime))
-                    .font(.system(size: 10))
-                    .foregroundStyle(.black)
-                Spacer()
-            }
+        if let post = profileSceneViewModel.findPostInfo(for: comment.id) {
+            return AnyView(
+                NavigationLink(destination: PostDetailsSceneViewRepresentable(userInfo: profileSceneViewModel.userInfo, postInfo: post).ignoresSafeArea()) {
+                HStack(spacing: 8) {
+                    Text(comment.body)
+                        .font(.system(size: 12))
+                        .foregroundStyle(.black)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .lineLimit(5)
+                    
+                    VStack {
+                        Text(profileSceneViewModel.timeAgoString(from: comment.commentTime))
+                            .font(.system(size: 10))
+                            .foregroundStyle(.black)
+                        Spacer()
+                    }
+                }
+                .padding(.vertical, 10)
+            })
+        } else {
+            return AnyView(EmptyStateView())
         }
-        .padding(.vertical, 10)
     }
     
     private var connectionsList: some View {
@@ -307,22 +323,24 @@ struct ProfileSceneView: View {
     }
     
     private func connectionListItem(_ connection: UserInfo) -> some View {
-        HStack(spacing: 16) {
-            Image(uiImage: profileSceneViewModel.getImageFromCache(userIDString: connection.id.uuidString))
-                .resizable()
-                .frame(width: 30, height: 30)
-                .clipShape(Circle())
-            
-            VStack(alignment: .leading, spacing: 8) {
-                Text(connection.displayName)
-                    .font(.system(size: 16).bold())
-                    .foregroundStyle(.black)
+        NavigationLink(destination: ProfileSceneView(profileSceneViewModel: ProfileSceneViewModel(profileOwnerInfoID: connection.id, userInfo: profileSceneViewModel.userInfo)).background(Color(uiColor: .customBackgroundColor))) {
+            HStack(spacing: 16) {
+                Image(uiImage: profileSceneViewModel.getImageFromCache(userIDString: connection.id.uuidString))
+                    .resizable()
+                    .frame(width: 30, height: 30)
+                    .clipShape(Circle())
                 
-                Text("@\(connection.userName)")
-                    .font(.system(size: 12))
-                    .foregroundStyle(.black.opacity(0.8))
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(connection.displayName)
+                        .font(.system(size: 16).bold())
+                        .foregroundStyle(.black)
+                    
+                    Text("@\(connection.userName)")
+                        .font(.system(size: 12))
+                        .foregroundStyle(.black.opacity(0.8))
+                }
             }
+            .padding(.vertical, 10)
         }
-        .padding(.vertical, 10)
     }
 }

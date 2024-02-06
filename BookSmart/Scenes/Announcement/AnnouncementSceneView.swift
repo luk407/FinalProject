@@ -95,6 +95,7 @@ final class AnnouncementSceneView: UIViewController {
     private func setupAnnouncementsTableViewUI() {
         announcementsTableView.translatesAutoresizingMaskIntoConstraints = false
         announcementsTableView.backgroundColor = .clear
+        announcementsTableView.separatorColor = .clear
         announcementsTableView.estimatedRowHeight = 200
         announcementsTableView.rowHeight = UITableView.automaticDimension
         announcementsTableView.register(AnnouncementsTableViewCell.self, forCellReuseIdentifier: "announcementCell")

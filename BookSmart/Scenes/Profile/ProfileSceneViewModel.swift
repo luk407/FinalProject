@@ -235,6 +235,27 @@ class ProfileSceneViewModel: ObservableObject {
         }
     }
     
+    func findPostInfo(for commentID: UUID) -> PostInfo? {
+        for post in postsInfo {
+            if post.comments.contains(commentID) {
+                return post
+            }
+        }
+        return nil
+    }
+    
+    func deletePost(_ post: PostInfo) {
+        let postRef = Firestore.firestore().collection("PostInfo").document(post.id.uuidString)
+        
+        postRef.delete { error in
+            if let error = error {
+                print("Error deleting post: \(error.localizedDescription)")
+            } else {
+                print("Post deleted successfully")
+            }
+        }
+    }
+    
     // MARK: - Comment
     
     private func commentInfoListener() {
@@ -286,6 +307,19 @@ class ProfileSceneViewModel: ObservableObject {
                 }
                 self.commentsInfo = fetchedComments.sorted(by: { $0.commentTime > $1.commentTime })
             }
+    }
+    
+    func deleteComment(_ comment: CommentInfo) {
+        let commentRef = Firestore.firestore().collection("CommentInfo").document(comment.id.uuidString)
+        
+        commentRef.delete { error in
+            if let error = error {
+                print("Error deleting comment: \(error.localizedDescription)")
+            } else {
+                print("Comment deleted successfully")
+                
+            }
+        }
     }
     
     // MARK: - Connections

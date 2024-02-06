@@ -60,6 +60,7 @@
 		A193933F2B6B81620077D7EF /* AnnouncementTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A193933E2B6B81620077D7EF /* AnnouncementTableViewCell.swift */; };
 		A19393462B6FA7860077D7EF /* OnboardingSceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A19393452B6FA7860077D7EF /* OnboardingSceneView.swift */; };
 		A19393482B6FA99B0077D7EF /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A19393472B6FA99B0077D7EF /* OnboardingViewController.swift */; };
+		A193934B2B72831E0077D7EF /* PostDetailsSceneViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A193934A2B72831D0077D7EF /* PostDetailsSceneViewRepresentable.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -114,6 +115,7 @@
 		A193933E2B6B81620077D7EF /* AnnouncementTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementTableViewCell.swift; sourceTree = "<group>"; };
 		A19393452B6FA7860077D7EF /* OnboardingSceneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingSceneView.swift; sourceTree = "<group>"; };
 		A19393472B6FA99B0077D7EF /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
+		A193934A2B72831D0077D7EF /* PostDetailsSceneViewRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailsSceneViewRepresentable.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -262,6 +264,7 @@
 		A10694C62B56F462009E5843 /* Profile */ = {
 			isa = PBXGroup;
 			children = (
+				A19393492B7282EF0077D7EF /* PostDetailsSceneViewRepresentable */,
 				A10694C72B56F478009E5843 /* ProfileSceneView.swift */,
 				A10694C92B56F497009E5843 /* ProfileSceneViewModel.swift */,
 			);
@@ -420,6 +423,14 @@
 			path = Onboarding;
 			sourceTree = "<group>";
 		};
+		A19393492B7282EF0077D7EF /* PostDetailsSceneViewRepresentable */ = {
+			isa = PBXGroup;
+			children = (
+				A193934A2B72831D0077D7EF /* PostDetailsSceneViewRepresentable.swift */,
+			);
+			path = PostDetailsSceneViewRepresentable;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -535,6 +546,7 @@
 				A10695232B5A848C009E5843 /* UIStackView+Extension.swift in Sources */,
 				A10694CA2B56F497009E5843 /* ProfileSceneViewModel.swift in Sources */,
 				A10694B42B56F236009E5843 /* HomeSceneView.swift in Sources */,
+				A193934B2B72831E0077D7EF /* PostDetailsSceneViewRepresentable.swift in Sources */,
 				A10694BB2B56F300009E5843 /* AnnouncementSceneView.swift in Sources */,
 				A10694B12B56F1C3009E5843 /* SignupSceneView.swift in Sources */,
 				A13726152B66787F00F1EA6E /* BadgeManager.swift in Sources */,
