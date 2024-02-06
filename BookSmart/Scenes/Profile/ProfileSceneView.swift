@@ -214,14 +214,6 @@ struct ProfileSceneView: View {
                 List {
                     ForEach(profileSceneViewModel.postsInfo) { post in
                        postListItem(post)
-                            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                                Button {
-                                    profileSceneViewModel.deletePost(post)
-                                } label: {
-                                    Text("Delete")
-                                }
-                                .tint(.clear)
-                            }
                     }
                     .listRowBackground(
                         RoundedRectangle(cornerRadius: 8)
@@ -255,6 +247,16 @@ struct ProfileSceneView: View {
             }
             .padding(.vertical, 10)
         }
+        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+            if profileSceneViewModel.isOwnProfile {
+                Button {
+                    profileSceneViewModel.deletePost(post)
+                } label: {
+                    Text("Delete")
+                }
+                .tint(.clear)
+            }
+        }
     }
     
     private var commentsList: some View {
@@ -265,14 +267,6 @@ struct ProfileSceneView: View {
                 List {
                     ForEach(profileSceneViewModel.commentsInfo) { comment in
                         commentsListItem(comment)
-                            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                                Button {
-                                    profileSceneViewModel.deleteComment(comment)
-                                } label: {
-                                    Text("Delete")
-                                }
-                                .tint(.clear)
-                            }
                     }
                     .listRowBackground(
                         RoundedRectangle(cornerRadius: 8)
@@ -305,6 +299,16 @@ struct ProfileSceneView: View {
                     }
                 }
                 .padding(.vertical, 10)
+            }
+            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                if profileSceneViewModel.isOwnProfile {
+                    Button {
+                        profileSceneViewModel.deleteComment(comment)
+                    } label: {
+                        Text("Delete")
+                    }
+                    .tint(.clear)
+                }
             })
         } else {
             return AnyView(EmptyStateView())
