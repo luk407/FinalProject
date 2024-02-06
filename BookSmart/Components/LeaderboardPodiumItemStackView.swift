@@ -55,7 +55,7 @@ final class LeaderboardPodiumItemStackView: UIStackView {
         booksReadCountStackView.addArrangedSubview(booksReadCountLabel)
     }
     
-    private func setupUI(place: Int, userImage: UIImage, imageSize: CGFloat, username: String, booksReadCount: Int, shadowColor: UIColor) {
+    func setupUI(place: Int, userImage: UIImage, imageSize: CGFloat, username: String, booksReadCount: Int, shadowColor: UIColor = .clear) {
         
         booksReadCountStackView.axis = .horizontal
         booksReadCountStackView.spacing = 8
