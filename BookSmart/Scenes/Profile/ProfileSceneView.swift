@@ -96,7 +96,7 @@ struct ProfileSceneView: View {
     }
     
     private var optionsView: some View {
-        //MARK: if user is me setting, else add connection
+        
         VStack {
             if profileSceneViewModel.isOwnProfile {
                 editProfileButton
@@ -133,11 +133,13 @@ struct ProfileSceneView: View {
         VStack {
             
             TextField("", text: $profileSceneViewModel.fetchedOwnerDisplayName)
+                .autocorrectionDisabled()
                 .font(.system(size: 24).bold())
                 .foregroundStyle(.white)
                 .disabled(!profileSceneViewModel.isEditable)
             
             TextField("", text: $profileSceneViewModel.fetchedOwnerUsername)
+                .autocorrectionDisabled()
                 .font(.system(size: 16))
                 .foregroundStyle(.gray)
                 .disabled(!profileSceneViewModel.isEditable)
@@ -155,6 +157,7 @@ struct ProfileSceneView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             
             TextField("Nothing to see here...", text: $profileSceneViewModel.fetchedOwnerBio)
+                .autocorrectionDisabled()
                 .font(.system(size: 14))
                 .disabled(!profileSceneViewModel.isEditable)
         }

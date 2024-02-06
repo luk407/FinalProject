@@ -204,6 +204,7 @@ class SignupSceneView: UIViewController {
     
     private func setupNicknameTextFieldUI() {
         usernameTextField.autocapitalizationType = .none
+        usernameTextField.autocorrectionType = .no
         usernameTextField.font = .systemFont(ofSize: 14)
         usernameTextField.backgroundColor = .white
         usernameTextField.borderStyle = .roundedRect
@@ -226,6 +227,7 @@ class SignupSceneView: UIViewController {
     
     private func setupEmailTextFieldUI() {
         emailTextField.autocapitalizationType = .none
+        emailTextField.autocorrectionType = .no
         emailTextField.font = .systemFont(ofSize: 14)
         emailTextField.backgroundColor = .white
         emailTextField.borderStyle = .roundedRect

@@ -97,6 +97,8 @@ class TabBarController: UITabBarController {
         navigationItem.rightBarButtonItem = searchButton
         
         searchBar.barTintColor = .customBackgroundColor
+        searchBar.autocapitalizationType = .none
+        searchBar.autocorrectionType = .no
         searchBar.tintColor = .white
         if let textFieldInsideSearchBar = searchBar.value(forKey: "searchField") as? UITextField {
             textFieldInsideSearchBar.textColor = .white

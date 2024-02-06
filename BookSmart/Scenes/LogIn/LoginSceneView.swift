@@ -179,6 +179,7 @@ final class LoginSceneView: UIViewController {
     
     private func setupEmailTextFieldUI() {
         emailTextField.autocapitalizationType = .none
+        emailTextField.autocorrectionType = .no
         emailTextField.font = .systemFont(ofSize: 14)
         emailTextField.backgroundColor = .white
         emailTextField.borderStyle = .roundedRect

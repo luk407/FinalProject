@@ -48,6 +48,7 @@ struct StoryPostView: View {
     private var headerTextField: some View {
         
         TextField("", text: $viewModel.headerText, prompt: Text("Post Header...").foregroundColor(.black), axis: .vertical)
+            .autocorrectionDisabled()
             .textFieldStyle(.plain)
             .lineLimit(1)
             .padding()
@@ -62,6 +63,7 @@ struct StoryPostView: View {
     private var bodyTextField: some View {
         
         TextField("", text: $viewModel.bodyText, prompt: Text("Post Body...").foregroundColor(.black), axis: .vertical)
+            .autocorrectionDisabled()
             .frame(height: 200, alignment: .topLeading)
             .textFieldStyle(.plain)
             .padding()

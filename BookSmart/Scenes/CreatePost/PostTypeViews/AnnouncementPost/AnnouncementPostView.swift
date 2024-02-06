@@ -42,6 +42,7 @@ struct AnnouncementPostView: View {
         }
         .searchable(text: $viewModel.searchText, prompt: "Enter book name...")
         .textInputAutocapitalization(.never)
+        .autocorrectionDisabled()
         .foregroundStyle(Color(uiColor: .customAccentColor))
     }
     
