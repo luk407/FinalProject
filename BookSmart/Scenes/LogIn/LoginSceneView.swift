@@ -181,7 +181,7 @@ final class LoginSceneView: UIViewController {
         emailTextField.autocapitalizationType = .none
         emailTextField.autocorrectionType = .no
         emailTextField.font = .systemFont(ofSize: 14)
-        emailTextField.backgroundColor = .white
+        emailTextField.textColor = .black
         emailTextField.borderStyle = .roundedRect
         emailTextField.backgroundColor = .customAccentColor.withAlphaComponent(0.5)
         emailTextField.attributedPlaceholder = NSAttributedString(string: "Email...", attributes: [NSAttributedString.Key.foregroundColor: UIColor.black])
@@ -204,7 +204,7 @@ final class LoginSceneView: UIViewController {
         passwordTextField.autocapitalizationType = .none
         passwordTextField.isSecureTextEntry = true
         passwordTextField.font = .systemFont(ofSize: 14)
-        passwordTextField.backgroundColor = .white
+        passwordTextField.textColor = .black
         passwordTextField.borderStyle = .roundedRect
         passwordTextField.backgroundColor = .customAccentColor.withAlphaComponent(0.5)
         passwordTextField.attributedPlaceholder = NSAttributedString(string: "Password...", attributes: [NSAttributedString.Key.foregroundColor: UIColor.black])

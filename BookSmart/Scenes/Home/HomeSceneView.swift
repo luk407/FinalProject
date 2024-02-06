@@ -98,6 +98,7 @@ final class HomeSceneView: UIViewController {
         postsTableView.translatesAutoresizingMaskIntoConstraints = false
         postsTableView.backgroundColor = .clear
         postsTableView.estimatedRowHeight = 200
+        postsTableView.separatorColor = .clear
         postsTableView.rowHeight = UITableView.automaticDimension
         postsTableView.register(PostsTableViewCell.self, forCellReuseIdentifier: "postCell")
         postsTableView.dataSource = self

@@ -159,6 +159,7 @@ struct ProfileSceneView: View {
             TextField("Nothing to see here...", text: $profileSceneViewModel.fetchedOwnerBio)
                 .autocorrectionDisabled()
                 .font(.system(size: 14))
+                .foregroundStyle(.black)
                 .disabled(!profileSceneViewModel.isEditable)
         }
         .padding()
@@ -237,6 +238,7 @@ struct ProfileSceneView: View {
             VStack(spacing: 8) {
                 Text(profileSceneViewModel.timeAgoString(from: post.postingTime))
                     .font(.system(size: 10))
+                    .foregroundStyle(.black)
                 Spacer()
             }
         }
@@ -276,6 +278,7 @@ struct ProfileSceneView: View {
             VStack {
                 Text(profileSceneViewModel.timeAgoString(from: comment.commentTime))
                     .font(.system(size: 10))
+                    .foregroundStyle(.black)
                 Spacer()
             }
         }

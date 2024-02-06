@@ -25,6 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             NSAttributedString.Key.foregroundColor : UIColor.clear
         ]
         navigationBarAppearance.backgroundColor = UIColor.clear
+        navigationBarAppearance.shadowColor = .clear
         UINavigationBar.appearance().standardAppearance = navigationBarAppearance
         UINavigationBar.appearance().compactAppearance = navigationBarAppearance
         UINavigationBar.appearance().scrollEdgeAppearance = navigationBarAppearance

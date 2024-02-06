@@ -206,7 +206,7 @@ class SignupSceneView: UIViewController {
         usernameTextField.autocapitalizationType = .none
         usernameTextField.autocorrectionType = .no
         usernameTextField.font = .systemFont(ofSize: 14)
-        usernameTextField.backgroundColor = .white
+        usernameTextField.textColor = .black
         usernameTextField.borderStyle = .roundedRect
         usernameTextField.backgroundColor = .customAccentColor.withAlphaComponent(0.5)
         usernameTextField.attributedPlaceholder = NSAttributedString(string: "Nickname...", attributes: [NSAttributedString.Key.foregroundColor: UIColor.black])
@@ -229,7 +229,7 @@ class SignupSceneView: UIViewController {
         emailTextField.autocapitalizationType = .none
         emailTextField.autocorrectionType = .no
         emailTextField.font = .systemFont(ofSize: 14)
-        emailTextField.backgroundColor = .white
+        emailTextField.textColor = .black
         emailTextField.borderStyle = .roundedRect
         emailTextField.backgroundColor = .customAccentColor.withAlphaComponent(0.5)
         emailTextField.attributedPlaceholder = NSAttributedString(string: "Email...", attributes: [NSAttributedString.Key.foregroundColor: UIColor.black])
@@ -252,7 +252,7 @@ class SignupSceneView: UIViewController {
         passwordTextField.isSecureTextEntry = true
         passwordTextField.autocapitalizationType = .none
         passwordTextField.font = .systemFont(ofSize: 14)
-        passwordTextField.backgroundColor = .white
+        passwordTextField.textColor = .black
         passwordTextField.borderStyle = .roundedRect
         passwordTextField.backgroundColor = .customAccentColor.withAlphaComponent(0.5)
         passwordTextField.attributedPlaceholder = NSAttributedString(string: "Password...", attributes: [NSAttributedString.Key.foregroundColor: UIColor.black])

@@ -175,6 +175,7 @@ final class LeaderboardSceneView: UIViewController {
         leaderboardTableView.translatesAutoresizingMaskIntoConstraints = false
         leaderboardTableView.backgroundColor = .clear
         leaderboardTableView.backgroundView = .none
+        leaderboardTableView.separatorColor = .clear
         leaderboardTableView.dataSource = self
         leaderboardTableView.delegate = self
         leaderboardTableView.rowHeight = UITableView.automaticDimension

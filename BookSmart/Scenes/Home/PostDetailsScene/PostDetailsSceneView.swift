@@ -133,6 +133,7 @@ final class PostDetailsSceneView: UIViewController {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.backgroundColor = .customBackgroundColor
         tableView.estimatedRowHeight = 100
+        tableView.separatorColor = .clear
         tableView.rowHeight = UITableView.automaticDimension
         tableView.register(PostTableViewCell.self, forCellReuseIdentifier: "postCell")
         tableView.register(CommentTableViewCell.self, forCellReuseIdentifier: "commentCell")
@@ -154,6 +155,7 @@ final class PostDetailsSceneView: UIViewController {
         typeCommentTextView.backgroundColor = .customAccentColor.withAlphaComponent(0.5)
         typeCommentTextView.layer.cornerRadius = 8
         typeCommentTextView.tintColor = .black
+        typeCommentTextView.textColor = .black
     }
     
     private func setupSubmitCommentButtonUI() {
@@ -223,6 +225,7 @@ extension PostDetailsSceneView: UITableViewDataSource {
                 }
             }
         }
+        
         let emptyCell = UITableViewCell()
         emptyCell.backgroundColor = .customBackgroundColor
         return emptyCell
