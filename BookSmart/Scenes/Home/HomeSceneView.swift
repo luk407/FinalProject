@@ -1,9 +1,3 @@
-//
-//  HomeView.swift
-//  BookSmart
-//
-//  Created by Luka Gazdeliani on 16.01.24.
-//
 
 import UIKit
 import SwiftUI
@@ -45,7 +39,6 @@ final class HomeSceneView: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         homeSceneViewModel.homeSceneViewWillAppear()
-        postsTableView.reloadData()
     }
     
     // MARK: - Setup Subviews, Constraints, UI
@@ -111,12 +104,15 @@ final class HomeSceneView: UIViewController {
     }
     
     @objc private func refreshTableView() {
-        postsTableView.reloadData()
-        refreshControl.endRefreshing()
+        homeSceneViewModel.getPostsInfoFromFirebase {
+            self.postsTableView.reloadData()
+            self.refreshControl.endRefreshing()
+        }
     }
 }
 
-// MARK: Extensions
+// MARK: - Extensions
+
 extension HomeSceneView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         homeSceneViewModel.filteredStoryPosts.count
@@ -146,6 +142,7 @@ extension HomeSceneView: UITableViewDelegate {
 }
 
 extension HomeSceneView: PostsScenesViewModelDelegateForStory {
+    
     func reloadTableView() {
         DispatchQueue.main.async {
             self.postsTableView.reloadData()

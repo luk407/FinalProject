@@ -1,9 +1,3 @@
-//
-//  PostDetailsSceneView.swift
-//  BookSmart
-//
-//  Created by Luka Gazdeliani on 22.01.24.
-//
 
 import UIKit
 import Firebase
@@ -164,7 +158,7 @@ final class PostDetailsSceneView: UIViewController {
         submitCommentButton.addTarget(self, action: #selector(submitCommentButtonTapped), for: .touchUpInside)
     }
     
-    // MARK: - Private Methods
+    // MARK: - Button Methods
     
     @objc private func submitCommentButtonTapped() {
         viewModel.submitCommentButtonTapped(commentText: typeCommentTextView.text)

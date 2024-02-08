@@ -1,9 +1,3 @@
-//
-//  LeaderboardSceneView.swift
-//  BookSmart
-//
-//  Created by Luka Gazdeliani on 16.01.24.
-//
 
 import UIKit
 import SwiftUI
@@ -227,7 +221,7 @@ extension LeaderboardSceneView: UITableViewDataSource {
             return emptyCell
         }
         
-        let userInfo = leaderboardSceneViewModel.fetchedUsersInfo[indexPath.row + 2]
+        let userInfo = leaderboardSceneViewModel.fetchedUsersInfo[indexPath.row + 3]
         let cell = leaderboardTableView.dequeueReusableCell(withIdentifier: "userCell", for: indexPath) as! LeaderboardTableViewCell
         let userImage = leaderboardSceneViewModel.getImage(userID: userInfo.id) ?? UIImage(systemName: "person.fill")!
         cell.backgroundColor = .clear

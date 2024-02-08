@@ -1,15 +1,10 @@
-//
-//  LoginSceneViewController.swift
-//  BookSmart
-//
-//  Created by Luka Gazdeliani on 16.01.24.
-//
 
 import UIKit
 
 final class LoginSceneView: UIViewController {
     
     // MARK: - Properties
+    
     private var mainStackView = UIStackView()
     
     private var inputInfoStackView = UIStackView()
@@ -34,13 +29,18 @@ final class LoginSceneView: UIViewController {
     
     private var loginButton = UIButton()
     
-    private var loginErrorAlert = UIAlertController(title: "Login Error", message: "Please try again", preferredStyle: .alert)
+    private var loginErrorAlert = UIAlertController(title: "Login Error",
+                                                    message: "Please try again",
+                                                    preferredStyle: .alert)
     
-    private var emptyAlert = UIAlertController(title: "Email or Password field is empty", message: "Please fill in all fields to log in", preferredStyle: .alert)
+    private var emptyAlert = UIAlertController(title: "Email or Password field is empty",
+                                               message: "Please fill in all fields to log in",
+                                               preferredStyle: .alert)
     
     var loginSceneViewModel = LoginSceneViewModel()
     
     // MARK: - LifeCycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         loginSceneViewModel.delegate = self
@@ -51,6 +51,7 @@ final class LoginSceneView: UIViewController {
     }
     
     // MARK: - Setup Subviews, Constraints, UI
+    
     private func setupSubviews() {
         view.addSubview(mainStackView)
         mainStackView.addArrangedSubview(inputInfoStackView)
@@ -93,6 +94,7 @@ final class LoginSceneView: UIViewController {
     }
     
     // MARK: - Constraints
+    
     private func setupMainStackViewConstraints() {
         NSLayoutConstraint.activate([
             mainStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 150),
@@ -149,6 +151,7 @@ final class LoginSceneView: UIViewController {
     }
     
     // MARK: - UI
+    
     private func setupMainStackViewUI() {
         mainStackView.translatesAutoresizingMaskIntoConstraints = false
         mainStackView.axis = .vertical
@@ -243,7 +246,7 @@ final class LoginSceneView: UIViewController {
         loginErrorAlert.addAction(UIAlertAction(title: "OK", style: .cancel))
     }
     
-    // MARK: - Private Methods
+    // MARK: - Button Actions
     
     @objc private func signupButtonPressed() {
         
@@ -266,9 +269,10 @@ final class LoginSceneView: UIViewController {
             loginSceneViewModel.loginAndNavigate(
                 email: emailTextField.text ?? "",
                 password: passwordTextField.text ?? "")
-            
         }
     }
+    
+    // MARK: - Private Methods
     
     private func assignBackground(){
         let background = UIImage(named: "backgroundWithLogo")

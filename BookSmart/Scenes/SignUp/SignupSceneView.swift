@@ -1,15 +1,10 @@
-//
-//  SignupView.swift
-//  BookSmart
-//
-//  Created by Luka Gazdeliani on 16.01.24.
-//
 
 import UIKit
 
 class SignupSceneView: UIViewController {
     
     // MARK: - Properties
+    
     private var mainStackView = UIStackView()
     
     private var inputInfoStackView = UIStackView()
@@ -34,17 +29,19 @@ class SignupSceneView: UIViewController {
     
     private var signupButton = UIButton()
     
-    private var passwordStrengthChecklistView = PasswordStrengthChecklistView(
-        isMinLengthMet: false,
-        isCapitalLetterMet: false,
-        isNumberMet: false,
-        isUniqueCharacterMet: false)
+    private var passwordStrengthChecklistView = PasswordStrengthChecklistView(isMinLengthMet: false,
+                                                                              isCapitalLetterMet: false,
+                                                                              isNumberMet: false,
+                                                                              isUniqueCharacterMet: false)
     
-    private var emptyAlert = UIAlertController(title: "Nickname or Email field is empty", message: "Please fill in all fields to sign up", preferredStyle: .alert)
+    private var emptyAlert = UIAlertController(title: "Nickname or Email field is empty",
+                                               message: "Please fill in all fields to sign up",
+                                               preferredStyle: .alert)
     
     private var signupSceneViewModel = SignupSceneViewModel()
     
     // MARK: - LifeCycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         assignBackground()
@@ -54,6 +51,7 @@ class SignupSceneView: UIViewController {
     }
     
     // MARK: - Setup Subviews, Constraints, UI
+    
     private func setupSubviews() {
         view.addSubview(mainStackView)
         mainStackView.addArrangedSubview(inputInfoStackView)
@@ -99,6 +97,7 @@ class SignupSceneView: UIViewController {
     }
     
     // MARK: - Constraints
+    
     private func setupMainStackViewConstraints() {
         NSLayoutConstraint.activate([
             mainStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 150),
@@ -162,6 +161,7 @@ class SignupSceneView: UIViewController {
     }
     
     // MARK: - UI
+    
     private func setupMainStackViewUI() {
         mainStackView.translatesAutoresizingMaskIntoConstraints = false
         mainStackView.axis = .vertical
@@ -271,7 +271,8 @@ class SignupSceneView: UIViewController {
         emptyAlert.addAction(UIAlertAction(title: "OK", style: .cancel))
     }
     
-    // MARK: - Private Methods
+    // MARK: - Button Actions
+    
     @objc private func signupButtonPressed() {
         
         buttonAnimation(signupButton)
@@ -296,6 +297,8 @@ class SignupSceneView: UIViewController {
             self.updateTextField()
         }
     }
+    
+    // MARK: - Private Methods
     
     private func updateTextField() {
         signupSceneViewModel.updatePasswordCriteria(password: passwordTextField.text ?? "")

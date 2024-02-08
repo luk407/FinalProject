@@ -1,9 +1,3 @@
-//
-//  AnnouncementsTableViewCell.swift
-//  BookSmart
-//
-//  Created by Luka Gazdeliani on 30.01.24.
-//
 
 import UIKit
 import SwiftUI
@@ -157,7 +151,7 @@ final class AnnouncementsTableViewCell: UITableViewCell {
             }
         }
         
-        let timeAgo = viewModel?.timeAgoString(from: postInfo?.postingTime ?? Date())
+        let timeAgo = MethodsManager.shared.timeAgoString(from: postInfo?.postingTime ?? Date())
         
         timeLabel.text = timeAgo
         headerLabel.text = postInfo?.header
@@ -486,7 +480,9 @@ final class AnnouncementsTableViewCell: UITableViewCell {
     
     @objc private func likeButtonTapped(sender: UITapGestureRecognizer) {
         
-        toggleLikePost()
+        toggleLikePost() { hasLiked in
+            self.updateLikeButtonUI(isLiked: hasLiked)
+        }
         
         if sender.state == .ended {
             UIView.animate(withDuration: 0.1, animations: {
@@ -568,94 +564,26 @@ final class AnnouncementsTableViewCell: UITableViewCell {
         authorImageView.image = UIImage(systemName: "person.fill")
         authorImageView.tintColor = .customAccentColor
         
-        guard let imageName = postInfo?.authorID.uuidString else { return }
+        guard let postInfoAuthorIDString = postInfo?.authorID.uuidString else { return }
         
-        if let cachedImage = CacheManager.instance.get(name: imageName) {
-            authorImageView.image = cachedImage
-        } else {
-            let database = Firestore.firestore()
-            database.collection("UserInfo").document((postInfo?.authorID.uuidString)!).getDocument { document, error in
-                if error == nil && document != nil {
-                    let imagePath = document?.data()?["image"] as? String
-                    self.fetchImage(imagePath ?? "")
-                    print("fetched")
-                }
-            }
+        FirebaseManager.shared.retrieveImage(postInfoAuthorIDString) { retrievedImage in
+            self.authorImageView.image = retrievedImage
         }
     }
     
-    private func fetchImage(_ imagePath: String) {
-        let storageReference = Storage.storage().reference()
-        let fileReference = storageReference.child(imagePath)
-        
-        fileReference.getData(maxSize: 5 * 1024 * 1024) { data, error in
-            if let data = data, error == nil, let fetchedImage = UIImage(data: data) {
-                print("Image fetched successfully.")
-                DispatchQueue.main.async {
-                    self.authorImageView.image = fetchedImage
-                    CacheManager.instance.add(image: fetchedImage, name: self.postInfo?.authorID.uuidString ?? "")
-                    print("fetchedfdf")
-                }
-            } else {
-                print("Error fetching image:", error?.localizedDescription ?? "Unknown error")
-            }
-        }
-    }
-
-    private func toggleLikePost() {
+    private func toggleLikePost(completion: @escaping (Bool) -> Void) {
         
         guard let postInfo else { return }
-        
         guard let viewModel else { return }
- 
-        let database = Firestore.firestore()
-        
-        let userReference = database.collection("UserInfo").document(viewModel.userInfo.id.uuidString)
-        let postReference = database.collection("PostInfo").document(postInfo.id.uuidString)
-        
-        let isLiked = viewModel.userInfo.likedPosts.contains(postInfo.id)
-        
-        if isLiked {
-            userReference.updateData([
-                "likedPosts": FieldValue.arrayRemove([postInfo.id.uuidString])
-            ]) { [self] error in
-                if let error = error {
-                    print(error.localizedDescription)
-                    return
-                }
-                
-                postReference.updateData([
-                    "likedBy": FieldValue.arrayRemove([viewModel.userInfo.id.uuidString])
-                ]) { error in
-                    if let error = error {
-                        print(error.localizedDescription)
-                        return
-                    }
-                }
-                updateLikeButtonUI(isLiked: viewModel.userInfo.likedPosts.contains(postInfo.id))
-            }
-        } else {
-            userReference.updateData([
-                "likedPosts": FieldValue.arrayUnion([postInfo.id.uuidString])
-            ]) { [self] error in
-                if let error = error {
-                    print(error.localizedDescription)
-                    return
-                }
-                
-                postReference.updateData([
-                    "likedBy": FieldValue.arrayUnion([viewModel.userInfo.id.uuidString])
-                ]) {  error in
-                    if let error = error {
-                        print(error.localizedDescription)
-                        return
-                    }
-                }
-                updateLikeButtonUI(isLiked: viewModel.userInfo.likedPosts.contains(postInfo.id))
-            }
+          
+        FirebaseManager.shared.toggleLikePost(userInfoIDString: viewModel.userInfo.id.uuidString,
+                                              postInfoIDString: postInfo.id.uuidString) { hasLiked in
+            completion(hasLiked)
         }
     }
 
+    // MARK: - Update UI
+    
     private func updateLikeButtonUI(isLiked: Bool) {
         DispatchQueue.main.async {
             let imageName = isLiked ? "heart.fill" : "heart"

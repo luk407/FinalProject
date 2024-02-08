@@ -1,9 +1,3 @@
-//
-//  PostDetailsSceneViewRepresentable.swift
-//  BookSmart
-//
-//  Created by Luka Gazdeliani on 06.02.24.
-//
 
 import SwiftUI
 
@@ -20,5 +14,4 @@ struct PostDetailsSceneViewRepresentable: UIViewControllerRepresentable {
     func updateUIViewController(_ uiViewController: PostDetailsSceneView, context: Context) {
        
     }
-    
 }

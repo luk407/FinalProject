@@ -1,9 +1,3 @@
-//
-//  CommentTableViewCell.swift
-//  BookSmart
-//
-//  Created by Luka Gazdeliani on 22.01.24.
-//
 
 import UIKit
 import SwiftUI
@@ -112,7 +106,7 @@ class CommentTableViewCell: UITableViewCell {
             let isLiked = commentInfo.likedBy.contains(viewModel.userInfo.id)
             authorImageView.image = UIImage(systemName: "person.fill")
             nameLabel.text = authorInfo?.userName
-            timeLabel.text = viewModel.timeAgoString(from: commentInfo.commentTime)
+            timeLabel.text = MethodsManager.shared.timeAgoString(from: commentInfo.commentTime)
             bodyTextView.text = commentInfo.body
             updateLikeButtonUI(isLiked: isLiked)
             retrieveImage()
@@ -342,6 +336,7 @@ class CommentTableViewCell: UITableViewCell {
 //            bodyTextView.text = commentInfo?.body
 //        }
 //    }
+    
     
     func toggleLikeComment() {
         

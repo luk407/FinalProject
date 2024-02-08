@@ -61,6 +61,8 @@
 		A19393462B6FA7860077D7EF /* OnboardingSceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A19393452B6FA7860077D7EF /* OnboardingSceneView.swift */; };
 		A19393482B6FA99B0077D7EF /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A19393472B6FA99B0077D7EF /* OnboardingViewController.swift */; };
 		A193934B2B72831E0077D7EF /* PostDetailsSceneViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A193934A2B72831D0077D7EF /* PostDetailsSceneViewRepresentable.swift */; };
+		A193934D2B72A88F0077D7EF /* FirebaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A193934C2B72A88F0077D7EF /* FirebaseManager.swift */; };
+		A193934F2B72C3A50077D7EF /* MethodsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A193934E2B72C3A50077D7EF /* MethodsManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -116,6 +118,8 @@
 		A19393452B6FA7860077D7EF /* OnboardingSceneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingSceneView.swift; sourceTree = "<group>"; };
 		A19393472B6FA99B0077D7EF /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		A193934A2B72831D0077D7EF /* PostDetailsSceneViewRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailsSceneViewRepresentable.swift; sourceTree = "<group>"; };
+		A193934C2B72A88F0077D7EF /* FirebaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManager.swift; sourceTree = "<group>"; };
+		A193934E2B72C3A50077D7EF /* MethodsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MethodsManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -161,6 +165,8 @@
 				A10694CC2B56F622009E5843 /* Resources */,
 				A10694972B56EC75009E5843 /* Info.plist */,
 				A13726102B663E2500F1EA6E /* CacheManager.swift */,
+				A193934C2B72A88F0077D7EF /* FirebaseManager.swift */,
+				A193934E2B72C3A50077D7EF /* MethodsManager.swift */,
 			);
 			path = BookSmart;
 			sourceTree = "<group>";
@@ -522,6 +528,7 @@
 				A10695412B601886009E5843 /* PostTableViewCell.swift in Sources */,
 				A10694AC2B56F129009E5843 /* LoginSceneViewModel.swift in Sources */,
 				A10694CE2B56F787009E5843 /* UIColor+Extension.swift in Sources */,
+				A193934F2B72C3A50077D7EF /* MethodsManager.swift in Sources */,
 				A10694A22B56F052009E5843 /* PostInfo.swift in Sources */,
 				A10695322B5C088A009E5843 /* StoryPostViewModel.swift in Sources */,
 				A10695282B5BAF37009E5843 /* StoryPostView.swift in Sources */,
@@ -548,6 +555,7 @@
 				A10694B42B56F236009E5843 /* HomeSceneView.swift in Sources */,
 				A193934B2B72831E0077D7EF /* PostDetailsSceneViewRepresentable.swift in Sources */,
 				A10694BB2B56F300009E5843 /* AnnouncementSceneView.swift in Sources */,
+				A193934D2B72A88F0077D7EF /* FirebaseManager.swift in Sources */,
 				A10694B12B56F1C3009E5843 /* SignupSceneView.swift in Sources */,
 				A13726152B66787F00F1EA6E /* BadgeManager.swift in Sources */,
 				A19393482B6FA99B0077D7EF /* OnboardingViewController.swift in Sources */,
