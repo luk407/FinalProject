@@ -1,9 +1,3 @@
-//
-//  PostTableViewCell.swift
-//  BookSmart
-//
-//  Created by Luka Gazdeliani on 23.01.24.
-//
 
 import UIKit
 import SwiftUI
@@ -126,7 +120,7 @@ class PostTableViewCell: UITableViewCell {
         authorImageView.image = UIImage(systemName: "person.fill")
         nameLabel.text = authorInfo.displayName
         usernameLabel.text = "@\(authorInfo.userName)"
-        timeLabel.text = viewModel.timeAgoString(from: postInfo.postingTime)
+        timeLabel.text = MethodsManager.shared.timeAgoString(from: postInfo.postingTime)
         headerLabel.text = postInfo.header
         bodyTextView.text = postInfo.body
         
@@ -343,7 +337,9 @@ class PostTableViewCell: UITableViewCell {
     
     @objc private func likeButtonTapped(sender: UITapGestureRecognizer) {
         
-        viewModel?.toggleLikePost()
+        viewModel?.toggleLikePost() { hasLiked in
+            self.updateLikeButtonUI(isLiked: hasLiked)
+        }
         
         if sender.state == .ended {
             UIView.animate(withDuration: 0.1, animations: {
@@ -411,39 +407,16 @@ class PostTableViewCell: UITableViewCell {
         }
     }
     
-    func retrieveImage() {
+    // MARK: - Firebase Methods
+    
+    private func retrieveImage() {
         authorImageView.image = UIImage(systemName: "person.fill")
         authorImageView.tintColor = .customAccentColor
         
-        guard let imageName = viewModel?.postInfo.authorID.uuidString else { return }
+        guard let postInfoAuthorIDString = viewModel?.postInfo.authorID.uuidString else { return }
         
-        if let cachedImage = CacheManager.instance.get(name: imageName) {
-            authorImageView.image = cachedImage
-        } else {
-            let database = Firestore.firestore()
-            database.collection("UserInfo").document((viewModel?.postInfo.authorID.uuidString)!).getDocument { document, error in
-                if error == nil && document != nil {
-                    let imagePath = document?.data()?["image"] as? String
-                    self.fetchImage(imagePath ?? "")
-                }
-            }
-        }
-    }
-    
-    private func fetchImage(_ imagePath: String) {
-        let storageReference = Storage.storage().reference()
-        let fileReference = storageReference.child(imagePath)
-        
-        fileReference.getData(maxSize: 5 * 1024 * 1024) { data, error in
-            if let data = data, error == nil, let fetchedImage = UIImage(data: data) {
-                print("Image fetched successfully.")
-                DispatchQueue.main.async {
-                    self.authorImageView.image = fetchedImage
-                    CacheManager.instance.add(image: fetchedImage, name: self.viewModel?.postInfo.authorID.uuidString ?? "")
-                }
-            } else {
-                print("Error fetching image:", error?.localizedDescription ?? "Unknown error")
-            }
+        FirebaseManager.shared.retrieveImage(postInfoAuthorIDString) { retrievedImage in
+            self.authorImageView.image = retrievedImage
         }
     }
 }

@@ -1,9 +1,3 @@
-//
-//  AnnouncementSceneView.swift
-//  BookSmart
-//
-//  Created by Luka Gazdeliani on 16.01.24.
-//
 
 import UIKit
 
@@ -108,8 +102,10 @@ final class AnnouncementSceneView: UIViewController {
     }
     
     @objc private func refreshTableView() {
-        announcementsTableView.reloadData()
-        refreshControl.endRefreshing()
+        announcementSceneViewModel.getPostsInfoFromFirebase {
+            self.announcementsTableView.reloadData()
+            self.refreshControl.endRefreshing()
+        }
     }
 }
 

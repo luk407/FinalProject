@@ -1,9 +1,3 @@
-//
-//  AnnouncementPostViewModel.swift
-//  BookSmart
-//
-//  Created by Luka Gazdeliani on 20.01.24.
-//
 
 import SwiftUI
 import Foundation
@@ -23,7 +17,7 @@ final class AnnouncementPostViewModel: ObservableObject {
     @Published var selectedAnnouncementType: AnnouncementType = .startedBook
     @Published var selectedBook: Book? = nil
     
-    var userInfo: UserInfo
+    @Published var userInfo: UserInfo
     
     @Published var booksArray: [Book] = [] {
         didSet {
@@ -108,54 +102,17 @@ final class AnnouncementPostViewModel: ObservableObject {
     }
     
     private func addPostToFirebase(post: PostInfo) {
-        let database = Firestore.firestore()
-        let postReference = database.collection("PostInfo").document(post.id.uuidString)
-        
-        let postData: [String: Any] = [
-            "id": post.id.uuidString,
-            "authorID": post.authorID.uuidString,
-            "type": post.type.rawValue,
-            "header": post.header,
-            "body": post.body,
-            "postingTime": post.postingTime,
-            "likedBy": post.likedBy.map { $0.uuidString },
-            "comments": post.comments.map { $0.uuidString },
-            "spoilersAllowed": post.spoilersAllowed,
-            "announcementType": post.announcementType.rawValue
-        ]
-        
-        postReference.setData(postData)
+        FirebaseManager.shared.addPostToFirebase(post: post)
     }
     
     private func updateUserDataOnFirebase(postID: UUID) {
-        let database = Firestore.firestore()
-        let userReference = database.collection("UserInfo").document(userInfo.id.uuidString)
         
-        let updatedPosts = FieldValue.arrayUnion([postID.uuidString])
+        guard let selectedBook else { return }
         
-        var updatedFinishedBooks = userInfo.booksFinished
-        
-        if selectedAnnouncementType == .finishedBook, let selectedBook = selectedBook {
-            if !updatedFinishedBooks.contains(selectedBook) {
-                updatedFinishedBooks.append(selectedBook)
-            }
-        }
-        
-        let userData: [String: Any] = [
-            "posts": updatedPosts,
-            "booksFinished": updatedFinishedBooks.map { book in
-                [
-                    "title": book.title,
-                    "authorName": book.authorName ?? []
-                ]
-            }
-        ]
-        
-        userReference.updateData(userData) { error in
-            if let error = error {
-                print("Error updating user data on Firebase: \(error.localizedDescription)")
-            }
-        }
+        FirebaseManager.shared.updateUserPostsAndFinishedBooksOnFirebase(userInfo: userInfo,
+                                                        postID: postID,
+                                                        selectedAnnouncementType: selectedAnnouncementType,
+                                                        selectedBook: selectedBook)
     }
 
     func fetchBooksData(with titleString: String) {

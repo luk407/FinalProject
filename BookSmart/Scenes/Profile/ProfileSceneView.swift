@@ -1,9 +1,3 @@
-//
-//  ProfileSceneViewModel.swift
-//  BookSmart
-//
-//  Created by Luka Gazdeliani on 16.01.24.
-//
 
 import SwiftUI
 
@@ -48,7 +42,7 @@ struct ProfileSceneView: View {
         }
         .background(Color(uiColor: .customBackgroundColor))
         .padding()
-        .onAppear {
+        .task {
             profileSceneViewModel.viewOnAppear()
         }
         .sheet(isPresented: $profileSceneViewModel.isImagePickerShowing) {
@@ -207,12 +201,12 @@ struct ProfileSceneView: View {
     }
     
     private var postsList: some View {
-        if profileSceneViewModel.postsInfo.isEmpty {
+        if profileSceneViewModel.ownerPostsInfo.isEmpty {
             return AnyView(EmptyStateView())
         } else {
             return AnyView(
                 List {
-                    ForEach(profileSceneViewModel.postsInfo) { post in
+                    ForEach(profileSceneViewModel.ownerPostsInfo) { post in
                        postListItem(post)
                     }
                     .listRowBackground(
@@ -239,7 +233,7 @@ struct ProfileSceneView: View {
                     .lineLimit(5)
                 
                 VStack(spacing: 8) {
-                    Text(profileSceneViewModel.timeAgoString(from: post.postingTime))
+                    Text(MethodsManager.shared.timeAgoString(from: post.postingTime))
                         .font(.system(size: 10))
                         .foregroundStyle(.black)
                     Spacer()
@@ -292,7 +286,7 @@ struct ProfileSceneView: View {
                         .lineLimit(5)
                     
                     VStack {
-                        Text(profileSceneViewModel.timeAgoString(from: comment.commentTime))
+                        Text(MethodsManager.shared.timeAgoString(from: comment.commentTime))
                             .font(.system(size: 10))
                             .foregroundStyle(.black)
                         Spacer()
@@ -303,7 +297,7 @@ struct ProfileSceneView: View {
             .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                 if profileSceneViewModel.isOwnProfile {
                     Button {
-                        profileSceneViewModel.deleteComment(comment)
+                        profileSceneViewModel.deleteComment(comment, for: post)
                     } label: {
                         Text("Delete")
                     }

@@ -1,9 +1,3 @@
-//
-//  CreatePostSceneView.swift
-//  BookSmart
-//
-//  Created by Luka Gazdeliani on 20.01.24.
-//
 
 import SwiftUI
 

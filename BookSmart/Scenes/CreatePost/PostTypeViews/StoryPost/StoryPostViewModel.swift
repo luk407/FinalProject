@@ -1,9 +1,3 @@
-//
-//  StoryPostViewModel.swift
-//  BookSmart
-//
-//  Created by Luka Gazdeliani on 20.01.24.
-//
 
 import Foundation
 import Firebase
@@ -54,51 +48,14 @@ final class StoryPostViewModel: ObservableObject {
     }
     
     private func addPostToFirebase(post: PostInfo) {
-        let database = Firestore.firestore()
-        let postReference = database.collection("PostInfo").document(post.id.uuidString)
-        
-        let postData: [String: Any] = [
-            "id": post.id.uuidString,
-            "authorID": post.authorID.uuidString,
-            "type": post.type.rawValue,
-            "header": post.header,
-            "body": post.body,
-            "postingTime": post.postingTime,
-            "likedBy": post.likedBy.map { $0.uuidString },
-            "comments": post.comments.map { $0.uuidString },
-            "spoilersAllowed": post.spoilersAllowed,
-            "announcementType": post.announcementType.rawValue
-        ]
-        
-        postReference.setData(postData)
+        FirebaseManager.shared.addPostToFirebase(post: post)
     }
     
     private func addQuotesToFirebase(quotes: [Quote]) {
-        let database = Firestore.firestore()
-        let userReference = database.collection("UserInfo").document(userInfo.id.uuidString)
-        
-        let quotesData: [[String: Any]] = quotes.map { quote in
-            return [
-                "text": quote.text,
-                "author": quote.author
-            ]
-        }
-        
-        userReference.updateData(["quotesUsed": FieldValue.arrayUnion(quotesData)]) { error in
-            if let error = error {
-                print("Error updating user quotes on Firebase: \(error.localizedDescription)")
-            }
-        }
+        FirebaseManager.shared.addQuotesToFirebase(userInfoIDString: userInfo.id.uuidString, quotes: quotes)
     }
     
     private func updateUserDataOnFirebase(postID: UUID) {
-        let database = Firestore.firestore()
-        let userReference = database.collection("UserInfo").document(userInfo.id.uuidString)
-        
-        userReference.updateData(["posts": FieldValue.arrayUnion([postID.uuidString])]) { error in
-            if let error = error {
-                print("Error updating user data on Firebase: \(error.localizedDescription)")
-            }
-        }
+        FirebaseManager.shared.updateUserPostsOnFirebase(userInfoIDString: userInfo.id.uuidString, postID: postID)
     }
 }

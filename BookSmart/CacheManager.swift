@@ -1,14 +1,8 @@
-//
-//  CacheManager.swift
-//  BookSmart
-//
-//  Created by Luka Gazdeliani on 28.01.24.
-//
 
 import Foundation
 import UIKit
 
-class CacheManager {
+final public class CacheManager {
     
     static let instance = CacheManager()
     
@@ -38,5 +32,4 @@ class CacheManager {
         add(image: image, name: name)
         print("updated in cache")
     }
-
 }
