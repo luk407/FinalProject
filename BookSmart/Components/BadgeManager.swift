@@ -1,9 +1,3 @@
-//
-//  BadgeManager.swift
-//  BookSmart
-//
-//  Created by Luka Gazdeliani on 28.01.24.
-//
 
 import Foundation
 

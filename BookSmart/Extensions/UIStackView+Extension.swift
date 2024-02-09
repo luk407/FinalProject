@@ -1,9 +1,3 @@
-//
-//  UIStackView+Extension.swift
-//  BookSmart
-//
-//  Created by Luka Gazdeliani on 19.01.24.
-//
 
 import UIKit
 

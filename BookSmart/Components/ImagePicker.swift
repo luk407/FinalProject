@@ -1,9 +1,3 @@
-//
-//  ImagePicker.swift
-//  BookSmart
-//
-//  Created by Luka Gazdeliani on 27.01.24.
-//
 
 import Foundation
 import UIKit

@@ -1,9 +1,3 @@
-//
-//  PasswordStrengthChecklistUIView.swift
-//  BookSmart
-//
-//  Created by Luka Gazdeliani on 17.01.24.
-//
 
 import UIKit
 

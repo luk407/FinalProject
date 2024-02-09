@@ -1,9 +1,3 @@
-//
-//  EmptyStateView.swift
-//  BookSmart
-//
-//  Created by Luka Gazdeliani on 25.01.24.
-//
 
 import SwiftUI
 

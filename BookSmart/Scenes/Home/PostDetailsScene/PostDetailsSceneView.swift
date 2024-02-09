@@ -252,9 +252,23 @@ extension PostDetailsSceneView: UITableViewDelegate {
 }
 
 extension PostDetailsSceneView: PostDetailsSceneViewDelegate {
-    func postUpdated() {
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
+    
+        func postUpdated() {
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
         }
+    
+    func commentAdded() {
+        DispatchQueue.main.async {
+            self.insertNewComment()
+        }
+    }
+    
+    private func insertNewComment() {
+        let indexPath = IndexPath(row: 1, section: 0)
+        tableView.insertRows(at: [indexPath], with: .top)
+        
+        tableView.scrollToRow(at: indexPath, at: .top, animated: true)
     }
 }

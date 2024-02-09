@@ -13,6 +13,7 @@ protocol PostDetailsSceneViewDelegateForAnnouncement: AnyObject {
 
 protocol PostDetailsSceneViewDelegate: AnyObject {
     func postUpdated()
+    func commentAdded()
 }
 
 final class PostDetailsSceneViewModel {
@@ -77,7 +78,7 @@ final class PostDetailsSceneViewModel {
             }
             
             self.dispatchGroup.notify(queue: .main) {
-                self.delegate?.postUpdated()
+                self.delegate?.commentAdded()
             }
         }
     }
