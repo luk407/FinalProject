@@ -24,14 +24,14 @@ final class LeaderboardSceneView: UIViewController {
         } else {
             return LeaderboardPodiumItemStackView(place: 1, userImage: UIImage(systemName: "person.fill")!, imageSize: 90, username: "", booksReadCount: 0, shadowColor: .customGoldColor)
         }
-    
+        
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(navigateToProfile(_:)))
         stackView.addGestureRecognizer(gestureRecognizer)
         stackView.isUserInteractionEnabled = true
         
         return stackView
     }()
-
+    
     private lazy var secondPlaceStackView: LeaderboardPodiumItemStackView = {
         let stackView: LeaderboardPodiumItemStackView
         if leaderboardSceneViewModel.fetchedUsersInfo.count > 1 {
@@ -75,7 +75,7 @@ final class LeaderboardSceneView: UIViewController {
         
         return stackView
     }()
-
+    
     private let leaderboardTableView = UITableView(frame: .zero, style: .grouped)
     
     var leaderboardSceneViewModel: LeaderboardSceneViewModel
@@ -103,11 +103,11 @@ final class LeaderboardSceneView: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        leaderboardSceneViewModel.retrieveAllImages() {
+        leaderboardSceneViewModel.refetchInfo() {
             DispatchQueue.main.async {
                 self.leaderboardTableView.reloadData()
+                print("finished fetching")
             }
-            print("finished fetching")
         }
     }
     
@@ -178,10 +178,10 @@ final class LeaderboardSceneView: UIViewController {
     }
     
     // MARK: - Methods
-
+    
     @objc private func navigateToProfile(_ gestureRecognizer: UITapGestureRecognizer) {
         guard let tappedView = gestureRecognizer.view else { return }
-
+        
         var index: Int
         
         if tappedView == firstPlaceStackView {
@@ -193,10 +193,10 @@ final class LeaderboardSceneView: UIViewController {
         } else {
             return
         }
-
+        
         navigateToProfile(index: index)
     }
-
+    
     private func navigateToProfile(index: Int) {
         let profileSceneView = UIHostingController(rootView: ProfileSceneView(
             profileSceneViewModel: ProfileSceneViewModel(
@@ -242,7 +242,7 @@ extension LeaderboardSceneView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let profileSceneView = UIHostingController(rootView: ProfileSceneView(
             profileSceneViewModel: ProfileSceneViewModel(
-                profileOwnerInfoID: leaderboardSceneViewModel.fetchedUsersInfo[indexPath.row + 2].id,
+                profileOwnerInfoID: leaderboardSceneViewModel.fetchedUsersInfo[indexPath.row + 3].id,
                 userInfo: leaderboardSceneViewModel.userInfo)).background(Color(uiColor: .customBackgroundColor)))
         navigationController?.pushViewController(profileSceneView, animated: true)
     }
@@ -250,8 +250,49 @@ extension LeaderboardSceneView: UITableViewDelegate {
 
 extension LeaderboardSceneView: LeaderboardSceneViewModelDelegate {
     
+    func updatePodiumUI() {
+        guard let firstUser = leaderboardSceneViewModel.fetchedUsersInfo.first else {
+            return
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [self] in
+            firstPlaceStackView.setupUI(
+                place: 1,
+                userImage: leaderboardSceneViewModel.getImage(userID: firstUser.id) ?? UIImage(systemName: "person.fill")!,
+                imageSize: 90,
+                username: firstUser.userName,
+                booksReadCount: firstUser.booksFinished.count,
+                shadowColor: .customGoldColor
+            )
+            
+            if leaderboardSceneViewModel.fetchedUsersInfo.count > 1 {
+                let secondUser = leaderboardSceneViewModel.fetchedUsersInfo[1]
+                secondPlaceStackView.setupUI(
+                    place: 2,
+                    userImage: leaderboardSceneViewModel.getImage(userID: secondUser.id) ?? UIImage(systemName: "person.fill")!,
+                    imageSize: 70,
+                    username: secondUser.userName,
+                    booksReadCount: secondUser.booksFinished.count,
+                    shadowColor: .customSilverColor
+                )
+            }
+            
+            if leaderboardSceneViewModel.fetchedUsersInfo.count > 2 {
+                let thirdUser = leaderboardSceneViewModel.fetchedUsersInfo[2]
+                thirdPlaceStackView.setupUI(
+                    place: 3,
+                    userImage: leaderboardSceneViewModel.getImage(userID: thirdUser.id) ?? UIImage(systemName: "person.fill")!,
+                    imageSize: 70,
+                    username: thirdUser.userName,
+                    booksReadCount: thirdUser.booksFinished.count,
+                    shadowColor: .customBronzeColor
+                )
+            }
+        }
+    }
+    
     func updateUserImage(userIndex: Int, userImage: UIImage) {
-        DispatchQueue.main.async { [self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [self] in
             switch userIndex {
             case 0:
                 firstPlaceStackView.updateUserImage(image: userImage)
@@ -262,6 +303,12 @@ extension LeaderboardSceneView: LeaderboardSceneViewModelDelegate {
             default:
                 break
             }
+        }
+    }
+    
+    func updateTableViewRows(indexPaths: [IndexPath]) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.leaderboardTableView.reloadRows(at: indexPaths, with: .fade)
         }
     }
 }

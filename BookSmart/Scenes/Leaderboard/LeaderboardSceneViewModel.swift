@@ -5,6 +5,8 @@ import FirebaseStorage
 
 protocol LeaderboardSceneViewModelDelegate: AnyObject {
     func updateUserImage(userIndex: Int, userImage: UIImage)
+    func updatePodiumUI()
+    func updateTableViewRows(indexPaths: [IndexPath])
 }
 
 final class LeaderboardSceneViewModel {
@@ -20,17 +22,23 @@ final class LeaderboardSceneViewModel {
     // MARK: - Init
     
     init(userInfo: UserInfo) {
-        self.userInfo = userInfo
-        
-        getAllUsersInfo { usersInfo in
-            if let usersInfo {
-                self.fetchedUsersInfo = usersInfo.sorted { $0.booksFinished.count > $1.booksFinished.count }
-            }
-        }
-        
+        self.userInfo = userInfo     
     }
     
     // MARK: - Methods
+    
+    func refetchInfo(completion: @escaping () -> Void) {
+        getAllUsersInfo { usersInfo in
+            if let usersInfo {
+                self.fetchedUsersInfo = usersInfo.sorted { $0.booksFinished.count > $1.booksFinished.count }
+                
+                self.retrieveAllImages {
+                    self.delegate?.updatePodiumUI()
+                    completion()
+                }
+            }
+        }
+    }
     
     func getAllUsersInfo(completion: @escaping ([UserInfo]?) -> Void) {
         FirebaseManager.shared.getAllUsersInfo { allUserInfo in
@@ -44,13 +52,15 @@ final class LeaderboardSceneViewModel {
 
     func retrieveAllImages(completion: @escaping () -> Void) {
         self.fetchImagesSequentially(completion: completion)
+        completion()
     }
     
     private func fetchImagesSequentially(completion: @escaping () -> Void) {
-        var index = 0
+        fetchNextImage(index: 0)
         
-        func fetchNextImage() {
+        func fetchNextImage(index: Int) {
             guard index < fetchedUsersInfo.count else {
+                notifyTableViewRowsUpdated()
                 completion()
                 return
             }
@@ -61,38 +71,27 @@ final class LeaderboardSceneViewModel {
             if let cachedImage = CacheManager.instance.get(name: imageName) {
                 delegate?.updateUserImage(userIndex: index, userImage: cachedImage)
                 fetchedUserImages[user.id.uuidString] = cachedImage
-                index += 1
-                fetchNextImage()
             } else {
-                fetchImage(imageName, userIndex: index) {
-                    index += 1
-                    fetchNextImage()
+                fetchImage(imageName, userIndex: index) { retrievedImage in
+                    self.fetchedUserImages[user.id.uuidString] = retrievedImage
+                    CacheManager.instance.add(image: retrievedImage, name: user.id.uuidString)
                 }
             }
+            fetchNextImage(index: index + 1)
         }
-        
-        fetchNextImage()
     }
 
-    private func fetchImage(_ imageName: String, userIndex: Int, completion: @escaping () -> Void)  {
-//        let storageReference = Storage.storage().reference()
-//        let fileReference = storageReference.child("profileImages/\(imageName).jpg")
+    private func fetchImage(_ imageName: String, userIndex: Int, completion: @escaping (UIImage) -> Void)  {
         let userID = self.fetchedUsersInfo[userIndex].id
         
         FirebaseManager.shared.retrieveImage(userID.uuidString) { retrievedImage in
             self.delegate?.updateUserImage(userIndex: userIndex, userImage: retrievedImage)
+            completion(retrievedImage)
         }
-//        fileReference.getData(maxSize: 5 * 1024 * 1024) { data, error in
-//            if let data = data, error == nil, let fetchedImage = UIImage(data: data) {
-//                CacheManager.instance.add(image: fetchedImage, name: userID.uuidString)
-//                self.delegate?.updateUserImage(userIndex: userIndex, userImage: fetchedImage)
-//                completion()
-//            } else {
-//                print("Error fetching image:", error?.localizedDescription ?? "Unknown error")
-//                CacheManager.instance.add(image: UIImage(systemName: "person.fill")!, name: userID.uuidString)
-//                self.delegate?.updateUserImage(userIndex: userIndex, userImage: UIImage(systemName: "person.fill")!)
-//                completion()
-//            }
-//        }
+    }
+    
+    private func notifyTableViewRowsUpdated() {
+        let indexPaths = (0..<fetchedUsersInfo.count - 3).map { IndexPath(row: $0, section: 0) }
+        delegate?.updateTableViewRows(indexPaths: indexPaths)
     }
 }

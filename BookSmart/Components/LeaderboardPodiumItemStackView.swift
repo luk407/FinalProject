@@ -1,11 +1,3 @@
-//
-//  LeaderboardPodiumItemStackView.swift
-//  BookSmart
-//
-//  Created by Luka Gazdeliani on 29.01.24.
-//
-
-import Foundation
 
 import UIKit
 
