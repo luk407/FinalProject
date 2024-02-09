@@ -14,6 +14,8 @@ final class PostDetailsSceneView: UIViewController {
     private var typeCommentTextView = UITextView()
     private var submitCommentButton = UIButton()
     
+    private var lastDisplayedRow: Int = -1
+    
     var viewModel: PostDetailsSceneViewModel
     
     // MARK: - Init
@@ -229,6 +231,23 @@ extension PostDetailsSceneView: UITableViewDataSource {
 extension PostDetailsSceneView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         UITableView.automaticDimension
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+
+        if indexPath.row <= lastDisplayedRow {
+            lastDisplayedRow = -1
+        }
+        
+        cell.alpha = 0
+        
+        let delay = 0.1 * Double(indexPath.row)
+        
+        UIView.animate(withDuration: 0.5, delay: delay, options: .curveEaseInOut, animations: {
+            cell.alpha = 1
+        }, completion: nil)
+        
+        lastDisplayedRow = indexPath.row
     }
 }
 

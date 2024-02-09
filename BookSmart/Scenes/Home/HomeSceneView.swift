@@ -12,6 +12,8 @@ final class HomeSceneView: UIViewController {
     
     private let refreshControl = UIRefreshControl()
     
+    private var lastDisplayedRow: Int = -1
+    
     var homeSceneViewModel: PostsScenesViewModel
     
     // MARK: - Init
@@ -138,6 +140,23 @@ extension HomeSceneView: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         UITableView.automaticDimension
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+
+        if indexPath.row <= lastDisplayedRow {
+            lastDisplayedRow = -1
+        }
+        
+        cell.alpha = 0
+        
+        let delay = 0.1 * Double(indexPath.row)
+        
+        UIView.animate(withDuration: 0.5, delay: delay, options: .curveEaseInOut, animations: {
+            cell.alpha = 1
+        }, completion: nil)
+        
+        lastDisplayedRow = indexPath.row
     }
 }
 
