@@ -940,6 +940,54 @@ final public class FirebaseManager {
             }
     }
     
+    func toggleLikeComment(commentInfo: CommentInfo, userInfoID: UserInfo.ID, completion: @escaping (Bool) -> Void) {
+        
+        let database = Firestore.firestore()
+        
+        let commentReference = database.collection("CommentInfo").document(commentInfo.id.uuidString)
+        
+        let isLiked = commentInfo.likedBy.contains(userInfoID)
+        
+        if isLiked {
+            commentReference.updateData([
+                "likedBy": FieldValue.arrayRemove([userInfoID.uuidString])
+            ]) { error in
+                if let error = error {
+                    print("Error removing user from likedBy in comment: \(error.localizedDescription)")
+                    return
+                } else {
+                    completion(false)
+                }
+                
+//                if let indexOfUser = commentInfo.likedBy.firstIndex(of: viewModel!.userInfo.id) {
+//                    self.commentInfo?.likedBy.remove(at: indexOfUser)
+//                    
+//                    DispatchQueue.main.async {
+//                        self.updateLikeButtonUI(isLiked: false)
+//                    }
+//                }
+            }
+        } else {
+            commentReference.updateData([
+                "likedBy": FieldValue.arrayUnion([userInfoID.uuidString])
+            ]) { error in
+                if let error = error {
+                    print("Error adding user to likedBy in comment: \(error.localizedDescription)")
+                    return
+                } else {
+                    completion(true)
+                }
+                
+//                self.commentInfo?.likedBy.append(viewModel!.userInfo.id)
+//                
+//                DispatchQueue.main.async {
+//                    self.updateLikeButtonUI(isLiked: true)
+//                }
+            }
+        }
+    }
+
+    
     func addCommentToFirebase(userInfoID: UserInfo.ID, postInfoIDString: String, commentText: String, completion: @escaping (CommentInfo.ID) -> Void) {
         
         let database = Firestore.firestore()
@@ -1029,7 +1077,6 @@ final public class FirebaseManager {
             }
         }
     }
-
     
     private func updateUserDataWithNewCommentID(userInfoIDString: String, commentID: UUID) {
         

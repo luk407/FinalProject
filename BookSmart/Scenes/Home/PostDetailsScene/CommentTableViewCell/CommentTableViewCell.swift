@@ -339,57 +339,19 @@ class CommentTableViewCell: UITableViewCell {
     
     
     func toggleLikeComment() {
+        guard let viewModel else { return }
+        guard let commentInfo else { return }
         
-        guard let commentInfo = commentInfo else { return }
-        
-        let database = Firestore.firestore()
-        
-        let commentReference = database.collection("CommentInfo").document(commentInfo.id.uuidString)
-        
-        let isLiked = commentInfo.likedBy.contains(viewModel!.userInfo.id)
-        
-        updateLikeButtonUI(isLiked: !isLiked)
-        
-        if isLiked {
-            commentReference.updateData([
-                "likedBy": FieldValue.arrayRemove([viewModel?.userInfo.id.uuidString ?? ""])
-            ]) { [self] error in
-                if let error = error {
-                    print("Error removing user from likedBy in comment: \(error.localizedDescription)")
-                    return
-                }
-                
-                if let indexOfUser = commentInfo.likedBy.firstIndex(of: viewModel!.userInfo.id) {
+        FirebaseManager.shared.toggleLikeComment(commentInfo: commentInfo, userInfoID: viewModel.userInfo.id) { isLiked in
+            if !isLiked {
+                if let indexOfUser = commentInfo.likedBy.firstIndex(of: self.viewModel!.userInfo.id) {
                     self.commentInfo?.likedBy.remove(at: indexOfUser)
-                    
-                    DispatchQueue.main.async {
-                        self.updateLikeButtonUI(isLiked: false)
-                    }
                 }
+            } else {
+                self.commentInfo?.likedBy.append(self.viewModel!.userInfo.id)
             }
-        } else {
-            commentReference.updateData([
-                "likedBy": FieldValue.arrayUnion([viewModel?.userInfo.id.uuidString ?? ""])
-            ]) { [self] error in
-                if let error = error {
-                    print("Error adding user to likedBy in comment: \(error.localizedDescription)")
-                    return
-                }
-                
-                self.commentInfo?.likedBy.append(viewModel!.userInfo.id)
-                
-                DispatchQueue.main.async {
-                    self.updateLikeButtonUI(isLiked: true)
-                }
-            }
-        }
-    }
-    
-    func updateLikeButtonUI(isLiked: Bool) {
-        DispatchQueue.main.async {
-            let imageName = isLiked ? "heart.fill" : "heart"
             
-            self.likeButtonImageView.image = UIImage(systemName: imageName)?.withTintColor(.customLikeButtonColor)
+            self.updateLikeButtonUI(isLiked: isLiked)
         }
     }
     
@@ -407,6 +369,14 @@ class CommentTableViewCell: UITableViewCell {
         
         FirebaseManager.shared.retrieveImage(authorIDString) { commentAuthorImage in
             self.authorImageView.image = commentAuthorImage
+        }
+    }
+    
+    func updateLikeButtonUI(isLiked: Bool) {
+        DispatchQueue.main.async {
+            let imageName = isLiked ? "heart.fill" : "heart"
+            
+            self.likeButtonImageView.image = UIImage(systemName: imageName)?.withTintColor(.customLikeButtonColor)
         }
     }
 }
