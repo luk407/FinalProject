@@ -454,7 +454,6 @@ final class PostsTableViewCell: UITableViewCell {
                     self.commentButtonLabel.alpha = 1.0
                     
                     if let navigationController = self.window?.rootViewController as? UINavigationController {
-                        // fix force unwrap
                         let commentDetailsViewController = PostDetailsSceneView(
                             viewModel: PostDetailsSceneViewModel(
                                 userInfo: viewModel!.userInfo,
@@ -506,13 +505,18 @@ final class PostsTableViewCell: UITableViewCell {
     // MARK: - Firebase Methods
     
     func retrieveImage() {
-        authorImageView.image = UIImage(systemName: "person.fill")
         authorImageView.tintColor = .customAccentColor
         
         guard let postInfoAuthorIDString = postInfo?.authorID.uuidString else { return }
         
         FirebaseManager.shared.retrieveImage(postInfoAuthorIDString) { retrievedImage in
-            self.authorImageView.image = retrievedImage
+            UIView.transition(with: self.authorImageView,
+                                      duration: 0.3,
+                                      options: .transitionCrossDissolve,
+                                      animations: {
+                                          self.authorImageView.image = retrievedImage
+                                      },
+                                      completion: nil)
         }
     }
 

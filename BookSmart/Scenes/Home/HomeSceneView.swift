@@ -107,7 +107,8 @@ final class HomeSceneView: UIViewController {
     
     @objc private func refreshTableView() {
         homeSceneViewModel.getPostsInfoFromFirebase {
-            self.postsTableView.reloadData()
+            self.homeSceneViewModel.loadInitialStoryPosts()
+            self.reloadTableViewWithAnimation()
             self.refreshControl.endRefreshing()
         }
     }
@@ -151,26 +152,23 @@ extension HomeSceneView: UITableViewDelegate {
             homeSceneViewModel.loadMoreStoryPosts()
         }
     }
-    
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-
-        if indexPath.row <= lastDisplayedRow {
-            lastDisplayedRow = -1
-        }
-        
-        cell.alpha = 0
-        
-        let delay = 0.1 * Double(indexPath.row)
-        
-        UIView.animate(withDuration: 0.2, delay: delay, options: .curveEaseInOut, animations: {
-            cell.alpha = 1
-        }, completion: nil)
-        
-        lastDisplayedRow = indexPath.row
-    }
 }
 
 extension HomeSceneView: PostsScenesViewModelDelegateForStory {
+    
+    func reloadTableViewWithAnimation() {
+        DispatchQueue.main.async {
+            self.postsTableView.reloadData()
+            for indexPath in self.postsTableView.indexPathsForVisibleRows ?? [] {
+                if let cell = self.postsTableView.cellForRow(at: indexPath) {
+                    cell.alpha = 0
+                    UIView.animate(withDuration: 0.5) {
+                        cell.alpha = 1
+                    }
+                }
+            }
+        }
+    }
     
     func reloadTableView() {
         DispatchQueue.main.async {

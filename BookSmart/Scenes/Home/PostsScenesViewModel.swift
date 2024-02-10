@@ -3,10 +3,12 @@ import Foundation
 import Firebase
 
 protocol PostsScenesViewModelDelegateForAnnouncement: AnyObject {
+    func reloadTableViewWithAnimation()
     func reloadTableView()
 }
 
 protocol PostsScenesViewModelDelegateForStory: AnyObject {
+    func reloadTableViewWithAnimation()
     func reloadTableView()
 }
 
@@ -43,8 +45,8 @@ final class PostsScenesViewModel: ObservableObject {
         userInfoListener()
         getPostsInfoFromFirebase() {
             self.loadInitialStoryPosts()
-            self.storyDelegate?.reloadTableView()
-            self.announcementDelegate?.reloadTableView()
+            self.storyDelegate?.reloadTableViewWithAnimation()
+            self.announcementDelegate?.reloadTableViewWithAnimation()
         }
     }
     
@@ -68,7 +70,7 @@ final class PostsScenesViewModel: ObservableObject {
         
         filteredStoryPosts.sort(by: { $0.postingTime > $1.postingTime })
         storyPostsToDisplay.sort(by: { $0.postingTime > $1.postingTime })
-        storyDelegate?.reloadTableView()
+        storyDelegate?.reloadTableViewWithAnimation()
     }
     
     func loadInitialStoryPosts() {
@@ -118,7 +120,6 @@ final class PostsScenesViewModel: ObservableObject {
             announcementDelegate?.reloadTableView()
         }
     }
-
 
     // MARK: - Firebase Methods
     

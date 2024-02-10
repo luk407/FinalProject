@@ -878,7 +878,12 @@ final public class FirebaseManager {
                     completion(fetchedImage)
                 }
             } else {
+                let placeHolderImage = UIImage(systemName: "person.fill")!
+                
+                CacheManager.instance.add(image: placeHolderImage, name: imagePath)
+                
                 print("Error fetching image:", error?.localizedDescription ?? "Unknown error")
+                completion(placeHolderImage)
             }
         }
     }
@@ -958,14 +963,6 @@ final public class FirebaseManager {
                 } else {
                     completion(false)
                 }
-                
-//                if let indexOfUser = commentInfo.likedBy.firstIndex(of: viewModel!.userInfo.id) {
-//                    self.commentInfo?.likedBy.remove(at: indexOfUser)
-//                    
-//                    DispatchQueue.main.async {
-//                        self.updateLikeButtonUI(isLiked: false)
-//                    }
-//                }
             }
         } else {
             commentReference.updateData([
@@ -977,12 +974,6 @@ final public class FirebaseManager {
                 } else {
                     completion(true)
                 }
-                
-//                self.commentInfo?.likedBy.append(viewModel!.userInfo.id)
-//                
-//                DispatchQueue.main.async {
-//                    self.updateLikeButtonUI(isLiked: true)
-//                }
             }
         }
     }

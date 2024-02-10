@@ -350,13 +350,18 @@ class CommentTableViewCell: UITableViewCell {
     }
     
     func retrieveImage() {
-        authorImageView.image = UIImage(systemName: "person.fill")
         authorImageView.tintColor = .customAccentColor
         
         guard let authorIDString = commentInfo?.authorID.uuidString else { return }
         
         FirebaseManager.shared.retrieveImage(authorIDString) { commentAuthorImage in
-            self.authorImageView.image = commentAuthorImage
+            UIView.transition(with: self.authorImageView,
+                                      duration: 0.3,
+                                      options: .transitionCrossDissolve,
+                                      animations: {
+                                          self.authorImageView.image = commentAuthorImage
+                                      },
+                                      completion: nil)
         }
     }
     

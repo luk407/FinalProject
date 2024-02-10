@@ -94,6 +94,7 @@ final class AnnouncementsTableViewCell: UITableViewCell {
         authorInfoStackView.addSubview(authorImageView)
         authorInfoStackView.addArrangedSubview(namesStackView)
         authorInfoStackView.bringSubviewToFront(authorImageView)
+        authorInfoStackView.bringSubviewToFront(namesStackView)
         
         namesStackView.addArrangedSubview(nameLabel)
         namesStackView.addArrangedSubview(usernameLabel)
@@ -109,6 +110,7 @@ final class AnnouncementsTableViewCell: UITableViewCell {
     private func setupConstraints() {
         setupMainStackViewConstraints()
         setupAnnouncementAuthorStackViewConstraints()
+        setupBackgroundImageViewConstraints()
         setupAuthorInfoViewConstraints()
         setupSpoilerTagStackViewConstraints()
         setupAuthorImageViewConstraints()
@@ -140,7 +142,7 @@ final class AnnouncementsTableViewCell: UITableViewCell {
     func configureCell() {
         self.backgroundColor = .clear
         self.selectionStyle = .none
-
+        
         DispatchQueue.main.async { [self] in
             viewModel?.getAuthorInfo(with: postInfo!.authorID) { [self] authorInfo in
                 self.authorInfo = authorInfo
@@ -153,6 +155,8 @@ final class AnnouncementsTableViewCell: UITableViewCell {
         
         let timeAgo = MethodsManager.shared.timeAgoString(from: postInfo?.postingTime ?? Date())
         
+        nameLabel.text = " "
+        usernameLabel.text = " "
         timeLabel.text = timeAgo
         headerLabel.text = postInfo?.header
         bodyLabel.text = postInfo?.body
@@ -194,14 +198,14 @@ final class AnnouncementsTableViewCell: UITableViewCell {
     
     private func setupAuthorInfoViewConstraints() {
         NSLayoutConstraint.activate([
-            authorInfoStackView.heightAnchor.constraint(equalToConstant: 170)
+            authorInfoStackView.heightAnchor.constraint(greaterThanOrEqualToConstant: 200)
         ])
     }
     
     private func setupBackgroundImageViewConstraints() {
         NSLayoutConstraint.activate([
-            backgroundImageView.heightAnchor.constraint(equalToConstant: 100),
-            backgroundImageView.widthAnchor.constraint(equalToConstant: 100),
+            backgroundImageView.heightAnchor.constraint(greaterThanOrEqualToConstant: 130),
+            backgroundImageView.widthAnchor.constraint(greaterThanOrEqualToConstant: 100),
         ])
     }
 
@@ -209,9 +213,7 @@ final class AnnouncementsTableViewCell: UITableViewCell {
         NSLayoutConstraint.activate([
             spoilerTagStackView.widthAnchor.constraint(equalToConstant: 50),
             spoilerTagStackView.heightAnchor.constraint(equalToConstant: 25),
-            //spoilerTagStackView.centerYAnchor.constraint(equalTo: announcementAuthorStackView.centerYAnchor, constant: -16)
         ])
-
     }
     
     private func setupAuthorImageViewConstraints() {
@@ -225,7 +227,6 @@ final class AnnouncementsTableViewCell: UITableViewCell {
     
     private func setupNamesStackViewConstraints() {
         NSLayoutConstraint.activate([
-            namesStackView.topAnchor.constraint(equalTo: authorImageView.bottomAnchor, constant: 8),
             namesStackView.heightAnchor.constraint(equalToConstant: 70)
         ])
     }
@@ -239,8 +240,8 @@ final class AnnouncementsTableViewCell: UITableViewCell {
     
     private func setupPostContentStackViewConstraints() {
         NSLayoutConstraint.activate([
-            postContentStackView.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor, constant: 10),
-            postContentStackView.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor, constant: -10),
+            postContentStackView.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor, constant: 20),
+            postContentStackView.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor, constant: -20),
         ])
     }
     
@@ -269,7 +270,7 @@ final class AnnouncementsTableViewCell: UITableViewCell {
     
     private func setupAnnouncementAuthorStackViewUI() {
         announcementAuthorStackView.axis = .horizontal
-        announcementAuthorStackView.spacing = 32
+        announcementAuthorStackView.spacing = 24
         announcementAuthorStackView.alignment = .top
         announcementAuthorStackView.distribution = .fillProportionally
     }
@@ -282,7 +283,6 @@ final class AnnouncementsTableViewCell: UITableViewCell {
     
     private func setupBackgroundImageViewUI() {
         backgroundImageView.tintColor = .customAccentColor
-        backgroundImageView.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
     }
 
     private func setupAuthorImageViewUI() {
@@ -293,7 +293,6 @@ final class AnnouncementsTableViewCell: UITableViewCell {
         authorImageView.translatesAutoresizingMaskIntoConstraints = false
         authorImageView.contentMode = .scaleAspectFill
         authorImageView.clipsToBounds = true
-        authorImageView.layer.masksToBounds = true
         authorImageView.layer.cornerRadius = 30
         authorImageView.layer.borderColor = UIColor.customBackgroundColor.cgColor
         authorImageView.layer.borderWidth = 4
@@ -442,7 +441,6 @@ final class AnnouncementsTableViewCell: UITableViewCell {
             }
             print("image tapped, go to profile page")
         }
-        // fix force unwrap
         let profileSceneViewController = UIHostingController(
             rootView: ProfileSceneView(
                 profileSceneViewModel: ProfileSceneViewModel(
@@ -465,7 +463,6 @@ final class AnnouncementsTableViewCell: UITableViewCell {
                     self.bodyLabel.alpha = 1.0
                     
                     if let navigationController = self.window?.rootViewController as? UINavigationController {
-                        //fix force unwrap
                         let commentDetailsViewController = PostDetailsSceneView(
                             viewModel: PostDetailsSceneViewModel(
                                 userInfo: viewModel!.userInfo,
@@ -511,7 +508,6 @@ final class AnnouncementsTableViewCell: UITableViewCell {
                     self.commentButtonLabel.alpha = 1.0
                     
                     if let navigationController = self.window?.rootViewController as? UINavigationController {
-                        // fix force unwrap
                         let commentDetailsViewController = PostDetailsSceneView(
                             viewModel: PostDetailsSceneViewModel(
                                 userInfo: viewModel!.userInfo,
@@ -561,13 +557,18 @@ final class AnnouncementsTableViewCell: UITableViewCell {
     }
     
     func retrieveImage() {
-        authorImageView.image = UIImage(systemName: "person.fill")
-        authorImageView.tintColor = .customAccentColor
+        authorImageView.tintColor = .customBackgroundColor
         
         guard let postInfoAuthorIDString = postInfo?.authorID.uuidString else { return }
         
         FirebaseManager.shared.retrieveImage(postInfoAuthorIDString) { retrievedImage in
-            self.authorImageView.image = retrievedImage
+            UIView.transition(with: self.authorImageView,
+                                      duration: 0.3,
+                                      options: .transitionCrossDissolve,
+                                      animations: {
+                                          self.authorImageView.image = retrievedImage
+                                      },
+                                      completion: nil)
         }
     }
     

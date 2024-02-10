@@ -538,13 +538,18 @@ final class AnnouncementTableViewCell: UITableViewCell {
     }
     
     func retrieveImage() {
-        authorImageView.image = UIImage(systemName: "person.fill")
         authorImageView.tintColor = .customAccentColor
         
         guard let postInfoAuthorIDString = viewModel?.postInfo.authorID.uuidString else { return }
         
         FirebaseManager.shared.retrieveImage(postInfoAuthorIDString) { retrievedImage in
-            self.authorImageView.image = retrievedImage
+            UIView.transition(with: self.authorImageView,
+                                      duration: 0.3,
+                                      options: .transitionCrossDissolve,
+                                      animations: {
+                                          self.authorImageView.image = retrievedImage
+                                      },
+                                      completion: nil)
         }
     }
 }
