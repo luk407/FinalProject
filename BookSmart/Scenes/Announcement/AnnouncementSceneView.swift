@@ -38,6 +38,7 @@ final class AnnouncementSceneView: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        announcementSceneViewModel.loadInitialAnnouncementPosts()
         announcementsTableView.reloadData()
     }
     
@@ -115,11 +116,11 @@ final class AnnouncementSceneView: UIViewController {
 
 extension AnnouncementSceneView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        announcementSceneViewModel.announcementPosts.count
+        announcementSceneViewModel.announcementPostsToDisplay.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let announcementPostInfo = announcementSceneViewModel.announcementPosts[indexPath.row]
+        let announcementPostInfo = announcementSceneViewModel.announcementPostsToDisplay[indexPath.row]
         if let cell = announcementsTableView.dequeueReusableCell(withIdentifier: "announcementCell", for: indexPath) as? AnnouncementsTableViewCell {
             cell.navigationController = navigationController
             cell.viewModel = announcementSceneViewModel
@@ -137,6 +138,16 @@ extension AnnouncementSceneView: UITableViewDataSource {
 extension AnnouncementSceneView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         UITableView.automaticDimension
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let screenHeight = scrollView.frame.size.height
+        
+        if offsetY > contentHeight - screenHeight {
+            announcementSceneViewModel.loadMoreAnnouncementPosts()
+        }
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {

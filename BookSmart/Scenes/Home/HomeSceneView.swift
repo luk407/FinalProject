@@ -117,11 +117,11 @@ final class HomeSceneView: UIViewController {
 
 extension HomeSceneView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        homeSceneViewModel.filteredStoryPosts.count
+        homeSceneViewModel.storyPostsToDisplay.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let storyPostInfo = homeSceneViewModel.filteredStoryPosts[indexPath.row]
+        let storyPostInfo = homeSceneViewModel.storyPostsToDisplay[indexPath.row]
         if let cell = postsTableView.dequeueReusableCell(withIdentifier: "postCell", for: indexPath) as? PostsTableViewCell {
             cell.navigationController = navigationController
             cell.viewModel = homeSceneViewModel
@@ -142,6 +142,16 @@ extension HomeSceneView: UITableViewDelegate {
         UITableView.automaticDimension
     }
     
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let screenHeight = scrollView.frame.size.height
+        
+        if offsetY > contentHeight - screenHeight {
+            homeSceneViewModel.loadMoreStoryPosts()
+        }
+    }
+    
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
 
         if indexPath.row <= lastDisplayedRow {
@@ -152,7 +162,7 @@ extension HomeSceneView: UITableViewDelegate {
         
         let delay = 0.1 * Double(indexPath.row)
         
-        UIView.animate(withDuration: 0.5, delay: delay, options: .curveEaseInOut, animations: {
+        UIView.animate(withDuration: 0.2, delay: delay, options: .curveEaseInOut, animations: {
             cell.alpha = 1
         }, completion: nil)
         

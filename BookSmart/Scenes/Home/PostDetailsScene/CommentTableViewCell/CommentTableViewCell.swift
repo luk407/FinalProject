@@ -325,19 +325,7 @@ class CommentTableViewCell: UITableViewCell {
             }
         }
     }
-    
-//    private func updateCellUI(with commentInfo: CommentInfo?) {
-//        
-//        DispatchQueue.main.async { [self] in
-//            let authorInfo = getAuthorInfo(with: commentInfo?.authorID ?? UUID())
-//            authorImageView.image = UIImage(systemName: "person.fill")
-//            nameLabel.text = authorInfo?.userName
-//            timeLabel.text = viewModel?.timeAgoString(from: commentInfo?.commentTime ?? Date())
-//            bodyTextView.text = commentInfo?.body
-//        }
-//    }
-    
-    
+
     func toggleLikeComment() {
         guard let viewModel else { return }
         guard let commentInfo else { return }

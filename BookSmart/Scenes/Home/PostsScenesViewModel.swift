@@ -24,6 +24,10 @@ final class PostsScenesViewModel: ObservableObject {
 
     weak var storyDelegate: PostsScenesViewModelDelegateForStory?
     weak var announcementDelegate: PostsScenesViewModelDelegateForAnnouncement?
+    
+    var limit = 5
+    var storyPostsToDisplay: [PostInfo] = []
+    var announcementPostsToDisplay: [PostInfo] = []
 
     private let dispatchGroup = DispatchGroup()
     
@@ -36,25 +40,17 @@ final class PostsScenesViewModel: ObservableObject {
     // MARK: - Methods
     
     func homeSceneViewWillAppear() {
-        //dispatchGroup.enter()
         userInfoListener()
-        //dispatchGroup.leave()
-        
-        //dispatchGroup.enter()
         getPostsInfoFromFirebase() {
+            self.loadInitialStoryPosts()
             self.storyDelegate?.reloadTableView()
             self.announcementDelegate?.reloadTableView()
         }
-       // dispatchGroup.leave()
-        
-        //dispatchGroup.notify(queue: .main) { [weak self] in
-//            self?.storyDelegate?.reloadTableView()
-//            self?.announcementDelegate?.reloadTableView()
-       // }
     }
     
     func filterStoryPosts(with searchText: String) {
         if searchText == "" {
+            storyPostsToDisplay = storyPosts
             filteredStoryPosts = storyPosts
         } else {
             filteredStoryPosts = storyPosts.filter { postInfo in
@@ -62,11 +58,67 @@ final class PostsScenesViewModel: ObservableObject {
                 let bodyMatch = postInfo.body.localizedCaseInsensitiveContains(searchText)
                 return headerMatch || bodyMatch
             }
+            
+            storyPostsToDisplay = storyPosts.filter { postInfo in
+                let headerMatch = postInfo.header.localizedCaseInsensitiveContains(searchText)
+                let bodyMatch = postInfo.body.localizedCaseInsensitiveContains(searchText)
+                return headerMatch || bodyMatch
+            }
         }
         
         filteredStoryPosts.sort(by: { $0.postingTime > $1.postingTime })
+        storyPostsToDisplay.sort(by: { $0.postingTime > $1.postingTime })
         storyDelegate?.reloadTableView()
     }
+    
+    func loadInitialStoryPosts() {
+        limit = 5
+        storyPostsToDisplay = []
+        
+        var itemIndex = 0
+        
+        while itemIndex < limit && itemIndex < filteredStoryPosts.count {
+            storyPostsToDisplay.append(filteredStoryPosts[itemIndex])
+            itemIndex += 1
+        }
+    }
+    
+    func loadMoreStoryPosts() {
+        if storyPostsToDisplay.count < filteredStoryPosts.count {
+            var itemIndex = storyPostsToDisplay.count
+            limit = itemIndex + 5
+            while itemIndex < limit && itemIndex < filteredStoryPosts.count {
+                storyPostsToDisplay.append(filteredStoryPosts[itemIndex])
+                itemIndex += 1
+            }
+            storyDelegate?.reloadTableView()
+        }
+    }
+    
+    func loadInitialAnnouncementPosts() {
+        limit = 5
+        announcementPostsToDisplay = []
+        
+        var itemIndex = 0
+        
+        while itemIndex < limit && itemIndex < announcementPosts.count {
+            announcementPostsToDisplay.append(announcementPosts[itemIndex])
+            itemIndex += 1
+        }
+    }
+    
+    func loadMoreAnnouncementPosts() {
+        if announcementPostsToDisplay.count < announcementPosts.count {
+            var itemIndex = announcementPostsToDisplay.count
+            limit = itemIndex + 5
+            while itemIndex < limit && itemIndex < announcementPosts.count {
+                announcementPostsToDisplay.append(announcementPosts[itemIndex])
+                itemIndex += 1
+            }
+            announcementDelegate?.reloadTableView()
+        }
+    }
+
 
     // MARK: - Firebase Methods
     
