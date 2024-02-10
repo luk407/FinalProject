@@ -160,7 +160,7 @@ extension AnnouncementSceneView: UITableViewDelegate {
         
         let delay = 0.1 * Double(indexPath.row)
         
-        UIView.animate(withDuration: 0.5, delay: delay, options: .curveEaseInOut, animations: {
+        UIView.animate(withDuration: 0.2, delay: delay, options: .curveEaseInOut, animations: {
             cell.alpha = 1
         }, completion: nil)
         

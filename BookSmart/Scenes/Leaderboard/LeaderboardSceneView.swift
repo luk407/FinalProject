@@ -10,71 +10,28 @@ final class LeaderboardSceneView: UIViewController {
     
     private let podiumStackView = UIStackView()
     
-    private lazy var firstPlaceStackView: LeaderboardPodiumItemStackView = {
-        let stackView: LeaderboardPodiumItemStackView
-        if leaderboardSceneViewModel.fetchedUsersInfo.count > 0 {
-            stackView = LeaderboardPodiumItemStackView(
-                place: 1,
-                userImage: UIImage(systemName: "person.fill")!,
-                imageSize: 90,
-                username: leaderboardSceneViewModel.fetchedUsersInfo[0].userName,
-                booksReadCount: leaderboardSceneViewModel.fetchedUsersInfo[0].booksFinished.count,
-                shadowColor: .customGoldColor
-            )
-        } else {
-            return LeaderboardPodiumItemStackView(place: 1, userImage: UIImage(systemName: "person.fill")!, imageSize: 90, username: "", booksReadCount: 0, shadowColor: .customGoldColor)
-        }
-        
-        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(navigateToProfile(_:)))
-        stackView.addGestureRecognizer(gestureRecognizer)
-        stackView.isUserInteractionEnabled = true
-        
-        return stackView
-    }()
+    private lazy var firstPlaceStackView = LeaderboardPodiumItemStackView(place: 1, 
+                                                                          userImage: UIImage(systemName: "person.fill")!,
+                                                                          imageSize: 90,
+                                                                          username: "",
+                                                                          booksReadCount: 0,
+                                                                          shadowColor: .customGoldColor)
+
     
-    private lazy var secondPlaceStackView: LeaderboardPodiumItemStackView = {
-        let stackView: LeaderboardPodiumItemStackView
-        if leaderboardSceneViewModel.fetchedUsersInfo.count > 1 {
-            stackView = LeaderboardPodiumItemStackView(
-                place: 2,
-                userImage: UIImage(systemName: "person.fill")!,
-                imageSize: 70,
-                username: leaderboardSceneViewModel.fetchedUsersInfo[1].userName,
-                booksReadCount: leaderboardSceneViewModel.fetchedUsersInfo[1].booksFinished.count,
-                shadowColor: .customSilverColor
-            )
-        } else {
-            return LeaderboardPodiumItemStackView(place: 2, userImage: UIImage(systemName: "person.fill")!, imageSize: 70, username: "", booksReadCount: 0, shadowColor: .customSilverColor)
-        }
+    private lazy var secondPlaceStackView = LeaderboardPodiumItemStackView(place: 2, 
+                                                                           userImage: UIImage(systemName: "person.fill")!,
+                                                                           imageSize: 70,
+                                                                           username: "",
+                                                                           booksReadCount: 0,
+                                                                           shadowColor: .customSilverColor)
         
-        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(navigateToProfile(_:)))
-        stackView.addGestureRecognizer(gestureRecognizer)
-        stackView.isUserInteractionEnabled = true
-        
-        return stackView
-    }()
     
-    private lazy var thirdPlaceStackView: LeaderboardPodiumItemStackView = {
-        let stackView: LeaderboardPodiumItemStackView
-        if leaderboardSceneViewModel.fetchedUsersInfo.count > 2 {
-            stackView = LeaderboardPodiumItemStackView(
-                place: 3,
-                userImage: UIImage(systemName: "person.fill")!,
-                imageSize: 70,
-                username: leaderboardSceneViewModel.fetchedUsersInfo[2].userName,
-                booksReadCount: leaderboardSceneViewModel.fetchedUsersInfo[2].booksFinished.count,
-                shadowColor: .customBronzeColor
-            )
-        } else {
-            return LeaderboardPodiumItemStackView(place: 3, userImage: UIImage(systemName: "person.fill")!, imageSize: 70, username: "", booksReadCount: 0, shadowColor: .clear)
-        }
-        
-        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(navigateToProfile(_:)))
-        stackView.addGestureRecognizer(gestureRecognizer)
-        stackView.isUserInteractionEnabled = true
-        
-        return stackView
-    }()
+    private lazy var thirdPlaceStackView = LeaderboardPodiumItemStackView(place: 3, 
+                                                                          userImage: UIImage(systemName: "person.fill")!,
+                                                                          imageSize: 70, 
+                                                                          username: "",
+                                                                          booksReadCount: 0, 
+                                                                          shadowColor: .clear)
     
     private let leaderboardTableView = UITableView(frame: .zero, style: .grouped)
     
@@ -255,6 +212,10 @@ extension LeaderboardSceneView: LeaderboardSceneViewModelDelegate {
             return
         }
         
+        let firstGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(navigateToProfile(_:)))
+        let secondGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(navigateToProfile(_:)))
+        let thirdGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(navigateToProfile(_:)))
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [self] in
             firstPlaceStackView.setupUI(
                 place: 1,
@@ -264,6 +225,8 @@ extension LeaderboardSceneView: LeaderboardSceneViewModelDelegate {
                 booksReadCount: firstUser.booksFinished.count,
                 shadowColor: .customGoldColor
             )
+            firstPlaceStackView.addGestureRecognizer(firstGestureRecognizer)
+            firstPlaceStackView.isUserInteractionEnabled = true
             
             if leaderboardSceneViewModel.fetchedUsersInfo.count > 1 {
                 let secondUser = leaderboardSceneViewModel.fetchedUsersInfo[1]
@@ -275,6 +238,8 @@ extension LeaderboardSceneView: LeaderboardSceneViewModelDelegate {
                     booksReadCount: secondUser.booksFinished.count,
                     shadowColor: .customSilverColor
                 )
+                secondPlaceStackView.addGestureRecognizer(secondGestureRecognizer)
+                secondPlaceStackView.isUserInteractionEnabled = true
             }
             
             if leaderboardSceneViewModel.fetchedUsersInfo.count > 2 {
@@ -287,6 +252,8 @@ extension LeaderboardSceneView: LeaderboardSceneViewModelDelegate {
                     booksReadCount: thirdUser.booksFinished.count,
                     shadowColor: .customBronzeColor
                 )
+                thirdPlaceStackView.addGestureRecognizer(thirdGestureRecognizer)
+                thirdPlaceStackView.isUserInteractionEnabled = true
             }
         }
     }
