@@ -6,6 +6,7 @@ final public class MethodsManager {
     static let shared = MethodsManager()
     
     func timeAgoString(from date: Date) -> String {
+        
         let currentDate = Date()
         let calendar = Calendar.current
         let components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: date, to: currentDate)
@@ -25,25 +26,19 @@ final public class MethodsManager {
         }
     }
     
-    func setupLikeCommentShareStackViewUI(_ stackView: UIStackView, imageView: UIImageView, label: UILabel, labelText: String, buttonColor: UIColor, action: Selector) {
-        stackView.axis = .horizontal
-        stackView.alignment = .center
-        stackView.spacing = 8
+    func fadeAnimation(duration: TimeInterval = 0.1, alpha: CGFloat = 0.2, elements: UIView..., completion: (() -> Void)? = nil) {
         
-        imageView.contentMode = .scaleAspectFit
-        imageView.tintColor = buttonColor
-        imageView.widthAnchor.constraint(equalToConstant: 25).isActive = true
-        imageView.heightAnchor.constraint(equalToConstant: 25).isActive = true
-        
-        label.font = .systemFont(ofSize: 14, weight: .semibold)
-        label.textColor = .customAccentColor
-        label.text = labelText
-        
-        let gestureRecognizer = UITapGestureRecognizer(target: self, action: action)
-        stackView.addGestureRecognizer(gestureRecognizer)
-        
-        stackView.addArrangedSubview(imageView)
-        stackView.addArrangedSubview(label)
+        UIView.animate(withDuration: duration, animations: {
+            for element in elements {
+                element.alpha = alpha
+            }
+        }) { _ in
+            UIView.animate(withDuration: duration) {
+                for element in elements {
+                    element.alpha = 1
+                }
+            }
+            completion?()
+        }
     }
-
 }

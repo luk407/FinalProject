@@ -2,12 +2,15 @@
 import UIKit
 
 final class ChecklistItemView: UIView {
+    
     // MARK: - Properties
+    
     private let mainStackView = UIStackView()
     
     private let titleLabel = UILabel()
 
     // MARK: - Init
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupSubviews()
@@ -21,12 +24,14 @@ final class ChecklistItemView: UIView {
     }
 
     // MARK: - Methods
+    
     private func setupSubviews() {
         addSubview(mainStackView)
         mainStackView.addArrangedSubview(titleLabel)
     }
     
     // MARK: - Constraints
+    
     private func setupMainStackViewConstraints() {
         NSLayoutConstraint.activate([
             mainStackView.topAnchor.constraint(equalTo: topAnchor),
@@ -37,6 +42,7 @@ final class ChecklistItemView: UIView {
     }
     
     // MARK: - UI
+    
     private func setupMainStackViewUI() {
         mainStackView.translatesAutoresizingMaskIntoConstraints = false
         mainStackView.axis = .horizontal

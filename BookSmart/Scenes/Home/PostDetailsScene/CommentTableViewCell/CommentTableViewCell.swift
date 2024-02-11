@@ -1,10 +1,7 @@
 
-import UIKit
 import SwiftUI
-import Firebase
-import FirebaseStorage
 
-class CommentTableViewCell: UITableViewCell {
+final class CommentTableViewCell: UITableViewCell {
     
     // MARK: - Properties
     
@@ -274,58 +271,31 @@ class CommentTableViewCell: UITableViewCell {
     }
     
     // MARK: - Button Methods
+    
     @objc private func authorImageOrNameTapped(sender: UITapGestureRecognizer) {
-        
-        let profileSceneView = UIHostingController(rootView: ProfileSceneView(
-            profileSceneViewModel: ProfileSceneViewModel(
-                profileOwnerInfoID: authorInfo!.id,
-                userInfo: viewModel!.userInfo)).background(Color(uiColor: .customBackgroundColor)))
-        navigationController?.pushViewController(profileSceneView, animated: true)
-        
         if sender.state == .ended {
-            UIView.animate(withDuration: 0.1, animations: {
-                self.authorImageView.alpha = 0.2
-                self.nameLabel.alpha = 0.2
-            }) { _ in
-                UIView.animate(withDuration: 0.1) {
-                    self.authorImageView.alpha = 1.0
-                    self.nameLabel.alpha = 1.0
-                }
+            MethodsManager.shared.fadeAnimation(elements: authorImageView, nameLabel) {
+                self.navigateToProfileScene()
             }
         }
     }
     
     @objc private func likeButtonTapped(sender: UITapGestureRecognizer) {
-        
-        toggleLikeComment()
-        
         if sender.state == .ended {
-            UIView.animate(withDuration: 0.1, animations: {
-                self.likeButtonImageView.alpha = 0.2
-                self.likeButtonLabel.alpha = 0.2
-            }) { _ in
-                UIView.animate(withDuration: 0.1) {
-                    self.likeButtonImageView.alpha = 1.0
-                    self.likeButtonLabel.alpha = 1.0
-                }
+            MethodsManager.shared.fadeAnimation(elements: likeButtonImageView, likeButtonLabel) {
+                self.toggleLikeComment()
             }
         }
     }
     
     @objc private func commentButtonTapped(sender: UITapGestureRecognizer) {
         if sender.state == .ended {
-            UIView.animate(withDuration: 0.1, animations: {
-                self.commentButtonImageView.alpha = 0.2
-                self.commentButtonLabel.alpha = 0.2
-            }) { _ in
-                UIView.animate(withDuration: 0.1) { [self] in
-                    self.commentButtonImageView.alpha = 1.0
-                    self.commentButtonLabel.alpha = 1.0
-                }
-            }
+            MethodsManager.shared.fadeAnimation(elements: commentButtonImageView, commentButtonLabel)
         }
     }
 
+    // MARK: - Button Actions
+    
     func toggleLikeComment() {
         guard let viewModel else { return }
         guard let commentInfo else { return }
@@ -342,6 +312,24 @@ class CommentTableViewCell: UITableViewCell {
             self.updateLikeButtonUI(isLiked: isLiked)
         }
     }
+    
+    func updateLikeButtonUI(isLiked: Bool) {
+        DispatchQueue.main.async {
+            let imageName = isLiked ? "heart.fill" : "heart"
+            
+            self.likeButtonImageView.image = UIImage(systemName: imageName)?.withTintColor(.customLikeButtonColor)
+        }
+    }
+    
+    private func navigateToProfileScene() {
+        let profileSceneView = UIHostingController(rootView: ProfileSceneView(
+            profileSceneViewModel: ProfileSceneViewModel(
+                profileOwnerInfoID: authorInfo!.id,
+                userInfo: viewModel!.userInfo)).background(Color(uiColor: .customBackgroundColor)))
+        navigationController?.pushViewController(profileSceneView, animated: true)
+    }
+    
+    // MARK: - Firebase Methods
     
     func getAuthorInfo(with authorID: UserInfo.ID, completion: @escaping (UserInfo?) -> Void) {
         FirebaseManager.shared.getAuthorInfo(with: authorID) { authorInfo in
@@ -365,11 +353,4 @@ class CommentTableViewCell: UITableViewCell {
         }
     }
     
-    func updateLikeButtonUI(isLiked: Bool) {
-        DispatchQueue.main.async {
-            let imageName = isLiked ? "heart.fill" : "heart"
-            
-            self.likeButtonImageView.image = UIImage(systemName: imageName)?.withTintColor(.customLikeButtonColor)
-        }
-    }
 }

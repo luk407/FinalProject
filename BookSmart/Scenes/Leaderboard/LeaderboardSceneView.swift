@@ -1,5 +1,4 @@
 
-import UIKit
 import SwiftUI
 
 final class LeaderboardSceneView: UIViewController {
@@ -136,7 +135,7 @@ final class LeaderboardSceneView: UIViewController {
     
     // MARK: - Methods
     
-    @objc private func navigateToProfile(_ gestureRecognizer: UITapGestureRecognizer) {
+    @objc private func podiumStackViewItemTapped(_ gestureRecognizer: UITapGestureRecognizer) {
         guard let tappedView = gestureRecognizer.view else { return }
         
         var index: Int
@@ -151,10 +150,16 @@ final class LeaderboardSceneView: UIViewController {
             return
         }
         
-        navigateToProfile(index: index)
+        podiumStackViewItemTapped(index: index, tappedView: tappedView as! UIStackView)
     }
     
-    private func navigateToProfile(index: Int) {
+    private func podiumStackViewItemTapped(index: Int, tappedView: UIStackView) {
+        MethodsManager.shared.fadeAnimation(elements: tappedView) {
+            self.navigateToProfileScene(index: index)
+        }
+    }
+    
+    private func navigateToProfileScene(index: Int) {
         let profileSceneView = UIHostingController(rootView: ProfileSceneView(
             profileSceneViewModel: ProfileSceneViewModel(
                 profileOwnerInfoID: leaderboardSceneViewModel.fetchedUsersInfo[index].id,
@@ -197,11 +202,11 @@ extension LeaderboardSceneView: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let profileSceneView = UIHostingController(rootView: ProfileSceneView(
-            profileSceneViewModel: ProfileSceneViewModel(
-                profileOwnerInfoID: leaderboardSceneViewModel.fetchedUsersInfo[indexPath.row + 3].id,
-                userInfo: leaderboardSceneViewModel.userInfo)).background(Color(uiColor: .customBackgroundColor)))
-        navigationController?.pushViewController(profileSceneView, animated: true)
+        guard let cell = tableView.cellForRow(at: indexPath) else { return }
+        
+        MethodsManager.shared.fadeAnimation(elements: cell) {
+            self.navigateToProfileScene(index: indexPath.row + 3)
+        }
     }
 }
 
@@ -212,9 +217,9 @@ extension LeaderboardSceneView: LeaderboardSceneViewModelDelegate {
             return
         }
         
-        let firstGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(navigateToProfile(_:)))
-        let secondGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(navigateToProfile(_:)))
-        let thirdGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(navigateToProfile(_:)))
+        let firstGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(podiumStackViewItemTapped(_:)))
+        let secondGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(podiumStackViewItemTapped(_:)))
+        let thirdGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(podiumStackViewItemTapped(_:)))
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [self] in
             firstPlaceStackView.setupUI(

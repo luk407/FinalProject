@@ -1,6 +1,5 @@
 
 import Foundation
-import Firebase
 
 protocol LoginSceneViewDelegate: AnyObject {
     func navigateToTabBarController()

@@ -1,6 +1,5 @@
 
 import Foundation
-import Firebase
 
 final class SignupSceneViewModel {
     

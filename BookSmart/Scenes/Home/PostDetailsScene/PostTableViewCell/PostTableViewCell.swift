@@ -1,10 +1,7 @@
 
-import UIKit
 import SwiftUI
-import Firebase
-import FirebaseStorage
 
-class PostTableViewCell: UITableViewCell {
+final class PostTableViewCell: UITableViewCell {
     
     // MARK: - Properties
     
@@ -317,20 +314,9 @@ class PostTableViewCell: UITableViewCell {
     // MARK: - Button Methods
     
     @objc private func authorImageTapped(sender: UITapGestureRecognizer) {
-        
-        let profileSceneView = UIHostingController(rootView: ProfileSceneView(
-            profileSceneViewModel: ProfileSceneViewModel(
-                profileOwnerInfoID: viewModel!.postInfo.authorID,
-                userInfo: viewModel!.userInfo)).background(Color(uiColor: .customBackgroundColor)))
-        navigationController?.pushViewController(profileSceneView, animated: true)
-        
         if sender.state == .ended {
-            UIView.animate(withDuration: 0.1, animations: {
-                self.authorImageView.alpha = 0.2
-            }) { _ in
-                UIView.animate(withDuration: 0.1) {
-                    self.authorImageView.alpha = 1.0
-                }
+            MethodsManager.shared.fadeAnimation(elements: authorImageView) {
+                self.navigateToProfileScene()
             }
         }
     }
@@ -342,47 +328,32 @@ class PostTableViewCell: UITableViewCell {
         }
         
         if sender.state == .ended {
-            UIView.animate(withDuration: 0.1, animations: {
-                self.likeButtonImageView.alpha = 0.2
-                self.likeButtonLabel.alpha = 0.2
-            }) { _ in
-                UIView.animate(withDuration: 0.1) {
-                    self.likeButtonImageView.alpha = 1.0
-                    self.likeButtonLabel.alpha = 1.0
-                }
-            }
+            MethodsManager.shared.fadeAnimation(elements: likeButtonImageView, likeButtonLabel)
         }
     }
     
     @objc private func commentButtonTapped(sender: UITapGestureRecognizer) {
         if sender.state == .ended {
-            UIView.animate(withDuration: 0.1, animations: {
-                self.commentButtonImageView.alpha = 0.2
-                self.commentButtonLabel.alpha = 0.2
-            }) { _ in
-                UIView.animate(withDuration: 0.1) {
-                    self.commentButtonImageView.alpha = 1.0
-                    self.commentButtonLabel.alpha = 1.0
-                }
-            }
+            MethodsManager.shared.fadeAnimation(elements: commentButtonImageView, commentButtonLabel)
         }
     }
     
     @objc private func shareButtonTapped(sender: UITapGestureRecognizer) {
-        
-        sharePost()
-        
         if sender.state == .ended {
-            UIView.animate(withDuration: 0.1, animations: {
-                self.shareButtonImageView.alpha = 0.2
-                self.shareButtonLabel.alpha = 0.2
-            }) { _ in
-                UIView.animate(withDuration: 0.1) {
-                    self.shareButtonImageView.alpha = 1.0
-                    self.shareButtonLabel.alpha = 1.0
-                }
+            MethodsManager.shared.fadeAnimation(elements: shareButtonImageView, shareButtonLabel) {
+                self.sharePost()
             }
         }
+    }
+    
+    // MARK: - Button Actions
+    
+    private func navigateToProfileScene() {
+        let profileSceneView = UIHostingController(rootView: ProfileSceneView(
+            profileSceneViewModel: ProfileSceneViewModel(
+                profileOwnerInfoID: viewModel!.postInfo.authorID,
+                userInfo: viewModel!.userInfo)).background(Color(uiColor: .customBackgroundColor)))
+        navigationController?.pushViewController(profileSceneView, animated: true)
     }
     
     private func sharePost() {
@@ -410,6 +381,7 @@ class PostTableViewCell: UITableViewCell {
     // MARK: - Firebase Methods
     
     private func retrieveImage() {
+        
         authorImageView.tintColor = .customAccentColor
         
         guard let postInfoAuthorIDString = viewModel?.postInfo.authorID.uuidString else { return }
@@ -427,6 +399,7 @@ class PostTableViewCell: UITableViewCell {
 }
 
 // MARK: - Extensions
+
 extension PostTableViewCell: PostDetailsSceneViewDelegateForStory {
     
     func updateLikeButtonUI(isLiked: Bool) {

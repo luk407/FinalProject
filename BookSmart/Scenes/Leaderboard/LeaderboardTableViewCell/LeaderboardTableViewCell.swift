@@ -1,15 +1,7 @@
-//
-//  LeaderboardTableViewCell.swift
-//  BookSmart
-//
-//  Created by Luka Gazdeliani on 29.01.24.
-//
 
 import UIKit
-import Firebase
-import FirebaseStorage
 
-class LeaderboardTableViewCell: UITableViewCell {
+final class LeaderboardTableViewCell: UITableViewCell {
     
     // MARK: - Properties
     

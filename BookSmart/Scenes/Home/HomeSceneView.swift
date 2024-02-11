@@ -1,5 +1,4 @@
 
-import UIKit
 import SwiftUI
 
 final class HomeSceneView: UIViewController {
@@ -104,6 +103,8 @@ final class HomeSceneView: UIViewController {
         refreshControl.addTarget(self, action: #selector(refreshTableView), for: .valueChanged)
         refreshControl.tintColor = .customAccentColor
     }
+    
+    // MARK: - Button Methods
     
     @objc private func refreshTableView() {
         homeSceneViewModel.getPostsInfoFromFirebase {

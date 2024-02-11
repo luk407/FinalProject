@@ -47,7 +47,7 @@ final class OnboardingSceneView: UIPageViewController {
                                                  subtitleText: "to BookSmart")
         let secondPage = OnboardingViewController(imageName: "connection",
                                                   titleText: "Connect",
-                                                  subtitleText: "with millions of people around the world, who enjoy reading books.")
+                                                  subtitleText: "with people from around the world, who enjoy reading books.")
         let thirdPage = OnboardingViewController(imageName: "share",
                                                  titleText: "Share your thoughts",
                                                  subtitleText: "about your favourite books and find out what others think about them.")

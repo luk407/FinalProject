@@ -4,6 +4,7 @@ import UIKit
 final class PasswordStrengthChecklistView: UIView {
     
     // MARK: - Properties
+    
     var isMinLengthMet: Bool = false {
         didSet { updateUI() }
     }
@@ -18,6 +19,7 @@ final class PasswordStrengthChecklistView: UIView {
     }
 
     // MARK: - Subviews
+    
     private let mainStackView = UIStackView()
     
     private let requiredLabel = UILabel()
@@ -31,6 +33,7 @@ final class PasswordStrengthChecklistView: UIView {
     private let uniqueCharacterItem = ChecklistItemView()
 
     // MARK: - Init
+    
     init(isMinLengthMet: Bool, isCapitalLetterMet: Bool, isNumberMet: Bool, isUniqueCharacterMet: Bool) {
         self.isMinLengthMet = isMinLengthMet
         self.isCapitalLetterMet = isCapitalLetterMet
@@ -49,6 +52,7 @@ final class PasswordStrengthChecklistView: UIView {
     }
 
     // MARK: - Methods
+    
     private func setupSubviews() {
         addSubview(mainStackView)
         mainStackView.addArrangedSubview(requiredLabel)
@@ -59,6 +63,7 @@ final class PasswordStrengthChecklistView: UIView {
     }
     
     // MARK: - Constraints
+    
     private func setupMainStackViewConstraints() {
         NSLayoutConstraint.activate([
             mainStackView.topAnchor.constraint(equalTo: topAnchor),
@@ -69,6 +74,7 @@ final class PasswordStrengthChecklistView: UIView {
     }
     
     // MARK: - UI
+    
     private func setupUI() {
         setupMainStackViewUI()
         setupRequiredLabelUI()
@@ -92,6 +98,7 @@ final class PasswordStrengthChecklistView: UIView {
     }
     
     //MARK: - Private Methods
+    
     private func updateUI() {
         minLengthItem.update(title: "At least 8 characters", isMet: isMinLengthMet)
         capitalLetterItem.update(title: "At least one capital letter", isMet: isCapitalLetterMet)

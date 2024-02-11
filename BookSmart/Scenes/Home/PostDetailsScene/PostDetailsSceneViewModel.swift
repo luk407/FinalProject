@@ -1,7 +1,5 @@
 
 import SwiftUI
-import Firebase
-
 
 protocol PostDetailsSceneViewDelegateForStory: AnyObject {
     func updateLikeButtonUI(isLiked: Bool)

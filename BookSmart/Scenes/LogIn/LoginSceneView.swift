@@ -246,20 +246,28 @@ final class LoginSceneView: UIViewController {
         loginErrorAlert.addAction(UIAlertAction(title: "OK", style: .cancel))
     }
     
-    // MARK: - Button Actions
+    // MARK: - Button Methods
     
     @objc private func signupButtonPressed() {
-        
-        buttonAnimation(signUpButton)
-        
+        MethodsManager.shared.fadeAnimation(elements: signUpButton) {
+            self.navigateToSignupScene()
+        }
+    }
+    
+    @objc private func loginButtonPressed() {
+        MethodsManager.shared.fadeAnimation(elements: loginButton) {
+            self.loginButtonAction()
+        }
+    }
+    
+    // MARK: - Button Actions
+    
+    private func navigateToSignupScene() {
         let signupScene = SignupSceneView()
         navigationController?.pushViewController(signupScene, animated: true)
     }
     
-    @objc private func loginButtonPressed() {
-        
-        buttonAnimation(loginButton)
-        
+    private func loginButtonAction() {
         if emailTextField.text == "" || passwordTextField.text == "" {
             //present(emptyAlert, animated: true, completion: nil)
             //change after finishing project
@@ -285,16 +293,6 @@ final class LoginSceneView: UIViewController {
         imageView.center = view.center
         view.addSubview(imageView)
         self.view.sendSubviewToBack(imageView)
-    }
-    
-    private func buttonAnimation(_ buttonToAnimate: UIButton) {
-        UIView.animate(withDuration: 0.1, animations: {
-            buttonToAnimate.alpha = 0.5
-        }) { _ in
-            UIView.animate(withDuration: 0.1) {
-                buttonToAnimate.alpha = 1.0
-            }
-        }
     }
 }
 

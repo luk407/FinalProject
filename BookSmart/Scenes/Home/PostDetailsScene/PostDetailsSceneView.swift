@@ -1,6 +1,5 @@
 
 import UIKit
-import Firebase
 
 final class PostDetailsSceneView: UIViewController {
     
@@ -269,6 +268,6 @@ extension PostDetailsSceneView: PostDetailsSceneViewDelegate {
         let indexPath = IndexPath(row: 1, section: 0)
         tableView.insertRows(at: [indexPath], with: .top)
         
-        //tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+        tableView.scrollToRow(at: indexPath, at: .top, animated: true)
     }
 }

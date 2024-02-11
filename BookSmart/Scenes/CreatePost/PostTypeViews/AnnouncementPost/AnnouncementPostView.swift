@@ -5,10 +5,12 @@ import SwiftUI
 struct AnnouncementPostView: View {
     
     // MARK: - Properties
+    
     @Environment(\.dismiss) var dismiss
     @ObservedObject var viewModel: AnnouncementPostViewModel
     
-        // MARK: - Body
+    // MARK: - Body
+    
     var body: some View {
         
         NavigationStack {

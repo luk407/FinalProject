@@ -271,11 +271,18 @@ class SignupSceneView: UIViewController {
         emptyAlert.addAction(UIAlertAction(title: "OK", style: .cancel))
     }
     
-    // MARK: - Button Actions
+    // MARK: - Button Methods
     
     @objc private func signupButtonPressed() {
         
-        buttonAnimation(signupButton)
+        MethodsManager.shared.fadeAnimation(elements: signupButton) {
+            self.signupButtonAction()
+        }
+    }
+    
+    // MARK: - Button Actions
+    
+    private func signupButtonAction() {
         
         if signupSceneViewModel.isSignUpEnabled {
             if usernameTextField.text == "" || emailTextField.text == "" || passwordTextField.text == "" {
@@ -291,14 +298,14 @@ class SignupSceneView: UIViewController {
         }
     }
     
+    // MARK: - Private Methods
+    
     @objc private func textFieldDidChange(_ textField: UITextField) {
         DispatchQueue.main.async {
             self.signupSceneViewModel.passwordTextChange(textField.text ?? "")
             self.updateTextField()
         }
     }
-    
-    // MARK: - Private Methods
     
     private func updateTextField() {
         signupSceneViewModel.updatePasswordCriteria(password: passwordTextField.text ?? "")
@@ -318,16 +325,6 @@ class SignupSceneView: UIViewController {
             } else {
                 self.signupButton.isEnabled = true
                 self.signupButton.backgroundColor = .customAccentColor
-            }
-        }
-    }
-    
-    private func buttonAnimation(_ buttonToAnimate: UIButton) {
-        UIView.animate(withDuration: 0.1, animations: {
-            buttonToAnimate.alpha = 0.5
-        }) { _ in
-            UIView.animate(withDuration: 0.1) {
-                buttonToAnimate.alpha = 1.0
             }
         }
     }

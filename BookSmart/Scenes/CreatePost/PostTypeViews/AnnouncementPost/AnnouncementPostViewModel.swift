@@ -1,9 +1,7 @@
 
 import SwiftUI
-import Foundation
-import Firebase
-import GenericNetworkLayer
 import Combine
+import GenericNetworkLayer
  
 final class AnnouncementPostViewModel: ObservableObject {
     

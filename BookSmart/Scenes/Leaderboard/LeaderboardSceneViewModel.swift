@@ -1,7 +1,5 @@
 
-import Foundation
-import Firebase
-import FirebaseStorage
+import UIKit
 
 protocol LeaderboardSceneViewModelDelegate: AnyObject {
     func updateUserImage(userIndex: Int, userImage: UIImage)

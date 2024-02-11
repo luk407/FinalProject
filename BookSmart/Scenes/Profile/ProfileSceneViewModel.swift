@@ -1,8 +1,5 @@
 
-import Foundation
 import SwiftUI
-import Firebase
-import FirebaseStorage
 
 enum DisplayInfoType {
     case posts, comments, connections
