@@ -7,6 +7,8 @@ class SignupSceneView: UIViewController {
     
     private var mainStackView = UIStackView()
     
+    private var logoImageView = UIImageView()
+    
     private var inputInfoStackView = UIStackView()
     
     private var usernameStackView = UIStackView()
@@ -44,7 +46,7 @@ class SignupSceneView: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        assignBackground()
+        view.backgroundColor = .customBackgroundColor
         setupSubviews()
         setupConstraints()
         setupUI()
@@ -54,6 +56,7 @@ class SignupSceneView: UIViewController {
     
     private func setupSubviews() {
         view.addSubview(mainStackView)
+        mainStackView.addArrangedSubview(logoImageView)
         mainStackView.addArrangedSubview(inputInfoStackView)
         inputInfoStackView.addArrangedSubview(usernameStackView)
         usernameStackView.addArrangedSubview(usernameLabel)
@@ -82,6 +85,7 @@ class SignupSceneView: UIViewController {
     
     private func setupUI() {
         setupMainStackViewUI()
+        setupLogoImageViewUI()
         setupInputInfoStackViewUI()
         setupNicknameStackViewUI()
         setupNicknameLabelUI()
@@ -100,10 +104,10 @@ class SignupSceneView: UIViewController {
     
     private func setupMainStackViewConstraints() {
         NSLayoutConstraint.activate([
-            mainStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 150),
+            mainStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
             mainStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
             mainStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
-            mainStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            mainStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -50),
         ])
     }
     
@@ -170,17 +174,9 @@ class SignupSceneView: UIViewController {
         mainStackView.distribution = .fillProportionally
     }
     
-    private func assignBackground(){
-        let background = UIImage(named: "backgroundWithLogo")
-        
-        var imageView = UIImageView()
-        imageView = UIImageView(frame: view.bounds)
-        imageView.contentMode =  UIView.ContentMode.scaleAspectFill
-        imageView.clipsToBounds = true
-        imageView.image = background
-        imageView.center = view.center
-        view.addSubview(imageView)
-        self.view.sendSubviewToBack(imageView)
+    private func setupLogoImageViewUI() {
+        logoImageView.image = UIImage(named: "logo")
+        logoImageView.contentMode = .scaleAspectFit
     }
     
     private func setupInputInfoStackViewUI() {

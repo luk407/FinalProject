@@ -89,6 +89,7 @@ final class LeaderboardSceneViewModel {
     }
     
     private func notifyTableViewRowsUpdated() {
+        guard fetchedUsersInfo.count > 3 else { return }
         let indexPaths = (0..<fetchedUsersInfo.count - 3).map { IndexPath(row: $0, section: 0) }
         delegate?.updateTableViewRows(indexPaths: indexPaths)
     }

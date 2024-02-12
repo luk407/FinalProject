@@ -19,7 +19,7 @@ final class PostTableViewCell: UITableViewCell {
     
     private let postContentStackView = UIStackView()
     private let headerLabel = UILabel()
-    private let bodyTextView = UITextView()
+    private let bodyTextView = UILabel()
     
     private let likeCommentShareStackView = UIStackView()
 
@@ -66,17 +66,22 @@ final class PostTableViewCell: UITableViewCell {
     // MARK: - Setup Subviews, Constraints, UI
     
     private func setupSubviews() {
-        addSubview(mainStackView)
+        contentView.addSubview(mainStackView)
+        
         mainStackView.addArrangedSubview(authorInfoStackView)
+        mainStackView.addArrangedSubview(postContentStackView)
+        mainStackView.addArrangedSubview(likeCommentShareStackView)
+        
         authorInfoStackView.addArrangedSubview(authorImageView)
         authorInfoStackView.addArrangedSubview(namesStackView)
+        authorInfoStackView.addArrangedSubview(timeLabel)
+        
         namesStackView.addArrangedSubview(nameLabel)
         namesStackView.addArrangedSubview(usernameLabel)
-        authorInfoStackView.addArrangedSubview(timeLabel)
-        mainStackView.addArrangedSubview(postContentStackView)
+        
         postContentStackView.addArrangedSubview(headerLabel)
         postContentStackView.addArrangedSubview(bodyTextView)
-        mainStackView.addArrangedSubview(likeCommentShareStackView)
+        
         likeCommentShareStackView.addArrangedSubview(likeStackView)
         likeCommentShareStackView.addArrangedSubview(commentStackView)
         likeCommentShareStackView.addArrangedSubview(shareStackView)
@@ -87,7 +92,6 @@ final class PostTableViewCell: UITableViewCell {
         setupAuthorInfoStackViewConstraints()
         setupAuthorImageViewConstraints()
         setupTimeLabelConstraints()
-        setupPostContentStackViewConstraints()
     }
     
     private func setupUI() {
@@ -130,10 +134,10 @@ final class PostTableViewCell: UITableViewCell {
     
     private func setupMainStackViewConstraints() {
         NSLayoutConstraint.activate([
-            mainStackView.topAnchor.constraint(equalTo: self.topAnchor),
-            mainStackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
-            mainStackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
-            mainStackView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -20),
+            mainStackView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            mainStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            mainStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            mainStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20),
         ])
     }
     
@@ -158,33 +162,25 @@ final class PostTableViewCell: UITableViewCell {
         ])
     }
     
-    private func setupPostContentStackViewConstraints() {
-        NSLayoutConstraint.activate([
-            postContentStackView.heightAnchor.constraint(greaterThanOrEqualToConstant: 80),
-            postContentStackView.widthAnchor.constraint(equalTo: mainStackView.widthAnchor)
-        ])
-    }
-    
     // MARK: - UI
     
     private func setupMainStackViewUI() {
         mainStackView.translatesAutoresizingMaskIntoConstraints = false
         mainStackView.isLayoutMarginsRelativeArrangement = true
-        mainStackView.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        mainStackView.layoutMargins = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
         mainStackView.backgroundColor = .customBackgroundColor
         mainStackView.axis = .vertical
         mainStackView.spacing = 8
-        mainStackView.alignment = .center
+        mainStackView.alignment = .leading
         mainStackView.customize(
             backgroundColor: .customAccentColor.withAlphaComponent(0.1),
             radiusSize: 8,
             borderColor: .clear,
             borderWidth: 1)
+        
     }
     
     private func setupAuthorInfoStackViewUI() {
-        authorInfoStackView.axis = .horizontal
-        authorInfoStackView.distribution = .fillProportionally
         authorInfoStackView.alignment = .center
         authorInfoStackView.spacing = 16
     }
@@ -205,7 +201,6 @@ final class PostTableViewCell: UITableViewCell {
     
     private func setupNamesStackViewUI() {
         namesStackView.axis = .vertical
-        namesStackView.distribution = .fillProportionally
         namesStackView.alignment = .leading
         namesStackView.spacing = 8
     }
@@ -229,24 +224,20 @@ final class PostTableViewCell: UITableViewCell {
         postContentStackView.axis = .vertical
         postContentStackView.spacing = 16
         postContentStackView.alignment = .leading
-        postContentStackView.distribution = .fillProportionally
-        postContentStackView.isLayoutMarginsRelativeArrangement = true
-        postContentStackView.layoutMargins = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
+        postContentStackView.layoutIfNeeded()
+
     }
     
     private func setupHeaderLabelUI() {
         headerLabel.font = .boldSystemFont(ofSize: 16)
         headerLabel.textColor = .white
-        headerLabel.textAlignment = NSTextAlignment(.left)
+        headerLabel.numberOfLines = 0
     }
     
     private func setupBodyTextViewUI() {
         bodyTextView.font = .systemFont(ofSize: 14)
-        bodyTextView.isEditable = false
-        bodyTextView.backgroundColor = .clear
         bodyTextView.textColor = .white
-        bodyTextView.isScrollEnabled = false
-        bodyTextView.textAlignment = NSTextAlignment(.left)
+        bodyTextView.numberOfLines = 0
     }
 
     private func setupLikeCommentShareStackViewUI() {
@@ -296,10 +287,10 @@ final class PostTableViewCell: UITableViewCell {
         
         imageView.contentMode = .scaleAspectFit
         imageView.tintColor = buttonColor
-        imageView.widthAnchor.constraint(equalToConstant: 25).isActive = true
-        imageView.heightAnchor.constraint(equalToConstant: 25).isActive = true
+        imageView.widthAnchor.constraint(equalToConstant: 20).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: 20).isActive = true
         
-        label.font = .systemFont(ofSize: 14, weight: .semibold)
+        label.font = .systemFont(ofSize: 12, weight: .semibold)
         label.textColor = .customAccentColor
         label.text = labelText
         

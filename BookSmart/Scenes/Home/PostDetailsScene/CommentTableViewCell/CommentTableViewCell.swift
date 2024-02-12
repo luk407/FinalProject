@@ -14,7 +14,7 @@ final class CommentTableViewCell: UITableViewCell {
     private let timeLabel = UILabel()
     
     private let commentContentStackView = UIStackView()
-    private let bodyTextView = UITextView()
+    private let bodyTextView = UILabel()
     
     private let likeCommentStackView = UIStackView()
     
@@ -59,7 +59,7 @@ final class CommentTableViewCell: UITableViewCell {
     // MARK: - Setup Subviews, Constraints, UI
     
     private func setupSubViews() {
-        addSubview(mainStackView)
+        contentView.addSubview(mainStackView)
         mainStackView.addArrangedSubview(authorInfoStackView)
         authorInfoStackView.addArrangedSubview(authorImageView)
         authorInfoStackView.addArrangedSubview(nameLabel)
@@ -77,7 +77,7 @@ final class CommentTableViewCell: UITableViewCell {
         setupAuthorImageViewConstraints()
         setupTimeLabelConstraints()
         setupCommentContentStackViewConstraints()
-        setupBodyLabelConstraints()
+        setupBodyTextViewConstraints()
     }
     
     private func setupUI() {
@@ -93,31 +93,30 @@ final class CommentTableViewCell: UITableViewCell {
         setupCommentStackViewUI()
     }
     
-    func configureCell(viewModel: PostDetailsSceneViewModel, commentInfo: CommentInfo) {
+    func configureCell(viewModel: PostDetailsSceneViewModel, commentInfo: CommentInfo, commentAuthorInfo: UserInfo) {
         self.viewModel = viewModel
         self.commentInfo = commentInfo
+        self.authorInfo = commentAuthorInfo
         
-        getAuthorInfo(with: commentInfo.authorID) { [self] authorInfo in
-            self.authorInfo = authorInfo
-            
-            let isLiked = commentInfo.likedBy.contains(viewModel.userInfo.id)
-            authorImageView.image = UIImage(systemName: "person.fill")
-            nameLabel.text = authorInfo?.userName
-            timeLabel.text = MethodsManager.shared.timeAgoString(from: commentInfo.commentTime)
-            bodyTextView.text = commentInfo.body
-            updateLikeButtonUI(isLiked: isLiked)
-            retrieveImage()
-        }
+        let isLiked = commentInfo.likedBy.contains(viewModel.userInfo.id)
+        
+        authorImageView.image = UIImage(systemName: "person.fill")
+        nameLabel.text = authorInfo?.userName
+        timeLabel.text = MethodsManager.shared.timeAgoString(from: commentInfo.commentTime)
+        bodyTextView.text = commentInfo.body
+        
+        updateLikeButtonUI(isLiked: isLiked)
+        retrieveImage()
     }
     
     // MARK: - Constraints
     
     private func setupMainStackViewConstraints() {
         NSLayoutConstraint.activate([
-            mainStackView.topAnchor.constraint(equalTo: self.topAnchor),
-            mainStackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
-            mainStackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
-            mainStackView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -20),
+            mainStackView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            mainStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            mainStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            mainStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20),
         ])
     }
     
@@ -144,17 +143,18 @@ final class CommentTableViewCell: UITableViewCell {
     
     private func setupCommentContentStackViewConstraints() {
         NSLayoutConstraint.activate([
-            commentContentStackView.heightAnchor.constraint(greaterThanOrEqualToConstant: 33),
+            commentContentStackView.topAnchor.constraint(equalTo: authorInfoStackView.bottomAnchor, constant: 8),
             commentContentStackView.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor, constant: 20),
             commentContentStackView.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor, constant: -20),
         ])
     }
     
-    private func setupBodyLabelConstraints() {
+    private func setupBodyTextViewConstraints() {
         NSLayoutConstraint.activate([
-            bodyTextView.heightAnchor.constraint(greaterThanOrEqualToConstant: 33),
+            bodyTextView.topAnchor.constraint(equalTo: commentContentStackView.topAnchor),
             bodyTextView.leadingAnchor.constraint(equalTo: commentContentStackView.leadingAnchor),
             bodyTextView.trailingAnchor.constraint(equalTo: commentContentStackView.trailingAnchor),
+            bodyTextView.bottomAnchor.constraint(equalTo: commentContentStackView.bottomAnchor),
         ])
     }
     
@@ -210,14 +210,13 @@ final class CommentTableViewCell: UITableViewCell {
         commentContentStackView.spacing = 0
         commentContentStackView.alignment = .leading
         commentContentStackView.distribution = .fillProportionally
+        commentContentStackView.layoutIfNeeded()
     }
     
     private func setupBodyTextViewUI() {
         bodyTextView.font = .systemFont(ofSize: 14)
         bodyTextView.textColor = .white
-        bodyTextView.backgroundColor = .clear
-        bodyTextView.isEditable = false
-        bodyTextView.isScrollEnabled = false
+        bodyTextView.numberOfLines = 0
     }
     
     private func setupLikeCommentStackViewUI() {
@@ -256,10 +255,10 @@ final class CommentTableViewCell: UITableViewCell {
         
         imageView.contentMode = .scaleAspectFit
         imageView.tintColor = buttonColor
-        imageView.widthAnchor.constraint(equalToConstant: 25).isActive = true
-        imageView.heightAnchor.constraint(equalToConstant: 25).isActive = true
+        imageView.widthAnchor.constraint(equalToConstant: 20).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: 20).isActive = true
         
-        label.font = .systemFont(ofSize: 14, weight: .semibold)
+        label.font = .systemFont(ofSize: 12, weight: .semibold)
         label.textColor = .customAccentColor
         label.text = labelText
         

@@ -121,15 +121,13 @@ final class PostsTableViewCell: UITableViewCell {
     }
     
     func configureCell() {
-
-        DispatchQueue.main.async { [self] in
-            viewModel?.getAuthorInfo(with: postInfo!.authorID) { [self] authorInfo in
-                self.authorInfo = authorInfo
-                self.retrieveImage()
-                
-                nameLabel.text = "\(authorInfo?.displayName ?? "")"
-                usernameLabel.text = "@\(authorInfo?.userName ?? "")"
-            }
+        
+        viewModel?.getAuthorInfo(with: postInfo!.authorID) { [self] authorInfo in
+            self.authorInfo = authorInfo
+            self.retrieveImage()
+            
+            nameLabel.text = "\(authorInfo?.displayName ?? "")"
+            usernameLabel.text = "@\(authorInfo?.userName ?? "")"
         }
         
         let timeAgo = MethodsManager.shared.timeAgoString(from: postInfo?.postingTime ?? Date())
@@ -158,8 +156,8 @@ final class PostsTableViewCell: UITableViewCell {
     
     private func setupAuthorInfoStackViewConstraints() {
         NSLayoutConstraint.activate([
-            authorInfoStackView.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor, constant: 10),
-            authorInfoStackView.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor, constant: -10),
+            authorInfoStackView.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor, constant: 20),
+            authorInfoStackView.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor, constant: -20),
         ])
     }
     
@@ -172,7 +170,7 @@ final class PostsTableViewCell: UITableViewCell {
     
     private func setupNamesStackViewConstraints() {
         NSLayoutConstraint.activate([
-            namesStackView.widthAnchor.constraint(greaterThanOrEqualToConstant: 100),
+            namesStackView.widthAnchor.constraint(greaterThanOrEqualToConstant: 20),
         ])
     }
     
@@ -182,7 +180,6 @@ final class PostsTableViewCell: UITableViewCell {
             spoilerTagStackView.heightAnchor.constraint(equalToConstant: 25),
             spoilerLabel.widthAnchor.constraint(equalToConstant: 50)
         ])
-
     }
     
     private func setupTimeLabelConstraints() {
@@ -194,8 +191,8 @@ final class PostsTableViewCell: UITableViewCell {
     
     private func setupPostContentStackViewConstraints() {
         NSLayoutConstraint.activate([
-            postContentStackView.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor, constant: 10),
-            postContentStackView.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor, constant: -10),
+            postContentStackView.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor, constant: 20),
+            postContentStackView.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor, constant: -20),
         ])
     }
     
@@ -219,7 +216,7 @@ final class PostsTableViewCell: UITableViewCell {
             borderColor: .clear,
             borderWidth: 1)
         mainStackView.isLayoutMarginsRelativeArrangement = true
-        mainStackView.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        mainStackView.layoutMargins = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
     }
     
     private func setupAuthorInfoStackViewUI() {
@@ -285,6 +282,7 @@ final class PostsTableViewCell: UITableViewCell {
         postContentStackView.spacing = 16
         postContentStackView.alignment = .leading
         postContentStackView.distribution = .fillProportionally
+        postContentStackView.layoutIfNeeded()
     }
     
     private func setupHeaderLabelUI() {
@@ -303,7 +301,7 @@ final class PostsTableViewCell: UITableViewCell {
         
         bodyLabel.font = .systemFont(ofSize: 14)
         bodyLabel.textColor = .white
-        bodyLabel.numberOfLines = 0
+        bodyLabel.numberOfLines = 5
         bodyLabel.lineBreakMode = .byWordWrapping
     }
     
@@ -354,10 +352,10 @@ final class PostsTableViewCell: UITableViewCell {
         
         imageView.contentMode = .scaleAspectFit
         imageView.tintColor = buttonColor
-        imageView.widthAnchor.constraint(equalToConstant: 25).isActive = true
-        imageView.heightAnchor.constraint(equalToConstant: 25).isActive = true
+        imageView.widthAnchor.constraint(equalToConstant: 20).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: 20).isActive = true
         
-        label.font = .systemFont(ofSize: 14, weight: .semibold)
+        label.font = .systemFont(ofSize: 12, weight: .semibold)
         label.textColor = .customAccentColor
         label.text = labelText
         

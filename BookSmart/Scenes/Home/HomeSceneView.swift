@@ -11,8 +11,6 @@ final class HomeSceneView: UIViewController {
     
     private let refreshControl = UIRefreshControl()
     
-    private var lastDisplayedRow: Int = -1
-    
     var homeSceneViewModel: PostsScenesViewModel
     
     // MARK: - Init

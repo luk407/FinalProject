@@ -5,9 +5,7 @@ final class PostDetailsSceneView: UIViewController {
     
     // MARK: - Properties
     
-    private var mainStackView = UIStackView()
-    
-    private var tableView = UITableView()
+    private var detailsTableView = UITableView()
     
     private var typeCommentStackView = UIStackView()
     private var typeCommentTextView = UITextView()
@@ -48,15 +46,13 @@ final class PostDetailsSceneView: UIViewController {
     // MARK: - Setup Subviews, Constraints, UI
     
     private func setupSubviews() {
-        view.addSubview(mainStackView)
-        mainStackView.addSubview(tableView)
-        mainStackView.addSubview(typeCommentStackView)
+        view.addSubview(detailsTableView)
+        view.addSubview(typeCommentStackView)
         typeCommentStackView.addArrangedSubview(typeCommentTextView)
         typeCommentStackView.addArrangedSubview(submitCommentButton)
     }
     
     private func setupConstraints() {
-        setupMainStackViewConstraints()
         setupTableViewConstraints()
         setupTypeCommentStackViewConstraints()
         setupTypeCommentTextViewConstraint()
@@ -64,7 +60,6 @@ final class PostDetailsSceneView: UIViewController {
     }
     
     private func setupUI() {
-        setupMainStackViewUI()
         setupTableViewUI()
         setupTypeCommentStackViewUI()
         setupTypeCommentTextViewUI()
@@ -73,28 +68,19 @@ final class PostDetailsSceneView: UIViewController {
     
     // MARK: - Constraints
     
-    private func setupMainStackViewConstraints() {
-        NSLayoutConstraint.activate([
-            mainStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            mainStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            mainStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            mainStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-        ])
-    }
-    
     private func setupTableViewConstraints() {
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: typeCommentStackView.topAnchor, constant: -20),
+            detailsTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            detailsTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            detailsTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            detailsTableView.bottomAnchor.constraint(equalTo: typeCommentStackView.topAnchor, constant: -20),
         ])
     }
     
     private func setupTypeCommentStackViewConstraints() {
         NSLayoutConstraint.activate([
-            typeCommentStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            typeCommentStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            typeCommentStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            typeCommentStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
             typeCommentStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
         ])
     }
@@ -115,26 +101,15 @@ final class PostDetailsSceneView: UIViewController {
     
     // MARK: - UI
     
-    private func setupMainStackViewUI() {
-        mainStackView.translatesAutoresizingMaskIntoConstraints = false
-        mainStackView.backgroundColor = .customBackgroundColor
-        mainStackView.axis = .vertical
-        mainStackView.spacing = 20
-        mainStackView.alignment = .center
-        mainStackView.distribution = .fillProportionally
-    }
-    
     private func setupTableViewUI() {
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.backgroundColor = .customBackgroundColor
-        tableView.estimatedRowHeight = 100
-        tableView.separatorColor = .clear
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.register(PostTableViewCell.self, forCellReuseIdentifier: "postCell")
-        tableView.register(CommentTableViewCell.self, forCellReuseIdentifier: "commentCell")
-        tableView.register(AnnouncementTableViewCell.self, forCellReuseIdentifier: "announcementCell")
-        tableView.dataSource = self
-        tableView.delegate = self
+        detailsTableView.translatesAutoresizingMaskIntoConstraints = false
+        detailsTableView.backgroundColor = .customBackgroundColor
+        detailsTableView.separatorColor = .clear
+        detailsTableView.register(PostTableViewCell.self, forCellReuseIdentifier: "postCell")
+        detailsTableView.register(CommentTableViewCell.self, forCellReuseIdentifier: "commentCell")
+        detailsTableView.register(AnnouncementTableViewCell.self, forCellReuseIdentifier: "announcementCell")
+        detailsTableView.dataSource = self
+        detailsTableView.delegate = self
     }
     
     private func setupTypeCommentStackViewUI() {
@@ -183,9 +158,12 @@ extension PostDetailsSceneView: UITableViewDataSource {
                 if let cell = tableView.dequeueReusableCell(withIdentifier: "postCell", for: indexPath) as? PostTableViewCell {
                     viewModel.getAuthorInfo(with: viewModel.postInfo.authorID) { [self] authorInfo in
                         cell.navigationController = navigationController
-                        cell.configureCell(viewModel: viewModel, userInfo: viewModel.userInfo, authorInfo: authorInfo ?? viewModel.userInfo, postInfo: viewModel.postInfo)
+                        cell.configureCell(viewModel: viewModel, userInfo: viewModel.userInfo, authorInfo: authorInfo!, postInfo: viewModel.postInfo)
                         cell.backgroundColor = .customBackgroundColor
-                        cell.contentView.isUserInteractionEnabled = false
+                        cell.contentView.isUserInteractionEnabled = true
+                        tableView.beginUpdates()
+                        cell.layoutIfNeeded()
+                        tableView.endUpdates()
                     }
                     return cell
                 } else {
@@ -201,7 +179,10 @@ extension PostDetailsSceneView: UITableViewDataSource {
                         cell.navigationController = self?.navigationController
                         cell.configureCell()
                         cell.backgroundColor = .customBackgroundColor
-                        cell.contentView.isUserInteractionEnabled = false
+                        cell.contentView.isUserInteractionEnabled = true
+                        tableView.beginUpdates()
+                        cell.layoutIfNeeded()
+                        tableView.endUpdates()
                     }
                     return cell
                 } else {
@@ -212,12 +193,19 @@ extension PostDetailsSceneView: UITableViewDataSource {
             if let commentsInfo = viewModel.commentsInfo, indexPath.row - 1 < commentsInfo.count {
                 if let cell = tableView.dequeueReusableCell(withIdentifier: "commentCell", for: indexPath) as? CommentTableViewCell {
                     let commentInfo = commentsInfo[indexPath.row - 1]
-                    cell.navigationController = navigationController
-                    cell.configureCell(viewModel: viewModel, commentInfo: commentInfo)
-                    cell.backgroundColor = .customBackgroundColor
-                    cell.contentView.isUserInteractionEnabled = false
+                    viewModel.getAuthorInfo(with: commentInfo.authorID) { commentAuthorInfo in
+                        cell.navigationController = self.navigationController
+                        cell.configureCell(viewModel: self.viewModel, commentInfo: commentInfo, commentAuthorInfo: commentAuthorInfo!)
+                        cell.backgroundColor = .customBackgroundColor
+                        cell.contentView.isUserInteractionEnabled = true
+                        tableView.beginUpdates()
+                        cell.layoutIfNeeded()
+                        tableView.endUpdates()
+                    }
                     return cell
                 }
+            } else {
+                return UITableViewCell()
             }
         }
         
@@ -252,11 +240,11 @@ extension PostDetailsSceneView: UITableViewDelegate {
 
 extension PostDetailsSceneView: PostDetailsSceneViewDelegate {
     
-        func postUpdated() {
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-            }
+    func postUpdated() {
+        DispatchQueue.main.async {
+            self.detailsTableView.reloadData()
         }
+    }
     
     func commentAdded() {
         DispatchQueue.main.async {
@@ -266,8 +254,8 @@ extension PostDetailsSceneView: PostDetailsSceneViewDelegate {
     
     private func insertNewComment() {
         let indexPath = IndexPath(row: 1, section: 0)
-        tableView.insertRows(at: [indexPath], with: .top)
+        detailsTableView.insertRows(at: [indexPath], with: .top)
         
-        tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+        detailsTableView.scrollToRow(at: indexPath, at: .top, animated: true)
     }
 }

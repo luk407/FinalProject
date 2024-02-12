@@ -1,0 +1,6 @@
+framework module Pods_BookSmart {
+  umbrella header "Pods-BookSmart-umbrella.h"
+
+  export *
+  module * { export * }
+}

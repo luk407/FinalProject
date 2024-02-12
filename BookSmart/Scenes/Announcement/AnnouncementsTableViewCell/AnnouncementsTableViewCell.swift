@@ -410,10 +410,10 @@ final class AnnouncementsTableViewCell: UITableViewCell {
         
         imageView.contentMode = .scaleAspectFit
         imageView.tintColor = buttonColor
-        imageView.widthAnchor.constraint(equalToConstant: 25).isActive = true
-        imageView.heightAnchor.constraint(equalToConstant: 25).isActive = true
+        imageView.widthAnchor.constraint(equalToConstant: 20).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: 20).isActive = true
         
-        label.font = .systemFont(ofSize: 14, weight: .semibold)
+        label.font = .systemFont(ofSize: 12, weight: .semibold)
         label.textColor = .customAccentColor
         label.text = labelText
         

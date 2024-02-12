@@ -80,7 +80,7 @@ final class AnnouncementTableViewCell: UITableViewCell {
     // MARK: - Setup Subviews, Constraints, UI
     
     private func setupSubviews() {
-        addSubview(mainStackView) // vertical
+        contentView.addSubview(mainStackView) // vertical
         mainStackView.addArrangedSubview(announcementAuthorStackView) // horizontal
         mainStackView.addArrangedSubview(postContentStackView) // vertical
         mainStackView.addArrangedSubview(likeCommentShareStackView) // horizontal
@@ -173,10 +173,10 @@ final class AnnouncementTableViewCell: UITableViewCell {
     
     private func setupMainStackViewConstraints() {
         NSLayoutConstraint.activate([
-            mainStackView.topAnchor.constraint(equalTo: self.topAnchor),
-            mainStackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
-            mainStackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
-            mainStackView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -20),
+            mainStackView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            mainStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            mainStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            mainStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20),
         ])
     }
     
@@ -205,7 +205,6 @@ final class AnnouncementTableViewCell: UITableViewCell {
         NSLayoutConstraint.activate([
             spoilerTagStackView.widthAnchor.constraint(equalToConstant: 50),
             spoilerTagStackView.heightAnchor.constraint(equalToConstant: 25),
-            //spoilerTagStackView.centerYAnchor.constraint(equalTo: announcementAuthorStackView.centerYAnchor, constant: -16)
         ])
 
     }
@@ -237,7 +236,6 @@ final class AnnouncementTableViewCell: UITableViewCell {
         NSLayoutConstraint.activate([
             postContentStackView.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor, constant: 20),
             postContentStackView.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor, constant: -20),
-            postContentStackView.heightAnchor.constraint(greaterThanOrEqualToConstant: 100)
         ])
     }
     
@@ -403,10 +401,10 @@ final class AnnouncementTableViewCell: UITableViewCell {
         
         imageView.contentMode = .scaleAspectFit
         imageView.tintColor = buttonColor
-        imageView.widthAnchor.constraint(equalToConstant: 25).isActive = true
-        imageView.heightAnchor.constraint(equalToConstant: 25).isActive = true
+        imageView.widthAnchor.constraint(equalToConstant: 20).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: 20).isActive = true
         
-        label.font = .systemFont(ofSize: 14, weight: .semibold)
+        label.font = .systemFont(ofSize: 12, weight: .semibold)
         label.textColor = .customAccentColor
         label.text = labelText
         

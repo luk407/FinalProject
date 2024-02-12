@@ -29,11 +29,11 @@ final class AnnouncementPostViewModel: ObservableObject {
     }
 
     var headerTextForStart: String {
-        "\(userInfo.displayName) has just started reading a book \"\(selectedBook?.title ?? "")"
+        "\(userInfo.displayName) has just started reading a book \"\(selectedBook?.title ?? "")\""
     }
     
     var headerTextForFinish: String {
-        "\(userInfo.displayName) has just finished reading a book \"\(selectedBook?.title ?? "")"
+        "\(userInfo.displayName) has just finished reading a book \"\(selectedBook?.title ?? "")\""
     }
     
     var bodyText: String {

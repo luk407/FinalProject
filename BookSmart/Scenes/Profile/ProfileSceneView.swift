@@ -151,7 +151,7 @@ struct ProfileSceneView: View {
                 .foregroundStyle(.black)
                 .frame(maxWidth: .infinity, alignment: .leading)
             
-            TextField("Nothing to see here...", text: $profileSceneViewModel.fetchedOwnerBio)
+            TextField("", text: $profileSceneViewModel.fetchedOwnerBio, prompt: Text("Nothing to see here...").foregroundColor(.black), axis: .vertical)
                 .autocorrectionDisabled()
                 .font(.system(size: 14))
                 .foregroundStyle(.black)

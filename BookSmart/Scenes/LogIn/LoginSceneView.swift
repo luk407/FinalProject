@@ -1,11 +1,14 @@
 
 import UIKit
+import Lottie
 
 final class LoginSceneView: UIViewController {
     
     // MARK: - Properties
     
     private var mainStackView = UIStackView()
+    
+    private var logoImageView = UIImageView()
     
     private var inputInfoStackView = UIStackView()
     
@@ -29,6 +32,8 @@ final class LoginSceneView: UIViewController {
     
     private var loginButton = UIButton()
     
+    private var animationView: LottieAnimationView!
+    
     private var loginErrorAlert = UIAlertController(title: "Login Error",
                                                     message: "Please try again",
                                                     preferredStyle: .alert)
@@ -43,8 +48,8 @@ final class LoginSceneView: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .customBackgroundColor
         loginSceneViewModel.delegate = self
-        assignBackground()
         setupSubviews()
         setupConstraints()
         setupUI()
@@ -54,6 +59,7 @@ final class LoginSceneView: UIViewController {
     
     private func setupSubviews() {
         view.addSubview(mainStackView)
+        mainStackView.addArrangedSubview(logoImageView)
         mainStackView.addArrangedSubview(inputInfoStackView)
         inputInfoStackView.addArrangedSubview(emailStackView)
         emailStackView.addArrangedSubview(emailLabel)
@@ -79,6 +85,7 @@ final class LoginSceneView: UIViewController {
     
     private func setupUI() {
         setupMainStackViewUI()
+        setupLogoImageViewUI()
         setupInputInfoStackViewUI()
         setupEmailStackViewUI()
         setupEmailLabelUI()
@@ -91,16 +98,17 @@ final class LoginSceneView: UIViewController {
         setupSignUpButtonUI()
         setupLoginButtonUI()
         setupAlertsUI()
+        setupBookAnimationView()
     }
     
     // MARK: - Constraints
     
     private func setupMainStackViewConstraints() {
         NSLayoutConstraint.activate([
-            mainStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 150),
+            mainStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             mainStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
             mainStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
-            mainStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -150),
+            mainStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
         ])
     }
     
@@ -156,9 +164,15 @@ final class LoginSceneView: UIViewController {
         mainStackView.translatesAutoresizingMaskIntoConstraints = false
         mainStackView.axis = .vertical
         mainStackView.alignment = .center
-        mainStackView.spacing = 50
+        mainStackView.spacing = 30
         mainStackView.distribution = .fillProportionally
     }
+    
+    private func setupLogoImageViewUI(){
+        logoImageView.image = UIImage(named: "logo")
+        logoImageView.contentMode = .scaleAspectFit
+    }
+    
     
     private func setupInputInfoStackViewUI() {
         inputInfoStackView.axis = .vertical
@@ -246,6 +260,29 @@ final class LoginSceneView: UIViewController {
         loginErrorAlert.addAction(UIAlertAction(title: "OK", style: .cancel))
     }
     
+    private func setupBookAnimationView() {
+        animationView = .init(name: "Animation - 1707736393008")
+        animationView.contentMode = .scaleAspectFill
+        animationView.loopMode = .autoReverse
+        animationView.animationSpeed = 1
+        animationView.play()
+        let animationViewWidth: CGFloat = 250
+        let animationViewHeight: CGFloat = 250
+        
+        animationView.frame = CGRect(
+            x: (view.frame.width - animationViewWidth) / 2,
+            y: (view.frame.height - animationViewHeight) / 2,
+            width: animationViewWidth,
+            height: animationViewHeight)
+        
+        mainStackView.addArrangedSubview(animationView)
+        
+        NSLayoutConstraint.activate([
+            animationView.heightAnchor.constraint(equalToConstant: animationViewHeight),
+            animationView.widthAnchor.constraint(equalToConstant: animationViewWidth),
+        ])
+    }
+    
     // MARK: - Button Methods
     
     @objc private func signupButtonPressed() {
@@ -269,33 +306,14 @@ final class LoginSceneView: UIViewController {
     
     private func loginButtonAction() {
         if emailTextField.text == "" || passwordTextField.text == "" {
-            //present(emptyAlert, animated: true, completion: nil)
-            //change after finishing project
-            emailTextField.text = "luk@gmail.com"
-            passwordTextField.text = "Luka!2345"
+            present(emptyAlert, animated: true, completion: nil)
         } else {
             loginSceneViewModel.loginAndNavigate(
                 email: emailTextField.text ?? "",
                 password: passwordTextField.text ?? "")
         }
     }
-    
-    // MARK: - Private Methods
-    
-    private func assignBackground(){
-        let background = UIImage(named: "backgroundWithLogo")
-        
-        var imageView = UIImageView()
-        imageView = UIImageView(frame: view.bounds)
-        imageView.contentMode =  UIView.ContentMode.scaleAspectFill
-        imageView.clipsToBounds = true
-        imageView.image = background
-        imageView.center = view.center
-        view.addSubview(imageView)
-        self.view.sendSubviewToBack(imageView)
-    }
 }
-
 // MARK: - Extensions
 
 extension LoginSceneView: LoginSceneViewDelegate {
