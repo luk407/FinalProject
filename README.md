@@ -2,7 +2,7 @@
 
 BookSmart is a feature-rich discussion forum, where people from around the world can share their thoughts and impressions about all forms of written literature. 
 
-![mockUpWithLogo](https://github.com/luk407/FinalProject/assets/145837331/8f2cbaef-3a8c-493b-9cbe-8b139660e874)
+![logoAndContent](https://github.com/luk407/FinalProject/assets/145837331/175afb22-fbea-4eb5-8a67-5832544af9e6)
 
 ## Features
 
