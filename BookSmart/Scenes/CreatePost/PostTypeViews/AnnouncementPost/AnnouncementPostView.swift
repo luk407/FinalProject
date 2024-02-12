@@ -74,15 +74,18 @@ struct AnnouncementPostView: View {
                 Text(viewModel.headerTextForStart)
                     .foregroundStyle(.white)
                     .font(.system(size: 20, weight: .bold))
+                    .multilineTextAlignment(.center)
             case .finishedBook:
                 Text(viewModel.headerTextForFinish)
                     .foregroundStyle(.white)
                     .font(.system(size: 20, weight: .bold))
+                    .multilineTextAlignment(.center)
             }
             
             Text("The book is written by \(viewModel.formattedAuthorNames)")
                 .foregroundStyle(.white)
                 .font(.system(size: 14))
+                .multilineTextAlignment(.center)
         }
     }
     
