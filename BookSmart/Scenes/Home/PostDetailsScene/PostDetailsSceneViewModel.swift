@@ -15,28 +15,22 @@ protocol PostDetailsSceneViewDelegate: AnyObject {
 }
 
 final class PostDetailsSceneViewModel {
-    
     // MARK: - Properties
-    
     var userInfo: UserInfo
     var postInfo: PostInfo
     var commentsInfo: [CommentInfo]?
-    
     weak var delegate: PostDetailsSceneViewDelegate?
     weak var storyCellDelegate: PostDetailsSceneViewDelegateForStory?
     weak var announcementCellDelegate: PostDetailsSceneViewDelegateForAnnouncement?
-    
     private var dispatchGroup = DispatchGroup()
     
     // MARK: - Init
-    
     init(userInfo: UserInfo, postInfo: PostInfo) {
         self.userInfo = userInfo
         self.postInfo = postInfo
     }
     
     // MARK: - Methods
-    
     func postDetailsSceneViewWillAppear() {
         dispatchGroup.enter()
         commentsInfoListener() {
@@ -49,18 +43,14 @@ final class PostDetailsSceneViewModel {
     }
     
     // MARK: - Methods for posts
-    
     func toggleLikePost(completion: @escaping (Bool) -> Void) {
-        
         FirebaseManager.shared.toggleLikePost(userInfoIDString: userInfo.id.uuidString,
                                               postInfoIDString: postInfo.id.uuidString) { hasLiked in
-            
             completion(hasLiked)
         }
     }
     
     // MARK: - Methods for comments
-    
     func commentsInfoListener(completion: @escaping () -> Void) {
         FirebaseManager.shared.commentInfoListenerForPostDetails(commentsIDs: postInfo.comments) { commentsArray in
             self.commentsInfo = commentsArray

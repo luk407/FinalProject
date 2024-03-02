@@ -8,9 +8,7 @@ protocol LeaderboardSceneViewModelDelegate: AnyObject {
 }
 
 final class LeaderboardSceneViewModel {
-    
     // MARK: - Properties
-    
     var userInfo: UserInfo
     var fetchedUsersInfo: [UserInfo] = []
     var fetchedUserImages: [String: UIImage] = [:]
@@ -18,13 +16,11 @@ final class LeaderboardSceneViewModel {
     let group = DispatchGroup()
     
     // MARK: - Init
-    
     init(userInfo: UserInfo) {
-        self.userInfo = userInfo     
+        self.userInfo = userInfo
     }
     
     // MARK: - Methods
-    
     func refetchInfo(completion: @escaping () -> Void) {
         getAllUsersInfo { usersInfo in
             if let usersInfo {
@@ -47,7 +43,7 @@ final class LeaderboardSceneViewModel {
     func getImage(userID: UserInfo.ID) -> UIImage? {
         return CacheManager.instance.get(name: userID.uuidString)
     }
-
+    
     func retrieveAllImages(completion: @escaping () -> Void) {
         self.fetchImagesSequentially(completion: completion)
         completion()
@@ -78,7 +74,7 @@ final class LeaderboardSceneViewModel {
             fetchNextImage(index: index + 1)
         }
     }
-
+    
     private func fetchImage(_ imageName: String, userIndex: Int, completion: @escaping (UIImage) -> Void)  {
         let userID = self.fetchedUsersInfo[userIndex].id
         

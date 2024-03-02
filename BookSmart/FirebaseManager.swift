@@ -9,7 +9,6 @@ final public class FirebaseManager {
     let dispatchGroup = DispatchGroup()
     
     // MARK: - Registration Methods
-    
     func registerUser(emailText: String, passwordText: String) {
         Auth.auth().createUser(withEmail: emailText, password: passwordText) { result, error in
             if error != nil {
@@ -63,7 +62,6 @@ final public class FirebaseManager {
     }
     
     // MARK: - Login Methods
-    
     func loginToFirebase(email: String, password: String, completion: @escaping (Bool) -> Void) {
         Auth.auth().signIn(withEmail: email, password: password) { result, error in
             if error != nil {
@@ -75,7 +73,6 @@ final public class FirebaseManager {
     }
     
     // MARK: - User Methods
-    
     func getUserInfoToLogin(with email: String, and password: String, completion: @escaping (UserInfo?) -> Void) {
         let database = Firestore.firestore()
         let reference = database.collection("UserInfo")
@@ -99,7 +96,6 @@ final public class FirebaseManager {
     }
     
     private func parseSnapshot(_ snapshot: QuerySnapshot, email: String, password: String) -> UserInfo? {
-        
         for document in snapshot.documents {
             let data = document.data()
             
@@ -147,20 +143,16 @@ final public class FirebaseManager {
                 booksFinished: booksFinished,
                 quotesUsed: quotesUsed
             )
-            
             return userInfo
         }
-        
         return nil
     }
     
     func userInfoListener(userIDString: String, completion: @escaping (UserInfo) -> Void) {
-        
         let database = Firestore.firestore()
         let reference = database.collection("UserInfo").document(userIDString)
         
         reference.addSnapshotListener(includeMetadataChanges: true) { documentSnapshot, error in
-            
             if let error = error {
                 print("Error fetching user information: \(error.localizedDescription)")
                 return
@@ -214,18 +206,15 @@ final public class FirebaseManager {
                 booksFinished: booksFinished,
                 quotesUsed: quotesUsed
             )
-            
             completion(userInfo)
         }
     }
     
     func getUserInfo(userIDString: String, completion: @escaping (UserInfo) -> Void) {
-
         let database = Firestore.firestore()
         let reference = database.collection("UserInfo").document(userIDString)
         
         reference.getDocument { documentSnapshot, error in
-            
             if let error = error {
                 print("Error fetching user information: \(error.localizedDescription)")
                 return
@@ -279,13 +268,11 @@ final public class FirebaseManager {
                 booksFinished: booksFinished,
                 quotesUsed: quotesUsed
             )
-
             completion(userInfo)
         }
     }
     
     private func parseBooksFinishedArray(_ booksFinishedArray: [[String: Any]]) -> [Book] {
-        
         var booksFinished: [Book] = []
         
         for bookInfo in booksFinishedArray {
@@ -299,7 +286,6 @@ final public class FirebaseManager {
     }
     
     private func parseBadgesArray(_ badgesData: [[String: String]]) -> [BadgeInfo] {
-        
         var badges: [BadgeInfo] = []
         
         for badgeInfo in badgesData {
@@ -317,7 +303,6 @@ final public class FirebaseManager {
     }
     
     private func parseQuotesArray(_ quotesData: [[String: String]]) -> [Quote] {
-        
         var quotes: [Quote] = []
         
         for quoteData in quotesData {
@@ -348,7 +333,6 @@ final public class FirebaseManager {
     }
     
     func updateUserPostsAndFinishedBooksOnFirebase(userInfo: UserInfo, postID: UUID, selectedAnnouncementType: AnnouncementType, selectedBook: Book) {
-        
         let database = Firestore.firestore()
         let userReference = database.collection("UserInfo").document(userInfo.id.uuidString)
         
@@ -389,14 +373,12 @@ final public class FirebaseManager {
             }
         }
     }
-
+    
     func getAllUsersInfo(completion: @escaping ([UserInfo]?) -> Void) {
-        
         let database = Firestore.firestore()
         let reference = database.collection("UserInfo")
         
         reference.getDocuments { snapshot, error in
-            
             if let error = error {
                 print("Error fetching user information: \(error.localizedDescription)")
                 completion(nil)
@@ -455,10 +437,8 @@ final public class FirebaseManager {
                     booksFinished: booksFinished,
                     quotesUsed: quotesUsed
                 )
-                
                 fetchedUsers.append(userInfo)
             }
-            
             completion(fetchedUsers)
         }
     }
@@ -493,19 +473,15 @@ final public class FirebaseManager {
             ]
             badgesArray.append(badgeData)
         }
-        
         return badgesArray
     }
     
     // MARK: - Post Author Methods
-    
     func getAuthorInfo(with authorID: UserInfo.ID, completion: @escaping (UserInfo?) -> Void) {
-        
         let database = Firestore.firestore()
         let reference = database.collection("UserInfo").whereField("id", isEqualTo: authorID.uuidString)
         
         reference.getDocuments { snapshot, error in
-            
             if let error = error {
                 print("Error fetching user information: \(error.localizedDescription)")
                 completion(nil)
@@ -568,9 +544,7 @@ final public class FirebaseManager {
     }
     
     // MARK: - Methods for Posts
-    
     func postsInfoListenerForProfile(profileOwnerID: UserInfo.ID, completion: @escaping ([PostInfo]) -> Void) {
-
         let database = Firestore.firestore()
         let reference = database.collection("PostInfo")
         
@@ -627,9 +601,8 @@ final public class FirebaseManager {
             completion(posts.sorted(by: { $0.postingTime > $1.postingTime }))
         }
     }
-
+    
     func getPostsInfoFromFirebaseForPostsScenes(completion: @escaping ([PostInfo], [PostInfo], [PostInfo], [PostInfo]) -> Void) {
-        
         var fetchedPostsInfo: [PostInfo] = []
         var storyPosts: [PostInfo] = []
         var filteredStoryPosts: [PostInfo] = []
@@ -695,13 +668,11 @@ final public class FirebaseManager {
                     }
                 }
             }
-            
             completion(fetchedPostsInfo, storyPosts, filteredStoryPosts, announcementPosts)
         }
     }
     
     func toggleLikePost(userInfoIDString: String, postInfoIDString: String, completion: @escaping (Bool) -> Void) {
-        
         let database = Firestore.firestore()
         let userReference = database.collection("UserInfo").document(userInfoIDString)
         let postReference = database.collection("PostInfo").document(postInfoIDString)
@@ -759,7 +730,6 @@ final public class FirebaseManager {
     }
     
     func addPostToFirebase(post: PostInfo) {
-        
         let database = Firestore.firestore()
         let postReference = database.collection("PostInfo").document(post.id.uuidString)
         
@@ -780,7 +750,6 @@ final public class FirebaseManager {
     }
     
     func deletePost(_ post: PostInfo) {
-        
         let postRef = Firestore.firestore().collection("PostInfo").document(post.id.uuidString)
         
         postRef.delete { error in
@@ -794,7 +763,6 @@ final public class FirebaseManager {
     }
     
     private func removePostFromUserProfile(_ post: PostInfo) {
-        
         let userPostsRef = Firestore.firestore().collection("UserInfo").document(post.authorID.uuidString)
         
         userPostsRef.updateData([
@@ -807,13 +775,10 @@ final public class FirebaseManager {
             }
         }
     }
-
-    // MARK: - Methods for Images
     
+    // MARK: - Methods for Images
     func uploadImage(selectedImage: UIImage, userIDString: String) {
-        
         let storageReference = Storage.storage().reference()
-        
         let imageData = selectedImage.jpegData(compressionQuality: 0.8)
         
         guard imageData != nil else {
@@ -821,11 +786,9 @@ final public class FirebaseManager {
         }
         
         let path = "profileImages/\(userIDString).jpg"
-        
         let fileReference = storageReference.child(path)
         
         fileReference.putData(imageData!, metadata: nil) { [self] metadata, error in
-            
             if error == nil && metadata != nil {
                 changeImagePathOfOwner(userIDString: userIDString, path: path)
                 CacheManager.instance.update(image: selectedImage , name: userIDString)
@@ -834,7 +797,6 @@ final public class FirebaseManager {
     }
     
     private func changeImagePathOfOwner(userIDString: String, path: String) {
-        
         let database = Firestore.firestore()
         let userDocumentReference = database.collection("UserInfo").document(userIDString)
         
@@ -848,7 +810,6 @@ final public class FirebaseManager {
     }
     
     func retrieveImage(_ ownerIDString: String, completion: @escaping (UIImage) -> Void) {
-        
         if let cachedImage = CacheManager.instance.get(name: ownerIDString) {
             completion(cachedImage)
         } else {
@@ -865,7 +826,6 @@ final public class FirebaseManager {
     }
     
     private func fetchImage(_ imagePath: String, completion: @escaping (UIImage) -> Void) {
-        
         let storageReference = Storage.storage().reference()
         let fileReference = storageReference.child(imagePath)
         
@@ -888,9 +848,7 @@ final public class FirebaseManager {
     }
     
     // MARK: - Methods for Comments
-    
     func commentInfoListenerForPostDetails(commentsIDs: [CommentInfo.ID], completion: @escaping ([CommentInfo]) -> Void) {
-
         guard !commentsIDs.isEmpty else { return }
         
         let database = Firestore.firestore()
@@ -899,7 +857,6 @@ final public class FirebaseManager {
         commentCollection
             .whereField("id", in: commentsIDs.map { $0.uuidString })
             .addSnapshotListener(includeMetadataChanges: true) { (querySnapshot, error) in
-                
                 if let error = error {
                     print("Error fetching comments info: \(error.localizedDescription)")
                     return
@@ -937,7 +894,6 @@ final public class FirebaseManager {
                         likedBy: likedBy.map { UUID(uuidString: $0) ?? UUID() },
                         comments: comments.map { UUID(uuidString: $0) ?? UUID() }
                     )
-                    
                     fetchedComments.append(commentInfo)
                 }
                 completion(fetchedComments.sorted(by: { $0.commentTime > $1.commentTime }))
@@ -945,9 +901,7 @@ final public class FirebaseManager {
     }
     
     func toggleLikeComment(commentInfo: CommentInfo, userInfoID: UserInfo.ID, completion: @escaping (Bool) -> Void) {
-        
         let database = Firestore.firestore()
-        
         let commentReference = database.collection("CommentInfo").document(commentInfo.id.uuidString)
         
         let isLiked = commentInfo.likedBy.contains(userInfoID)
@@ -976,10 +930,8 @@ final public class FirebaseManager {
             }
         }
     }
-
     
     func addCommentToFirebase(userInfoID: UserInfo.ID, postInfoIDString: String, commentText: String, completion: @escaping (CommentInfo.ID) -> Void) {
-        
         let database = Firestore.firestore()
         let postReference = database.collection("PostInfo").document(postInfoIDString)
         
@@ -1023,7 +975,6 @@ final public class FirebaseManager {
     }
     
     func deleteComment(_ comment: CommentInfo, for post: PostInfo) {
-        
         let commentRef = Firestore.firestore().collection("CommentInfo").document(comment.id.uuidString)
         
         commentRef.delete { error in
@@ -1039,7 +990,6 @@ final public class FirebaseManager {
     }
     
     private func removeCommentFromUserProfile(_ comment: CommentInfo) {
-        
         let userCommentsRef = Firestore.firestore().collection("UserInfo").document(comment.authorID.uuidString)
         
         userCommentsRef.updateData([
@@ -1052,9 +1002,8 @@ final public class FirebaseManager {
             }
         }
     }
-
+    
     private func removeCommentFromParentPost(_ comment: CommentInfo, for post: PostInfo) {
-        
         let postRef = Firestore.firestore().collection("PostInfo").document(post.id.uuidString)
         
         postRef.updateData([
@@ -1069,7 +1018,6 @@ final public class FirebaseManager {
     }
     
     private func updateUserDataWithNewCommentID(userInfoIDString: String, commentID: UUID) {
-        
         let database = Firestore.firestore()
         let userReference = database.collection("UserInfo").document(userInfoIDString)
         
@@ -1085,7 +1033,6 @@ final public class FirebaseManager {
     }
     
     func commentInfoListenerForProfile(profileOwnerIDString: String, completion: @escaping ([CommentInfo]) -> Void) {
-        
         _ = Firestore.firestore()
             .collection("CommentInfo")
             .whereField("authorID", isEqualTo: profileOwnerIDString)
@@ -1133,15 +1080,12 @@ final public class FirebaseManager {
                 completion(fetchedComments.sorted(by: { $0.commentTime > $1.commentTime }))
             }
     }
-
-    // MARK: - Methods for Connections
     
+    // MARK: - Methods for Connections
     func connectionsInfoListener(profileOwnerIdString: String, completion: @escaping ([UserInfo]) -> Void) {
-
         let userDocumentReference = Firestore.firestore().collection("UserInfo").document(profileOwnerIdString)
         
         userDocumentReference.addSnapshotListener(includeMetadataChanges: true) { [weak self] (documentSnapshot, error) in
-            
             guard let self = self, let document = documentSnapshot else { return }
             
             if let error = error {
@@ -1155,26 +1099,25 @@ final public class FirebaseManager {
             }
             
             var fetchedConnections: [UserInfo] = []
+            
             dispatchGroup.enter()
             for connectionIDString in connectionsData {
-                
                 self.userInfoListener(userIDString: connectionIDString) { userInfo in
                     fetchedConnections.append(userInfo)
                     
                 }
                 
             }
+            
             dispatchGroup.leave()
             
             dispatchGroup.notify(queue: .main) {
                 completion(fetchedConnections)
             }
-            
         }
     }
     
     func addConnection(userIDString: String, profileOwnerIDString: String) {
-        
         let userDocumentReference = Firestore.firestore().collection("UserInfo").document(userIDString)
         
         userDocumentReference.updateData(["connections": FieldValue.arrayUnion([profileOwnerIDString])]) { [weak self] error in
@@ -1188,7 +1131,6 @@ final public class FirebaseManager {
     }
     
     private func updateProfileOwnerConnectionAddition(userIDString: String, profileOwnerIDString: String) {
-        
         let profileOwnerDocumentReference = Firestore.firestore().collection("UserInfo").document(profileOwnerIDString)
         
         profileOwnerDocumentReference.updateData(["connections": FieldValue.arrayUnion([userIDString])]) { error in
@@ -1199,9 +1141,8 @@ final public class FirebaseManager {
             }
         }
     }
-
+    
     func removeConnection(userIDString: String, profileOwnerIDString: String) {
-        
         let userDocumentReference = Firestore.firestore().collection("UserInfo").document(userIDString)
         
         userDocumentReference.updateData(["connections": FieldValue.arrayRemove([profileOwnerIDString])]) { [weak self] error in
@@ -1213,9 +1154,8 @@ final public class FirebaseManager {
             }
         }
     }
-
+    
     private func updateProfileOwnerConnectionRemoval(userIDString: String, profileOwnerIDString: String) {
-        
         let profileOwnerDocumentReference = Firestore.firestore().collection("UserInfo").document(profileOwnerIDString)
         
         profileOwnerDocumentReference.updateData(["connections": FieldValue.arrayRemove([userIDString])]) { error in

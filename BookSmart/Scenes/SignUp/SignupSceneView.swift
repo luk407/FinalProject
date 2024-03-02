@@ -2,9 +2,7 @@
 import UIKit
 
 class SignupSceneView: UIViewController {
-    
     // MARK: - Properties
-    
     private var mainStackView = UIStackView()
     
     private var logoImageView = UIImageView()
@@ -43,7 +41,6 @@ class SignupSceneView: UIViewController {
     private var signupSceneViewModel = SignupSceneViewModel()
     
     // MARK: - LifeCycle
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .customBackgroundColor
@@ -53,7 +50,6 @@ class SignupSceneView: UIViewController {
     }
     
     // MARK: - Setup Subviews, Constraints, UI
-    
     private func setupSubviews() {
         view.addSubview(mainStackView)
         mainStackView.addArrangedSubview(logoImageView)
@@ -101,7 +97,6 @@ class SignupSceneView: UIViewController {
     }
     
     // MARK: - Constraints
-    
     private func setupMainStackViewConstraints() {
         NSLayoutConstraint.activate([
             mainStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
@@ -165,7 +160,6 @@ class SignupSceneView: UIViewController {
     }
     
     // MARK: - UI
-    
     private func setupMainStackViewUI() {
         mainStackView.translatesAutoresizingMaskIntoConstraints = false
         mainStackView.axis = .vertical
@@ -239,9 +233,9 @@ class SignupSceneView: UIViewController {
     }
     
     private func setupPasswordLabelUI() {
-       passwordLabel.text = "Password"
-       passwordLabel.font = .systemFont(ofSize: 14)
-       passwordLabel.textColor = .customAccentColor
+        passwordLabel.text = "Password"
+        passwordLabel.font = .systemFont(ofSize: 14)
+        passwordLabel.textColor = .customAccentColor
     }
     
     private func setupPasswordTextFieldUI() {
@@ -268,16 +262,13 @@ class SignupSceneView: UIViewController {
     }
     
     // MARK: - Button Methods
-    
     @objc private func signupButtonPressed() {
-        
         MethodsManager.shared.fadeAnimation(elements: signupButton) {
             self.signupButtonAction()
         }
     }
     
     // MARK: - Button Actions
-    
     private func signupButtonAction() {
         
         if signupSceneViewModel.isSignUpEnabled {
@@ -295,7 +286,6 @@ class SignupSceneView: UIViewController {
     }
     
     // MARK: - Private Methods
-    
     @objc private func textFieldDidChange(_ textField: UITextField) {
         DispatchQueue.main.async {
             self.signupSceneViewModel.passwordTextChange(textField.text ?? "")

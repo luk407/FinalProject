@@ -2,31 +2,25 @@
 import UIKit
 
 final class OnboardingSceneView: UIPageViewController {
-    
     // MARK: - Properties
-    
     private let skipButton = UIButton()
     private let nextButton = UIButton()
     private let pageControl = UIPageControl()
     private let initialPage = 0
-    
     private var skipButtonTopAnchor: NSLayoutConstraint?
     private var nextButtonTopAnchor: NSLayoutConstraint?
     private var pageControlBottomAnchor: NSLayoutConstraint?
-    
     private var pages = [UIViewController]()
     
     // MARK: - LifeCycle
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         let onboardingCompleted = UserDefaults.standard.bool(forKey: "onboardingCompleted")
         
         if onboardingCompleted {
             goToLoginScene()
         }
-
+        
         view.backgroundColor = .customBackgroundColor
         setupPageControl()
         setupSubviews()
@@ -35,7 +29,6 @@ final class OnboardingSceneView: UIPageViewController {
     }
     
     // MARK: - Setup PageControl, Subviews, Constraints, UI
-    
     private func setupPageControl() {
         dataSource = self
         delegate = self
@@ -108,14 +101,12 @@ final class OnboardingSceneView: UIPageViewController {
     }
     
     // MARK: - Methods
-    
     private func setOnboardingCompleted() {
         UserDefaults.standard.set(true, forKey: "onboardingCompleted")
         UserDefaults.standard.synchronize()
     }
-
-    // MARK: - Button Actions
     
+    // MARK: - Button Actions
     @objc private func pageControlTapped(_ sender: UIPageControl) {
         setViewControllers([pages[sender.currentPage]], direction: .forward, animated: true, completion: nil)
         animateControlsIfNeeded()
@@ -142,7 +133,6 @@ final class OnboardingSceneView: UIPageViewController {
     }
     
     // MARK: - Navigation Methods
-    
     private func goToNextPage(animated: Bool = true, completion: ((Bool) -> Void)? = nil) {
         guard let currentPage = viewControllers?[0] else { return }
         guard let nextPage = dataSource?.pageViewController(self, viewControllerAfter: currentPage) else { return }
@@ -169,9 +159,7 @@ final class OnboardingSceneView: UIPageViewController {
 }
 
 // MARK: - Extensions
-
 extension OnboardingSceneView: UIPageViewControllerDataSource {
-    
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         
         guard let currentIndex = pages.firstIndex(of: viewController) else { return nil }
@@ -196,7 +184,6 @@ extension OnboardingSceneView: UIPageViewControllerDataSource {
 }
 
 extension OnboardingSceneView: UIPageViewControllerDelegate {
-    
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
         
         guard let viewControllers = pageViewController.viewControllers else { return }

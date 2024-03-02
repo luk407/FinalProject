@@ -1,22 +1,15 @@
 
 import SwiftUI
 
-@MainActor
 struct AnnouncementPostView: View {
-    
     // MARK: - Properties
-    
     @Environment(\.dismiss) var dismiss
     @ObservedObject var viewModel: AnnouncementPostViewModel
     
     // MARK: - Body
-    
     var body: some View {
-        
         NavigationStack {
-            
             VStack {
-                
                 searchList
                 
                 if viewModel.selectedBook != nil {
@@ -43,7 +36,6 @@ struct AnnouncementPostView: View {
     }
     
     // MARK: - Views
-    
     private var searchList: some View {
         if viewModel.searchText.isEmpty {
             return AnyView(Spacer())

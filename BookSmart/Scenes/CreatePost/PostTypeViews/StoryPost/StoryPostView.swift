@@ -2,20 +2,15 @@
 import SwiftUI
 
 struct StoryPostView: View {
-    
     // MARK: - Properties
-    
     @Environment(\.dismiss) var dismiss
     @ObservedObject var viewModel: StoryPostViewModel
     @State private var selectedQuote: Quote?
     
     // MARK: - Body
-    
     var body: some View {
-        
         NavigationStack {
             VStack(spacing: 8) {
-                
                 headerTextField
                 
                 bodyTextField
@@ -38,9 +33,7 @@ struct StoryPostView: View {
     }
     
     // MARK: - Views
-    
     private var headerTextField: some View {
-        
         TextField("", text: $viewModel.headerText, prompt: Text("Post Header...").foregroundColor(.black), axis: .vertical)
             .autocorrectionDisabled()
             .textFieldStyle(.plain)
@@ -55,7 +48,6 @@ struct StoryPostView: View {
     }
     
     private var bodyTextField: some View {
-        
         TextField("", text: $viewModel.bodyText, prompt: Text("Post Body...").foregroundColor(.black), axis: .vertical)
             .autocorrectionDisabled()
             .frame(height: 200, alignment: .topLeading)

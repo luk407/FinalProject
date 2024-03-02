@@ -2,11 +2,8 @@
 import UIKit
 
 final class PostDetailsSceneView: UIViewController {
-    
     // MARK: - Properties
-    
     private var detailsTableView = UITableView()
-    
     private var typeCommentStackView = UIStackView()
     private var typeCommentTextView = UITextView()
     private var submitCommentButton = UIButton()
@@ -16,7 +13,6 @@ final class PostDetailsSceneView: UIViewController {
     var viewModel: PostDetailsSceneViewModel
     
     // MARK: - Init
-    
     init(viewModel: PostDetailsSceneViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -27,7 +23,6 @@ final class PostDetailsSceneView: UIViewController {
     }
     
     // MARK: - LifeCycle
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         viewModel.delegate = self
@@ -41,10 +36,8 @@ final class PostDetailsSceneView: UIViewController {
         super.viewWillAppear(animated)
         viewModel.postDetailsSceneViewWillAppear()
     }
-
     
     // MARK: - Setup Subviews, Constraints, UI
-    
     private func setupSubviews() {
         view.addSubview(detailsTableView)
         view.addSubview(typeCommentStackView)
@@ -67,7 +60,6 @@ final class PostDetailsSceneView: UIViewController {
     }
     
     // MARK: - Constraints
-    
     private func setupTableViewConstraints() {
         NSLayoutConstraint.activate([
             detailsTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -100,7 +92,6 @@ final class PostDetailsSceneView: UIViewController {
     }
     
     // MARK: - UI
-    
     private func setupTableViewUI() {
         detailsTableView.translatesAutoresizingMaskIntoConstraints = false
         detailsTableView.backgroundColor = .customBackgroundColor
@@ -135,7 +126,6 @@ final class PostDetailsSceneView: UIViewController {
     }
     
     // MARK: - Button Methods
-    
     @objc private func submitCommentButtonTapped() {
         viewModel.submitCommentButtonTapped(commentText: typeCommentTextView.text)
         typeCommentTextView.text = ""
@@ -144,9 +134,7 @@ final class PostDetailsSceneView: UIViewController {
 }
 
 // MARK: - Extensions
-
 extension PostDetailsSceneView: UITableViewDataSource {
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         viewModel.postInfo.comments.count + 1
     }
@@ -188,7 +176,7 @@ extension PostDetailsSceneView: UITableViewDataSource {
                 } else {
                     return UITableViewCell()
                 }
-            }            
+            }
         } else {
             if let commentsInfo = viewModel.commentsInfo, indexPath.row - 1 < commentsInfo.count {
                 if let cell = tableView.dequeueReusableCell(withIdentifier: "commentCell", for: indexPath) as? CommentTableViewCell {
@@ -221,7 +209,7 @@ extension PostDetailsSceneView: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-
+        
         if indexPath.row <= lastDisplayedRow {
             lastDisplayedRow = -1
         }
@@ -239,7 +227,6 @@ extension PostDetailsSceneView: UITableViewDelegate {
 }
 
 extension PostDetailsSceneView: PostDetailsSceneViewDelegate {
-    
     func postUpdated() {
         DispatchQueue.main.async {
             self.detailsTableView.reloadData()

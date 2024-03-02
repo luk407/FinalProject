@@ -2,14 +2,11 @@
 import SwiftUI
 
 struct BadgeView: View {
-    
     // MARK: - Properties
-    
     @State private var isShowingBadgeInfo = false
     var badge: BadgeInfo
     
     // MARK: - Body
-    
     var body: some View {
         Button(action: {
             isShowingBadgeInfo.toggle()
@@ -25,9 +22,7 @@ struct BadgeView: View {
     }
     
     private var badgeView: some View {
-        
         ZStack {
-            
             Circle()
                 .stroke(lineWidth: 4)
                 .frame(width: 35, height: 35)
@@ -45,9 +40,8 @@ struct BadgeView: View {
                 }
         }
     }
-
+    
     private func getColor() -> Color {
-        
         switch badge.category {
         case .oneYearClub:
             return Color(uiColor: .customGoldColor)
@@ -56,7 +50,7 @@ struct BadgeView: View {
         default:
             break
         }
-
+        
         switch badge.type {
         case .bronze:
             return Color(uiColor: .customBronzeColor)
@@ -70,7 +64,6 @@ struct BadgeView: View {
     }
     
     private func getImageForBadge() -> Image {
-        
         switch badge.category {
         case .booksCount:
             return Image(systemName: "book.fill")
@@ -88,7 +81,6 @@ struct BadgeView: View {
             return Image(systemName: "5.circle")
         }
     }
-    
 }
 
 #Preview {

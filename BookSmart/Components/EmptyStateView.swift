@@ -4,9 +4,7 @@ import SwiftUI
 struct EmptyStateView: View {
     
     var body: some View {
-        
         VStack {
-            
             Image(systemName: "questionmark.app.fill")
                 .resizable()
                 .frame(width: 200, height: 200)

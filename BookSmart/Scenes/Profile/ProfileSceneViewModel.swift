@@ -5,11 +5,8 @@ enum DisplayInfoType {
     case posts, comments, connections
 }
 
-@MainActor
 final class ProfileSceneViewModel: ObservableObject {
-    
     // MARK: - Properties
-    
     var profileOwnerInfoID: UserInfo.ID
     @Published var userInfo: UserInfo
     @Published var fetchedOwnerInfo: UserInfo?
@@ -42,14 +39,12 @@ final class ProfileSceneViewModel: ObservableObject {
     }
     
     // MARK: - Init
-    
     init(profileOwnerInfoID: UserInfo.ID, userInfo: UserInfo) {
         self.profileOwnerInfoID = profileOwnerInfoID
         self.userInfo = userInfo
     }
     
     // MARK: - Methods
-    
     func viewOnAppear() {
         fetchOwnerInfo() { [self] in
             userInfoListener()
@@ -136,7 +131,6 @@ final class ProfileSceneViewModel: ObservableObject {
     }
 
     // MARK: - Firebase Methods
-    
     private func userInfoListener() {
         FirebaseManager.shared.userInfoListener(userIDString: userInfo.id.uuidString) { userInfo in
             self.userInfo = userInfo
@@ -168,7 +162,6 @@ final class ProfileSceneViewModel: ObservableObject {
     
     private func postsInfoListener() {
         FirebaseManager.shared.postsInfoListenerForProfile(profileOwnerID: profileOwnerInfoID) { postsInfo in
-            
             let filteredPosts = postsInfo.filter { $0.authorID == self.profileOwnerInfoID }
             
             self.allPostsInfo = postsInfo

@@ -2,9 +2,7 @@
 import SwiftUI
 
 final class PostsTableViewCell: UITableViewCell {
-    
     // MARK: - Properties
-    
     private let mainStackView = UIStackView()
     
     private let authorInfoStackView = UIStackView()
@@ -47,7 +45,6 @@ final class PostsTableViewCell: UITableViewCell {
     weak var navigationController: UINavigationController?
     
     // MARK: - Init
-    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupSubViews()
@@ -71,7 +68,6 @@ final class PostsTableViewCell: UITableViewCell {
     }
     
     // MARK: - Setup Subviews, Constraints, UI
-    
     private func setupSubViews() {
         addSubview(mainStackView)
         mainStackView.addArrangedSubview(authorInfoStackView)
@@ -121,7 +117,6 @@ final class PostsTableViewCell: UITableViewCell {
     }
     
     func configureCell() {
-        
         viewModel?.getAuthorInfo(with: postInfo!.authorID) { [self] authorInfo in
             self.authorInfo = authorInfo
             self.retrieveImage()
@@ -144,7 +139,6 @@ final class PostsTableViewCell: UITableViewCell {
     }
     
     // MARK: - Constraints
-    
     private func setupMainStackViewConstraints() {
         NSLayoutConstraint.activate([
             mainStackView.topAnchor.constraint(equalTo: self.topAnchor),
@@ -204,7 +198,6 @@ final class PostsTableViewCell: UITableViewCell {
     }
     
     // MARK: - UI
-    
     private func setupMainStackViewUI() {
         mainStackView.translatesAutoresizingMaskIntoConstraints = false
         mainStackView.axis = .vertical
@@ -289,7 +282,7 @@ final class PostsTableViewCell: UITableViewCell {
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.postHeaderOrBodyTapped))
         headerLabel.addGestureRecognizer(gestureRecognizer)
         headerLabel.isUserInteractionEnabled = true
-
+        
         headerLabel.font = .boldSystemFont(ofSize: 16)
         headerLabel.textColor = .white
     }
@@ -337,10 +330,10 @@ final class PostsTableViewCell: UITableViewCell {
     private func setupShareStackViewUI() {
         shareButtonImageView.image = UIImage(systemName: "square.and.arrow.up")
         setupLikeCommentShareStackViewUI(
-            shareStackView, 
+            shareStackView,
             imageView: shareButtonImageView,
             label: shareButtonLabel,
-            labelText: "Share", 
+            labelText: "Share",
             buttonColor: .customShareButtonColor,
             action: #selector(shareButtonTapped))
     }
@@ -367,7 +360,6 @@ final class PostsTableViewCell: UITableViewCell {
     }
     
     // MARK: - Button Methods
-    
     @objc private func authorImageTapped(sender: UITapGestureRecognizer) {
         if sender.state == .ended {
             MethodsManager.shared.fadeAnimation(elements: authorImageView) {
@@ -385,7 +377,6 @@ final class PostsTableViewCell: UITableViewCell {
     }
     
     @objc private func likeButtonTapped(sender: UITapGestureRecognizer) {
-        
         toggleLikePost() { hasLiked in
             self.updateLikeButtonUI(isLiked: hasLiked)
         }
@@ -412,7 +403,6 @@ final class PostsTableViewCell: UITableViewCell {
     }
     
     // MARK: - Button Actions
-    
     private func navigateToProfileScene() {
         let profileSceneViewController = UIHostingController(
             rootView: ProfileSceneView(
@@ -453,7 +443,6 @@ final class PostsTableViewCell: UITableViewCell {
     }
     
     // MARK: - Firebase Methods
-    
     func retrieveImage() {
         authorImageView.tintColor = .customAccentColor
         
@@ -461,28 +450,26 @@ final class PostsTableViewCell: UITableViewCell {
         
         FirebaseManager.shared.retrieveImage(postInfoAuthorIDString) { retrievedImage in
             UIView.transition(with: self.authorImageView,
-                                      duration: 0.3,
-                                      options: .transitionCrossDissolve,
-                                      animations: {
-                                          self.authorImageView.image = retrievedImage
-                                      },
-                                      completion: nil)
+                              duration: 0.3,
+                              options: .transitionCrossDissolve,
+                              animations: {
+                self.authorImageView.image = retrievedImage
+            },
+                              completion: nil)
         }
     }
-
+    
     private func toggleLikePost(completion: @escaping (Bool) -> Void) {
-        
         guard let postInfo else { return }
         guard let viewModel else { return }
-          
+        
         FirebaseManager.shared.toggleLikePost(userInfoIDString: viewModel.userInfo.id.uuidString,
                                               postInfoIDString: postInfo.id.uuidString) { hasLiked in
             completion(hasLiked)
         }
     }
-
-    // MARK: - Update UI
     
+    // MARK: - Update UI
     private func updateLikeButtonUI(isLiked: Bool) {
         DispatchQueue.main.async {
             let imageName = isLiked ? "heart.fill" : "heart"

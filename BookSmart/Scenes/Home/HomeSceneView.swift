@@ -2,19 +2,14 @@
 import SwiftUI
 
 final class HomeSceneView: UIViewController {
-    
     // MARK: - Properties
-    
     private var mainStackView = UIStackView()
-    
     private var postsTableView = UITableView()
-    
     private let refreshControl = UIRefreshControl()
     
     var homeSceneViewModel: PostsScenesViewModel
     
     // MARK: - Init
-    
     init(homeSceneViewModel: PostsScenesViewModel) {
         self.homeSceneViewModel = homeSceneViewModel
         super.init(nibName: nil, bundle: nil)
@@ -25,7 +20,6 @@ final class HomeSceneView: UIViewController {
     }
     
     // MARK: - LifeCycle
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         homeSceneViewModel.storyDelegate = self
@@ -41,7 +35,6 @@ final class HomeSceneView: UIViewController {
     }
     
     // MARK: - Setup Subviews, Constraints, UI
-    
     private func setupSubviews() {
         view.addSubview(mainStackView)
         mainStackView.addArrangedSubview(postsTableView)
@@ -58,7 +51,6 @@ final class HomeSceneView: UIViewController {
     }
     
     // MARK: - Constraints
-    
     private func setupMainStackViewConstraints() {
         NSLayoutConstraint.activate([
             mainStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -78,7 +70,6 @@ final class HomeSceneView: UIViewController {
     }
     
     // MARK: - UI
-    
     private func setupMainStackViewUI() {
         mainStackView.translatesAutoresizingMaskIntoConstraints = false
         mainStackView.axis = .vertical
@@ -103,7 +94,6 @@ final class HomeSceneView: UIViewController {
     }
     
     // MARK: - Button Methods
-    
     @objc private func refreshTableView() {
         homeSceneViewModel.getPostsInfoFromFirebase {
             self.homeSceneViewModel.loadInitialStoryPosts()
@@ -114,7 +104,6 @@ final class HomeSceneView: UIViewController {
 }
 
 // MARK: - Extensions
-
 extension HomeSceneView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         homeSceneViewModel.storyPostsToDisplay.count
@@ -137,7 +126,6 @@ extension HomeSceneView: UITableViewDataSource {
 }
 
 extension HomeSceneView: UITableViewDelegate {
-    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         UITableView.automaticDimension
     }
@@ -154,7 +142,6 @@ extension HomeSceneView: UITableViewDelegate {
 }
 
 extension HomeSceneView: PostsScenesViewModelDelegateForStory {
-    
     func reloadTableViewWithAnimation() {
         DispatchQueue.main.async {
             self.postsTableView.reloadData()

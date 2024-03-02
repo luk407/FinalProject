@@ -2,9 +2,7 @@
 import UIKit
 
 final class AnnouncementSceneView: UIViewController {
-    
     // MARK: - Properties
-    
     private var mainStackView = UIStackView()
     
     private var announcementsTableView = UITableView()
@@ -16,7 +14,6 @@ final class AnnouncementSceneView: UIViewController {
     var announcementSceneViewModel: PostsScenesViewModel
     
     // MARK: - Init
-    
     init(announcementSceneViewModel: PostsScenesViewModel) {
         self.announcementSceneViewModel = announcementSceneViewModel
         super.init(nibName: nil, bundle: nil)
@@ -27,7 +24,6 @@ final class AnnouncementSceneView: UIViewController {
     }
     
     // MARK: - LifeCycle
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         announcementSceneViewModel.announcementDelegate = self
@@ -43,7 +39,6 @@ final class AnnouncementSceneView: UIViewController {
     }
     
     // MARK: - Setup Subviews, Constraints, UI
-    
     private func setupSubviews() {
         view.addSubview(mainStackView)
         mainStackView.addArrangedSubview(announcementsTableView)
@@ -60,7 +55,6 @@ final class AnnouncementSceneView: UIViewController {
     }
     
     // MARK: - Constraints
-    
     private func setupMainStackViewConstraints() {
         NSLayoutConstraint.activate([
             mainStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -80,7 +74,6 @@ final class AnnouncementSceneView: UIViewController {
     }
     
     // MARK: - UI
-    
     private func setupMainStackViewUI() {
         mainStackView.translatesAutoresizingMaskIntoConstraints = false
         mainStackView.axis = .vertical
@@ -114,7 +107,6 @@ final class AnnouncementSceneView: UIViewController {
 }
 
 // MARK: - Extensions
-
 extension AnnouncementSceneView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         announcementSceneViewModel.announcementPostsToDisplay.count
@@ -153,7 +145,6 @@ extension AnnouncementSceneView: UITableViewDelegate {
 }
 
 extension AnnouncementSceneView: PostsScenesViewModelDelegateForAnnouncement {
-    
     func reloadTableViewWithAnimation() {
         DispatchQueue.main.async {
             self.announcementsTableView.reloadData()

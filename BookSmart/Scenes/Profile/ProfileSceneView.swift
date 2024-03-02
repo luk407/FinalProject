@@ -4,19 +4,14 @@ import SwiftUI
 struct ProfileSceneView: View {
     
     // MARK: - Properties
-    
     @ObservedObject var profileSceneViewModel: ProfileSceneViewModel
     
     private let gridColumns = [GridItem(.fixed(40)), GridItem(.fixed(40)), GridItem(.fixed(40))]
     
     // MARK: - Body
-    
     var body: some View {
-        
         VStack {
-            
             HStack {
-                
                 profilePictureView
                 
                 Spacer()
@@ -25,7 +20,6 @@ struct ProfileSceneView: View {
             }
             
             HStack {
-                
                 namesView
                 
                 Spacer()
@@ -38,7 +32,6 @@ struct ProfileSceneView: View {
             displayInfoPicker
             
             selectedDisplayInfoView(profileSceneViewModel.displayInfoType)
-            
         }
         .background(Color(uiColor: .customBackgroundColor))
         .padding()
@@ -53,10 +46,8 @@ struct ProfileSceneView: View {
     }
     
     // MARK: - Views
-    
     private var profilePictureView: some View {
         ZStack {
-            
             Circle()
                 .stroke(lineWidth: 4)
                 .frame(width: 110, height: 110)
@@ -91,7 +82,6 @@ struct ProfileSceneView: View {
     }
     
     private var optionsView: some View {
-        
         VStack {
             if profileSceneViewModel.isOwnProfile {
                 editProfileButton
@@ -124,9 +114,7 @@ struct ProfileSceneView: View {
     }
     
     private var namesView: some View {
-        
         VStack {
-            
             TextField("", text: $profileSceneViewModel.fetchedOwnerDisplayName)
                 .autocorrectionDisabled()
                 .font(.system(size: 24).bold())
@@ -143,9 +131,7 @@ struct ProfileSceneView: View {
     }
     
     private var bioView: some View {
-
         VStack(spacing: 8) {
-            
             Text("Bio")
                 .font(.system(size: 16).bold())
                 .foregroundStyle(.black)
@@ -208,7 +194,7 @@ struct ProfileSceneView: View {
             return AnyView(
                 List {
                     ForEach(profileSceneViewModel.ownerPostsInfo) { post in
-                       postListItem(post)
+                        postListItem(post)
                     }
                     .listRowBackground(
                         RoundedRectangle(cornerRadius: 8)
@@ -224,9 +210,7 @@ struct ProfileSceneView: View {
     
     private func postListItem(_ post: PostInfo) -> some View {
         NavigationLink(destination: PostDetailsSceneViewRepresentable(userInfo: profileSceneViewModel.userInfo, postInfo: post).ignoresSafeArea()) {
-            
             HStack(spacing: 8) {
-                
                 Text(post.header)
                     .font(.system(size: 12))
                     .foregroundStyle(.black)
@@ -279,32 +263,32 @@ struct ProfileSceneView: View {
         if let post = profileSceneViewModel.findPostInfo(for: comment.id) {
             return AnyView(
                 NavigationLink(destination: PostDetailsSceneViewRepresentable(userInfo: profileSceneViewModel.userInfo, postInfo: post).ignoresSafeArea()) {
-                HStack(spacing: 8) {
-                    Text(comment.body)
-                        .font(.system(size: 12))
-                        .foregroundStyle(.black)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .lineLimit(5)
-                    
-                    VStack {
-                        Text(MethodsManager.shared.timeAgoString(from: comment.commentTime))
-                            .font(.system(size: 10))
+                    HStack(spacing: 8) {
+                        Text(comment.body)
+                            .font(.system(size: 12))
                             .foregroundStyle(.black)
-                        Spacer()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .lineLimit(5)
+                        
+                        VStack {
+                            Text(MethodsManager.shared.timeAgoString(from: comment.commentTime))
+                                .font(.system(size: 10))
+                                .foregroundStyle(.black)
+                            Spacer()
+                        }
                     }
+                    .padding(.vertical, 10)
                 }
-                .padding(.vertical, 10)
-            }
-            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                if profileSceneViewModel.isOwnProfile {
-                    Button {
-                        profileSceneViewModel.deleteComment(comment, for: post)
-                    } label: {
-                        Text("Delete")
-                    }
-                    .tint(.clear)
-                }
-            })
+                    .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                        if profileSceneViewModel.isOwnProfile {
+                            Button {
+                                profileSceneViewModel.deleteComment(comment, for: post)
+                            } label: {
+                                Text("Delete")
+                            }
+                            .tint(.clear)
+                        }
+                    })
         } else {
             return AnyView(EmptyStateView())
         }

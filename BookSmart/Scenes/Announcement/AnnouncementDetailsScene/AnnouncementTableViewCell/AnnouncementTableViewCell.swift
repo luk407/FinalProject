@@ -2,11 +2,9 @@
 import SwiftUI
 
 final class AnnouncementTableViewCell: UITableViewCell {
-    
     // MARK: - Properties
-    
     private let mainStackView = UIStackView()
-    
+
     private let announcementAuthorStackView = UIStackView()
     
     private let authorInfoStackView = UIStackView()
@@ -51,9 +49,8 @@ final class AnnouncementTableViewCell: UITableViewCell {
     var authorInfo: UserInfo?
     
     weak var navigationController: UINavigationController?
-
-    // MARK: - Init
     
+    // MARK: - Init
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         selectionStyle = .none
@@ -76,33 +73,25 @@ final class AnnouncementTableViewCell: UITableViewCell {
         headerLabel.text = nil
         bodyLabel.text = nil
     }
-
-    // MARK: - Setup Subviews, Constraints, UI
     
+    // MARK: - Setup Subviews, Constraints, UI
     private func setupSubviews() {
         contentView.addSubview(mainStackView) // vertical
         mainStackView.addArrangedSubview(announcementAuthorStackView) // horizontal
         mainStackView.addArrangedSubview(postContentStackView) // vertical
         mainStackView.addArrangedSubview(likeCommentShareStackView) // horizontal
-        
         announcementAuthorStackView.addArrangedSubview(spoilerTagStackView)
         announcementAuthorStackView.addArrangedSubview(authorInfoStackView) //vertical
         announcementAuthorStackView.addArrangedSubview(timeLabel)
-        
         spoilerTagStackView.addArrangedSubview(spoilerLabel)
-        
         authorInfoStackView.addArrangedSubview(backgroundImageView)
-        
         authorInfoStackView.addSubview(authorImageView)
         authorInfoStackView.addArrangedSubview(namesStackView)
         authorInfoStackView.bringSubviewToFront(authorImageView)
-        
         namesStackView.addArrangedSubview(nameLabel)
         namesStackView.addArrangedSubview(usernameLabel)
-                
         postContentStackView.addArrangedSubview(headerLabel)
         postContentStackView.addArrangedSubview(bodyLabel)
-        
         likeCommentShareStackView.addArrangedSubview(likeStackView)
         likeCommentShareStackView.addArrangedSubview(commentStackView)
         likeCommentShareStackView.addArrangedSubview(shareStackView)
@@ -200,13 +189,12 @@ final class AnnouncementTableViewCell: UITableViewCell {
             backgroundImageView.widthAnchor.constraint(equalToConstant: 100),
         ])
     }
-
+    
     private func setupSpoilerTagStackViewConstraints() {
         NSLayoutConstraint.activate([
             spoilerTagStackView.widthAnchor.constraint(equalToConstant: 50),
             spoilerTagStackView.heightAnchor.constraint(equalToConstant: 25),
         ])
-
     }
     
     private func setupAuthorImageViewConstraints() {
@@ -279,7 +267,7 @@ final class AnnouncementTableViewCell: UITableViewCell {
         backgroundImageView.tintColor = .customAccentColor
         backgroundImageView.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
     }
-
+    
     private func setupAuthorImageViewUI() {
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.authorImageTapped))
         authorImageView.addGestureRecognizer(gestureRecognizer)
@@ -416,7 +404,6 @@ final class AnnouncementTableViewCell: UITableViewCell {
     }
     
     // MARK: - Private Methods
-    
     @objc private func authorImageTapped(sender: UITapGestureRecognizer) {
         if sender.state == .ended {
             MethodsManager.shared.fadeAnimation(elements: authorImageView) {
@@ -426,7 +413,6 @@ final class AnnouncementTableViewCell: UITableViewCell {
     }
     
     @objc private func likeButtonTapped(sender: UITapGestureRecognizer) {
-        
         viewModel?.toggleLikePost() { hasLiked in
             self.updateLikeButtonUI(isLiked: hasLiked)
         }
@@ -451,7 +437,6 @@ final class AnnouncementTableViewCell: UITableViewCell {
     }
     
     // MARK: - Button Actions
-    
     private func navigateToProfileScene() {
         let profileSceneViewController = UIHostingController(
             rootView: ProfileSceneView(
@@ -462,7 +447,6 @@ final class AnnouncementTableViewCell: UITableViewCell {
     }
     
     private func sharePost() {
-        
         let textToShare = "Check out this post on BookSmart!"
         let postURL = URL(string: "someURL")
         let items: [Any] = [textToShare, postURL as Any]
@@ -482,7 +466,6 @@ final class AnnouncementTableViewCell: UITableViewCell {
     }
     
     // MARK: - Firebase Methods
-    
     func retrieveImage() {
         authorImageView.tintColor = .customAccentColor
         
@@ -490,18 +473,17 @@ final class AnnouncementTableViewCell: UITableViewCell {
         
         FirebaseManager.shared.retrieveImage(postInfoAuthorIDString) { retrievedImage in
             UIView.transition(with: self.authorImageView,
-                                      duration: 0.3,
-                                      options: .transitionCrossDissolve,
-                                      animations: {
-                                          self.authorImageView.image = retrievedImage
-                                      },
-                                      completion: nil)
+                              duration: 0.3,
+                              options: .transitionCrossDissolve,
+                              animations: {
+                self.authorImageView.image = retrievedImage
+            },
+                              completion: nil)
         }
     }
 }
 
 // MARK: - Extension
-
 extension AnnouncementTableViewCell: PostDetailsSceneViewDelegateForAnnouncement {
     func updateLikeButtonUI(isLiked: Bool) {
         DispatchQueue.main.async {

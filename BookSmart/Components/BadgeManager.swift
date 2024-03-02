@@ -2,9 +2,7 @@
 import Foundation
 
 struct BadgeManager {
-    
     static func calculateBadges(for user: UserInfo) -> [BadgeInfo] {
-        
         let booksCount = user.booksFinished.count
         let commentsCount = user.comments.count
         let connectionsCount = user.connections.count
@@ -13,7 +11,7 @@ struct BadgeManager {
         let timeSinceRegistration = Calendar.current.dateComponents([.year], from: user.registrationDate, to: Date()).year ?? 0
         
         var badges: [BadgeInfo] = []
-
+        
         switch booksCount {
         case 0:
             badges.append(BadgeInfo(category: .booksCount, type: .bronze))
@@ -87,9 +85,7 @@ struct BadgeManager {
         default:
             break
         }
-
+        
         return badges
     }
 }
-
-

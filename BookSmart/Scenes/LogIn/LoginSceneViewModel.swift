@@ -7,24 +7,19 @@ protocol LoginSceneViewDelegate: AnyObject {
 }
 
 final class LoginSceneViewModel: ObservableObject {
-    
     // MARK: - Properties
-    
     @Published var fetchedUserData: UserInfo?
     private var dispatchGroup = DispatchGroup()
-
+    
     weak var delegate: LoginSceneViewDelegate?
     
     // MARK: - Init
-    
     init() {
         
     }
     
     // MARK: - Methods
-    
     func loginAndNavigate(email: String, password: String) {
-        
         dispatchGroup.enter()
         loginToFirebase(email: email, password: password) {
             self.dispatchGroup.leave()
@@ -48,9 +43,8 @@ final class LoginSceneViewModel: ObservableObject {
             completion()
         }
     }
-
-    // MARK: - Firebase Methods
     
+    // MARK: - Firebase Methods
     private func getUserInfo(email: String, password: String, completion: @escaping () -> Void) {
         FirebaseManager.shared.getUserInfoToLogin(with: email, and: password) { userInfo in
             self.fetchedUserData = userInfo

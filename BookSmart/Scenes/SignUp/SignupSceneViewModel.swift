@@ -2,9 +2,7 @@
 import Foundation
 
 final class SignupSceneViewModel {
-    
     // MARK: - Properties
-    
     var password: String = ""
     var isSignUpEnabled = false
     var isMinLengthMet = false
@@ -13,7 +11,6 @@ final class SignupSceneViewModel {
     var isUniqueCharacterMet = false
     
     // MARK: - Methods
-    
     func register(emailText: String, passwordText: String) {
         if isSignUpEnabled {
             FirebaseManager.shared.registerUser(emailText: emailText, passwordText: passwordText)

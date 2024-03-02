@@ -7,7 +7,6 @@ struct ImagePicker: UIViewControllerRepresentable {
     @Binding var isPickerShowing: Bool
     
     func makeUIViewController(context: Context) -> UIImagePickerController {
-        
         let imagePicker = UIImagePickerController()
         imagePicker.sourceType = .photoLibrary
         imagePicker.delegate = context.coordinator
@@ -25,7 +24,6 @@ struct ImagePicker: UIViewControllerRepresentable {
 }
 
 final class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    
     var parent: ImagePicker
     
     init(_ parent: ImagePicker) {

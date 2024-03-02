@@ -2,21 +2,16 @@
 import SwiftUI
 import Combine
 import GenericNetworkLayer
- 
+
 final class AnnouncementPostViewModel: ObservableObject {
-    
     // MARK: - Properties
-    
     private var searchTextCancellable: AnyCancellable?
     private var disposeBag = Set<AnyCancellable>()
-
     @Published var searchText: String = ""
     @Published var isSpoilersAllowed: Bool = false
     @Published var selectedAnnouncementType: AnnouncementType = .startedBook
     @Published var selectedBook: Book? = nil
-    
     @Published var userInfo: UserInfo
-    
     @Published var booksArray: [Book] = [] {
         didSet {
             objectWillChange.send()
@@ -27,7 +22,7 @@ final class AnnouncementPostViewModel: ObservableObject {
         guard let selectedBook = selectedBook else { return "" }
         return selectedBook.authorName?.joined(separator: ", ") ?? ""
     }
-
+    
     var headerTextForStart: String {
         "\(userInfo.displayName) has just started reading a book \"\(selectedBook?.title ?? "")\""
     }
@@ -41,14 +36,12 @@ final class AnnouncementPostViewModel: ObservableObject {
     }
     
     // MARK: - Init
-    
     init(userInfo: UserInfo) {
         self.userInfo = userInfo
         setupDebouncedTextChanges()
     }
     
     // MARK: - Methods
-    
     private func setupDebouncedTextChanges() {
         searchTextCancellable = $searchText
             .debounce(for: 1.0, scheduler: RunLoop.main)
@@ -60,7 +53,7 @@ final class AnnouncementPostViewModel: ObservableObject {
                 }
             }
     }
-
+    
     func addPost() {
         if selectedAnnouncementType == .finishedBook {
             let newPost = PostInfo(
@@ -104,15 +97,14 @@ final class AnnouncementPostViewModel: ObservableObject {
     }
     
     private func updateUserDataOnFirebase(postID: UUID) {
-        
         guard let selectedBook else { return }
         
         FirebaseManager.shared.updateUserPostsAndFinishedBooksOnFirebase(userInfo: userInfo,
-                                                        postID: postID,
-                                                        selectedAnnouncementType: selectedAnnouncementType,
-                                                        selectedBook: selectedBook)
+                                                                         postID: postID,
+                                                                         selectedAnnouncementType: selectedAnnouncementType,
+                                                                         selectedBook: selectedBook)
     }
-
+    
     func fetchBooksData(with titleString: String) {
         guard let url = URL(string: "https://openlibrary.org/search.json?title=\(titleString)") else { return }
         

@@ -2,34 +2,32 @@
 import SwiftUI
 
 final class LeaderboardSceneView: UIViewController {
-    
     // MARK: - Properties
-    
     private let mainStackView = UIStackView()
     
     private let podiumStackView = UIStackView()
     
-    private lazy var firstPlaceStackView = LeaderboardPodiumItemStackView(place: 1, 
+    private lazy var firstPlaceStackView = LeaderboardPodiumItemStackView(place: 1,
                                                                           userImage: UIImage(systemName: "person.fill")!,
                                                                           imageSize: 90,
                                                                           username: "",
                                                                           booksReadCount: 0,
                                                                           shadowColor: .customGoldColor)
-
     
-    private lazy var secondPlaceStackView = LeaderboardPodiumItemStackView(place: 2, 
+    
+    private lazy var secondPlaceStackView = LeaderboardPodiumItemStackView(place: 2,
                                                                            userImage: UIImage(systemName: "person.fill")!,
                                                                            imageSize: 70,
                                                                            username: "",
                                                                            booksReadCount: 0,
                                                                            shadowColor: .customSilverColor)
-        
     
-    private lazy var thirdPlaceStackView = LeaderboardPodiumItemStackView(place: 3, 
+    
+    private lazy var thirdPlaceStackView = LeaderboardPodiumItemStackView(place: 3,
                                                                           userImage: UIImage(systemName: "person.fill")!,
-                                                                          imageSize: 70, 
+                                                                          imageSize: 70,
                                                                           username: "",
-                                                                          booksReadCount: 0, 
+                                                                          booksReadCount: 0,
                                                                           shadowColor: .clear)
     
     private let leaderboardTableView = UITableView(frame: .zero, style: .grouped)
@@ -37,7 +35,6 @@ final class LeaderboardSceneView: UIViewController {
     var leaderboardSceneViewModel: LeaderboardSceneViewModel
     
     // MARK: - Init
-    
     init(leaderboardSceneViewModel: LeaderboardSceneViewModel) {
         self.leaderboardSceneViewModel = leaderboardSceneViewModel
         super.init(nibName: nil, bundle: nil)
@@ -48,7 +45,6 @@ final class LeaderboardSceneView: UIViewController {
     }
     
     // MARK: - LifeCycle
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         leaderboardSceneViewModel.delegate = self
@@ -68,7 +64,6 @@ final class LeaderboardSceneView: UIViewController {
     }
     
     // MARK: - Setup Subviews, Constraints, UI
-    
     private func setupSubViews() {
         view.addSubview(mainStackView)
         mainStackView.addArrangedSubview(podiumStackView)
@@ -90,7 +85,6 @@ final class LeaderboardSceneView: UIViewController {
     }
     
     // MARK: - Constraints
-    
     private func setupMainStackViewConstraints() {
         NSLayoutConstraint.activate([
             mainStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -107,7 +101,6 @@ final class LeaderboardSceneView: UIViewController {
     }
     
     // MARK: - UI
-    
     private func setupMainStackViewUI() {
         mainStackView.translatesAutoresizingMaskIntoConstraints = false
         mainStackView.axis = .vertical
@@ -134,7 +127,6 @@ final class LeaderboardSceneView: UIViewController {
     }
     
     // MARK: - Methods
-    
     @objc private func podiumStackViewItemTapped(_ gestureRecognizer: UITapGestureRecognizer) {
         guard let tappedView = gestureRecognizer.view else { return }
         
@@ -169,9 +161,7 @@ final class LeaderboardSceneView: UIViewController {
 }
 
 // MARK: - Extensions
-
 extension LeaderboardSceneView: UITableViewDataSource {
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return max(leaderboardSceneViewModel.fetchedUsersInfo.count - 3, 0)
     }
@@ -211,7 +201,6 @@ extension LeaderboardSceneView: UITableViewDelegate {
 }
 
 extension LeaderboardSceneView: LeaderboardSceneViewModelDelegate {
-    
     func updatePodiumUI() {
         guard let firstUser = leaderboardSceneViewModel.fetchedUsersInfo.first else {
             return

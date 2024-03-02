@@ -6,7 +6,6 @@ final public class MethodsManager {
     static let shared = MethodsManager()
     
     func timeAgoString(from date: Date) -> String {
-        
         let currentDate = Date()
         let calendar = Calendar.current
         let components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: date, to: currentDate)
@@ -27,7 +26,6 @@ final public class MethodsManager {
     }
     
     func fadeAnimation(duration: TimeInterval = 0.1, alpha: CGFloat = 0.2, elements: UIView..., completion: (() -> Void)? = nil) {
-        
         UIView.animate(withDuration: duration, animations: {
             for element in elements {
                 element.alpha = alpha

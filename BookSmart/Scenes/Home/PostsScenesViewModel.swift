@@ -11,35 +11,30 @@ protocol PostsScenesViewModelDelegateForStory: AnyObject {
     func reloadTableView()
 }
 
-@MainActor
 final class PostsScenesViewModel: ObservableObject {
-    
     // MARK: - Properties
-    
     @Published var userInfo: UserInfo
     
     var fetchedPostsInfo: [PostInfo] = []
     var storyPosts: [PostInfo] = []
     var announcementPosts: [PostInfo] = []
     var filteredStoryPosts: [PostInfo] = []
-
+    
     weak var storyDelegate: PostsScenesViewModelDelegateForStory?
     weak var announcementDelegate: PostsScenesViewModelDelegateForAnnouncement?
     
     var limit = 5
     var storyPostsToDisplay: [PostInfo] = []
     var announcementPostsToDisplay: [PostInfo] = []
-
+    
     private let dispatchGroup = DispatchGroup()
     
     // MARK: - Init
-    
     init(userInfo: UserInfo) {
-        self.userInfo = userInfo        
+        self.userInfo = userInfo
     }
     
     // MARK: - Methods
-    
     func homeSceneViewWillAppear() {
         userInfoListener()
         getPostsInfoFromFirebase() {
@@ -119,18 +114,15 @@ final class PostsScenesViewModel: ObservableObject {
             announcementDelegate?.reloadTableView()
         }
     }
-
-    // MARK: - Firebase Methods
     
+    // MARK: - Firebase Methods
     func getPostsInfoFromFirebase(completion: @escaping () -> Void) {
-        
         FirebaseManager.shared.getPostsInfoFromFirebaseForPostsScenes { fetchedPostsInfo, storyPosts, filteredStoryPosts, announcementPosts in
-            
             self.fetchedPostsInfo.removeAll()
             self.storyPosts.removeAll()
             self.announcementPosts.removeAll()
             self.filteredStoryPosts.removeAll()
-
+            
             self.fetchedPostsInfo = fetchedPostsInfo.sorted(by: { $0.postingTime > $1.postingTime })
             self.storyPosts = storyPosts.sorted(by: { $0.postingTime > $1.postingTime })
             self.filteredStoryPosts = filteredStoryPosts.sorted(by: { $0.postingTime > $1.postingTime })
@@ -140,16 +132,14 @@ final class PostsScenesViewModel: ObservableObject {
     }
     
     private func userInfoListener() {
-        
         FirebaseManager.shared.userInfoListener(userIDString: userInfo.id.uuidString) { userInfo in
             self.userInfo = userInfo
         }
     }
-
+    
     func getAuthorInfo(with authorID: UserInfo.ID, completion: @escaping (UserInfo?) -> Void) {
         FirebaseManager.shared.getAuthorInfo(with: authorID) { userInfo in
             completion(userInfo)
         }
     }
 }
-

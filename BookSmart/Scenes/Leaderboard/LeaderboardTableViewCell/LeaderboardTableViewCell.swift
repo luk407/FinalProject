@@ -2,9 +2,7 @@
 import UIKit
 
 final class LeaderboardTableViewCell: UITableViewCell {
-    
     // MARK: - Properties
-    
     private let mainStackView = UIStackView()
     
     private let placeLabel = UILabel()
@@ -20,7 +18,6 @@ final class LeaderboardTableViewCell: UITableViewCell {
     private let booksReadCountLabel = UILabel()
     
     // MARK: - Init
-
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         backgroundColor = .clear
@@ -41,7 +38,6 @@ final class LeaderboardTableViewCell: UITableViewCell {
     }
     
     // MARK: - Setup Subviews, Constraints, UI
-    
     private func setupSubViews() {
         addSubview(mainStackView)
         mainStackView.addArrangedSubview(placeLabel)
@@ -80,7 +76,6 @@ final class LeaderboardTableViewCell: UITableViewCell {
     }
     
     // MARK: - Constraints
-    
     private func setupMainStackViewConstraints() {
         NSLayoutConstraint.activate([
             mainStackView.topAnchor.constraint(equalTo: self.topAnchor),
@@ -133,9 +128,8 @@ final class LeaderboardTableViewCell: UITableViewCell {
             booksReadCountLabel.trailingAnchor.constraint(equalTo: cellStackView.trailingAnchor),
         ])
     }
-
-    // MARK: - UI
     
+    // MARK: - UI
     private func setupMainStackViewUI() {
         mainStackView.translatesAutoresizingMaskIntoConstraints = false
         mainStackView.axis = .horizontal

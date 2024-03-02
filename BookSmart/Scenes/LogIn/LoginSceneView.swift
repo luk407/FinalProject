@@ -3,9 +3,7 @@ import UIKit
 import Lottie
 
 final class LoginSceneView: UIViewController {
-    
     // MARK: - Properties
-    
     private var mainStackView = UIStackView()
     
     private var logoImageView = UIImageView()
@@ -45,7 +43,6 @@ final class LoginSceneView: UIViewController {
     var loginSceneViewModel = LoginSceneViewModel()
     
     // MARK: - LifeCycle
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .customBackgroundColor
@@ -56,7 +53,6 @@ final class LoginSceneView: UIViewController {
     }
     
     // MARK: - Setup Subviews, Constraints, UI
-    
     private func setupSubviews() {
         view.addSubview(mainStackView)
         mainStackView.addArrangedSubview(logoImageView)
@@ -102,7 +98,6 @@ final class LoginSceneView: UIViewController {
     }
     
     // MARK: - Constraints
-    
     private func setupMainStackViewConstraints() {
         NSLayoutConstraint.activate([
             mainStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -159,7 +154,6 @@ final class LoginSceneView: UIViewController {
     }
     
     // MARK: - UI
-    
     private func setupMainStackViewUI() {
         mainStackView.translatesAutoresizingMaskIntoConstraints = false
         mainStackView.axis = .vertical
@@ -172,7 +166,6 @@ final class LoginSceneView: UIViewController {
         logoImageView.image = UIImage(named: "logo")
         logoImageView.contentMode = .scaleAspectFit
     }
-    
     
     private func setupInputInfoStackViewUI() {
         inputInfoStackView.axis = .vertical
@@ -243,7 +236,7 @@ final class LoginSceneView: UIViewController {
     private func setupSignUpButtonUI() {
         signUpButton.setTitle("Sign Up", for: .normal)
         signUpButton.titleLabel?.font = .systemFont(ofSize: 20)
-        signUpButton.setTitleColor(.systemBlue, for: .normal)
+        signUpButton.setTitleColor(.blue, for: .normal)
         signUpButton.addTarget(self, action: #selector(signupButtonPressed), for: .touchUpInside)
     }
     
@@ -284,7 +277,6 @@ final class LoginSceneView: UIViewController {
     }
     
     // MARK: - Button Methods
-    
     @objc private func signupButtonPressed() {
         MethodsManager.shared.fadeAnimation(elements: signUpButton) {
             self.navigateToSignupScene()
@@ -298,7 +290,6 @@ final class LoginSceneView: UIViewController {
     }
     
     // MARK: - Button Actions
-    
     private func navigateToSignupScene() {
         let signupScene = SignupSceneView()
         navigationController?.pushViewController(signupScene, animated: true)
@@ -314,10 +305,9 @@ final class LoginSceneView: UIViewController {
         }
     }
 }
-// MARK: - Extensions
 
+// MARK: - Extensions
 extension LoginSceneView: LoginSceneViewDelegate {
-    
     func navigateToTabBarController() {
         guard let fetchedUserData = loginSceneViewModel.fetchedUserData else { return }
         

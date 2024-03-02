@@ -3,9 +3,7 @@ import SwiftUI
 import Firebase
 
 final class TabBarController: UITabBarController {
-    
     // MARK: - Properties
-    
     private var appNameLabel = UILabel()
     
     private lazy var searchBar: UISearchBar = {
@@ -16,13 +14,10 @@ final class TabBarController: UITabBarController {
     }()
     
     private var searchButton: UIBarButtonItem!
-    
     private var logoutButton: UIBarButtonItem!
-
     var userInfo: UserInfo
     
     // MARK: - Init
-    
     init(userInfo: UserInfo) {
         self.userInfo = userInfo
         super.init(nibName: nil, bundle: nil)
@@ -33,7 +28,6 @@ final class TabBarController: UITabBarController {
     }
     
     // MARK: - LifeCycle
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.delegate = self
@@ -43,7 +37,7 @@ final class TabBarController: UITabBarController {
         setupSearchButtonAndBar()
         
         let postsScenesViewModel = PostsScenesViewModel(userInfo: userInfo)
-    
+        
         let homeViewController = HomeSceneView(homeSceneViewModel: postsScenesViewModel)
         
         let announcementsViewController = AnnouncementSceneView(announcementSceneViewModel: postsScenesViewModel)
@@ -88,7 +82,6 @@ final class TabBarController: UITabBarController {
         navigationItem.titleView = searchBar
         searchBar.isHidden = true
         navigationItem.rightBarButtonItem = searchButton
-        
         searchBar.barTintColor = .customBackgroundColor
         searchBar.autocapitalizationType = .none
         searchBar.autocorrectionType = .no
@@ -97,7 +90,7 @@ final class TabBarController: UITabBarController {
             textFieldInsideSearchBar.textColor = .white
         }
     }
-
+    
     @objc private func searchButtonPressed() {
         searchBar.isHidden.toggle()
         
@@ -111,7 +104,6 @@ final class TabBarController: UITabBarController {
         if !searchBar.isHidden {
             searchBar.becomeFirstResponder()
         }
-        
     }
     
     private func setupLogoutButton() {
@@ -137,7 +129,7 @@ final class TabBarController: UITabBarController {
             print("Error signing out: \(error.localizedDescription)")
         }
     }
-
+    
     private func setupAppNameLabelUI() {
         appNameLabel.text = "BookSmart"
         appNameLabel.font = .systemFont(ofSize: 20)
@@ -147,9 +139,7 @@ final class TabBarController: UITabBarController {
 }
 
 // MARK: - Extensions
-
 extension TabBarController: UITabBarControllerDelegate {
-    
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
         if viewController is UIHostingController<CreatePostSceneView> {
             let createPostViewController = UIHostingController(rootView: CreatePostSceneView(userInfo: userInfo))
@@ -185,7 +175,6 @@ extension TabBarController {
 }
 
 extension TabBarController: UISearchBarDelegate {
-    
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if let homeViewController = viewControllers?.first as? HomeSceneView {
             homeViewController.homeSceneViewModel.filterStoryPosts(with: searchText)

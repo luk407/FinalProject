@@ -2,16 +2,13 @@
 import UIKit
 
 final class OnboardingViewController: UIViewController {
-    
     // MARK: - Properties
-    
     private let mainStackView = UIStackView()
     private let imageView = UIImageView()
     private let titleLabel = UILabel()
     private let subtitleLabel = UILabel()
     
     // MARK: - Init
-    
     init(imageName: String, titleText: String, subtitleText: String) {
         super.init(nibName: nil, bundle: nil)
         imageView.image = UIImage(named: imageName)
@@ -24,7 +21,6 @@ final class OnboardingViewController: UIViewController {
     }
     
     // MARK: - LifeCycle
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupSubviews()
@@ -33,7 +29,6 @@ final class OnboardingViewController: UIViewController {
     }
     
     // MARK: - Setup Subviews, Constraints, UI
-    
     private func setupSubviews() {
         view.addSubview(mainStackView)
         mainStackView.addArrangedSubview(imageView)

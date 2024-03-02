@@ -12,6 +12,6 @@ struct PostDetailsSceneViewRepresentable: UIViewControllerRepresentable {
     }
     
     func updateUIViewController(_ uiViewController: PostDetailsSceneView, context: Context) {
-       
+        
     }
 }

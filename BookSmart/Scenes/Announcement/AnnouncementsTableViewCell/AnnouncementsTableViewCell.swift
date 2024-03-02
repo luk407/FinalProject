@@ -49,7 +49,6 @@ final class AnnouncementsTableViewCell: UITableViewCell {
     weak var navigationController: UINavigationController?
     
     // MARK: - Init
-    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupSubViews()
@@ -73,32 +72,24 @@ final class AnnouncementsTableViewCell: UITableViewCell {
     }
     
     // MARK: - Setup Subviews, Constraints, UI
-    
     private func setupSubViews() {
         addSubview(mainStackView) // vertical
         mainStackView.addArrangedSubview(announcementAuthorStackView) // horizontal
         mainStackView.addArrangedSubview(postContentStackView) // vertical
         mainStackView.addArrangedSubview(likeCommentShareStackView) // horizontal
-        
         announcementAuthorStackView.addArrangedSubview(spoilerTagStackView)
         announcementAuthorStackView.addArrangedSubview(authorInfoStackView) //vertical
         announcementAuthorStackView.addArrangedSubview(timeLabel)
-        
         spoilerTagStackView.addArrangedSubview(spoilerLabel)
-        
         authorInfoStackView.addArrangedSubview(backgroundImageView)
-        
         authorInfoStackView.addSubview(authorImageView)
         authorInfoStackView.addArrangedSubview(namesStackView)
         authorInfoStackView.bringSubviewToFront(authorImageView)
         authorInfoStackView.bringSubviewToFront(namesStackView)
-        
         namesStackView.addArrangedSubview(nameLabel)
         namesStackView.addArrangedSubview(usernameLabel)
-                
         postContentStackView.addArrangedSubview(headerLabel)
         postContentStackView.addArrangedSubview(bodyLabel)
-        
         likeCommentShareStackView.addArrangedSubview(likeStackView)
         likeCommentShareStackView.addArrangedSubview(commentStackView)
         likeCommentShareStackView.addArrangedSubview(shareStackView)
@@ -175,7 +166,6 @@ final class AnnouncementsTableViewCell: UITableViewCell {
     }
     
     // MARK: - Constraints
-    
     private func setupMainStackViewConstraints() {
         NSLayoutConstraint.activate([
             mainStackView.topAnchor.constraint(equalTo: self.topAnchor),
@@ -250,7 +240,6 @@ final class AnnouncementsTableViewCell: UITableViewCell {
     }
     
     // MARK: - UI
-    
     private func setupMainStackViewUI() {
         mainStackView.translatesAutoresizingMaskIntoConstraints = false
         mainStackView.axis = .vertical
@@ -424,8 +413,7 @@ final class AnnouncementsTableViewCell: UITableViewCell {
         stackView.addArrangedSubview(label)
     }
     
-    // MARK: - Private Methods
-    
+    // MARK: - Button Methods
     @objc private func authorImageTapped(sender: UITapGestureRecognizer) {
         if sender.state == .ended {
             MethodsManager.shared.fadeAnimation(elements: authorImageView) {
@@ -443,7 +431,6 @@ final class AnnouncementsTableViewCell: UITableViewCell {
     }
     
     @objc private func likeButtonTapped(sender: UITapGestureRecognizer) {
-        
         toggleLikePost() { hasLiked in
             self.updateLikeButtonUI(isLiked: hasLiked)
         }
@@ -468,7 +455,6 @@ final class AnnouncementsTableViewCell: UITableViewCell {
     }
     
     // MARK: - Button Actions
-    
     private func navigateToProfileScene() {
         let profileSceneViewController = UIHostingController(
             rootView: ProfileSceneView(
@@ -489,7 +475,6 @@ final class AnnouncementsTableViewCell: UITableViewCell {
     }
     
     private func sharePost() {
-        
         let textToShare = "Check out this post on BookSmart!"
         let postURL = URL(string: "someURL")
         let items: [Any] = [textToShare, postURL as Any]
@@ -509,7 +494,6 @@ final class AnnouncementsTableViewCell: UITableViewCell {
     }
     
     // MARK: - Firebase Methods
-    
     func retrieveImage() {
         authorImageView.tintColor = .customBackgroundColor
         
@@ -527,7 +511,6 @@ final class AnnouncementsTableViewCell: UITableViewCell {
     }
     
     private func toggleLikePost(completion: @escaping (Bool) -> Void) {
-        
         guard let postInfo else { return }
         guard let viewModel else { return }
           
@@ -538,7 +521,6 @@ final class AnnouncementsTableViewCell: UITableViewCell {
     }
 
     // MARK: - Update UI
-    
     private func updateLikeButtonUI(isLiked: Bool) {
         DispatchQueue.main.async {
             let imageName = isLiked ? "heart.fill" : "heart"
@@ -548,4 +530,3 @@ final class AnnouncementsTableViewCell: UITableViewCell {
         }
     }
 }
-

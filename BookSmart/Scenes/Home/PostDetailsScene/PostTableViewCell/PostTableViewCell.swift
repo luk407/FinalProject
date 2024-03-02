@@ -2,9 +2,7 @@
 import SwiftUI
 
 final class PostTableViewCell: UITableViewCell {
-    
     // MARK: - Properties
-    
     private var mainStackView = UIStackView()
     
     private let authorInfoStackView = UIStackView()
@@ -22,7 +20,7 @@ final class PostTableViewCell: UITableViewCell {
     private let bodyTextView = UILabel()
     
     private let likeCommentShareStackView = UIStackView()
-
+    
     private let likeStackView = UIStackView()
     private let likeButtonImageView = UIImageView()
     private let likeButtonLabel = UILabel()
@@ -38,9 +36,8 @@ final class PostTableViewCell: UITableViewCell {
     var viewModel: PostDetailsSceneViewModel?
     
     weak var navigationController: UINavigationController?
-
-    // MARK: - Init
     
+    // MARK: - Init
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         selectionStyle = .none
@@ -62,9 +59,8 @@ final class PostTableViewCell: UITableViewCell {
         headerLabel.text = nil
         bodyTextView.text = nil
     }
-
-    // MARK: - Setup Subviews, Constraints, UI
     
+    // MARK: - Setup Subviews, Constraints, UI
     private func setupSubviews() {
         contentView.addSubview(mainStackView)
         
@@ -112,9 +108,8 @@ final class PostTableViewCell: UITableViewCell {
     }
     
     func configureCell(viewModel: PostDetailsSceneViewModel, userInfo: UserInfo, authorInfo: UserInfo, postInfo: PostInfo) {
-        
         let isLiked = viewModel.userInfo.likedPosts.contains(postInfo.id)
-
+        
         self.viewModel = viewModel
         viewModel.storyCellDelegate = self
         
@@ -131,7 +126,6 @@ final class PostTableViewCell: UITableViewCell {
     }
     
     // MARK: - Constraints
-    
     private func setupMainStackViewConstraints() {
         NSLayoutConstraint.activate([
             mainStackView.topAnchor.constraint(equalTo: contentView.topAnchor),
@@ -163,7 +157,6 @@ final class PostTableViewCell: UITableViewCell {
     }
     
     // MARK: - UI
-    
     private func setupMainStackViewUI() {
         mainStackView.translatesAutoresizingMaskIntoConstraints = false
         mainStackView.isLayoutMarginsRelativeArrangement = true
@@ -225,7 +218,7 @@ final class PostTableViewCell: UITableViewCell {
         postContentStackView.spacing = 16
         postContentStackView.alignment = .leading
         postContentStackView.layoutIfNeeded()
-
+        
     }
     
     private func setupHeaderLabelUI() {
@@ -239,7 +232,7 @@ final class PostTableViewCell: UITableViewCell {
         bodyTextView.textColor = .white
         bodyTextView.numberOfLines = 0
     }
-
+    
     private func setupLikeCommentShareStackViewUI() {
         likeCommentShareStackView.axis = .horizontal
         likeCommentShareStackView.distribution = .fillProportionally
@@ -301,9 +294,7 @@ final class PostTableViewCell: UITableViewCell {
         stackView.addArrangedSubview(label)
     }
     
-    
     // MARK: - Button Methods
-    
     @objc private func authorImageTapped(sender: UITapGestureRecognizer) {
         if sender.state == .ended {
             MethodsManager.shared.fadeAnimation(elements: authorImageView) {
@@ -313,7 +304,6 @@ final class PostTableViewCell: UITableViewCell {
     }
     
     @objc private func likeButtonTapped(sender: UITapGestureRecognizer) {
-        
         viewModel?.toggleLikePost() { hasLiked in
             self.updateLikeButtonUI(isLiked: hasLiked)
         }
@@ -338,7 +328,6 @@ final class PostTableViewCell: UITableViewCell {
     }
     
     // MARK: - Button Actions
-    
     private func navigateToProfileScene() {
         let profileSceneView = UIHostingController(rootView: ProfileSceneView(
             profileSceneViewModel: ProfileSceneViewModel(
@@ -370,29 +359,25 @@ final class PostTableViewCell: UITableViewCell {
     }
     
     // MARK: - Firebase Methods
-    
     private func retrieveImage() {
-        
         authorImageView.tintColor = .customAccentColor
         
         guard let postInfoAuthorIDString = viewModel?.postInfo.authorID.uuidString else { return }
         
         FirebaseManager.shared.retrieveImage(postInfoAuthorIDString) { retrievedImage in
             UIView.transition(with: self.authorImageView,
-                                      duration: 0.3,
-                                      options: .transitionCrossDissolve,
-                                      animations: {
-                                          self.authorImageView.image = retrievedImage
-                                      },
-                                      completion: nil)
+                              duration: 0.3,
+                              options: .transitionCrossDissolve,
+                              animations: {
+                self.authorImageView.image = retrievedImage
+            },
+                              completion: nil)
         }
     }
 }
 
 // MARK: - Extensions
-
 extension PostTableViewCell: PostDetailsSceneViewDelegateForStory {
-    
     func updateLikeButtonUI(isLiked: Bool) {
         DispatchQueue.main.async {
             let imageName = isLiked ? "heart.fill" : "heart"

@@ -2,7 +2,6 @@
 import UIKit
 
 final class LeaderboardPodiumItemStackView: UIStackView {
-    
     // MARK: - Properties
     private let crownImageView = UIImageView()
     private let placeLabel = UILabel()
@@ -12,15 +11,14 @@ final class LeaderboardPodiumItemStackView: UIStackView {
     private let booksReadCountLabel = UILabel()
     private let bookIconImageView = UIImageView()
     private let shadowContainer = UIView()
-
-    // MARK: - Init
     
+    // MARK: - Init
     init(place: Int, userImage: UIImage, imageSize: CGFloat, username: String, booksReadCount: Int, shadowColor: UIColor) {
         super.init(frame: .zero)
         addSubviews(place: place)
         setupUI(place: place, userImage: userImage, imageSize: imageSize, username: username, booksReadCount: booksReadCount, shadowColor: shadowColor)
         addShadowToUserImageView(imageView: userImageView, shadowColor: shadowColor)
-
+        
         self.axis = .vertical
         self.alignment = .center
         self.spacing = 8
@@ -31,7 +29,6 @@ final class LeaderboardPodiumItemStackView: UIStackView {
     }
     
     // MARK: - Setup Subviews, Constraints, UI
-    
     private func addSubviews(place: Int) {
         if place == 1 {
             addArrangedSubview(crownImageView)
@@ -48,13 +45,12 @@ final class LeaderboardPodiumItemStackView: UIStackView {
     }
     
     func setupUI(place: Int, userImage: UIImage, imageSize: CGFloat, username: String, booksReadCount: Int, shadowColor: UIColor = .clear) {
-        
         booksReadCountStackView.axis = .horizontal
         booksReadCountStackView.spacing = 8
         
         setupIconUI(imageView: crownImageView,
                     image: UIImage(systemName: "crown.fill"),
-                    size: 50, 
+                    size: 50,
                     color: .customGoldColor)
         
         setupLabelUI(
@@ -88,11 +84,7 @@ final class LeaderboardPodiumItemStackView: UIStackView {
             color: .white)
     }
     
-    // MARK: - Constraints
-    
-    
     // MARK: - UI
-    
     private func setupLabelUI(label: UILabel, text: String, textColor: UIColor, font: UIFont, backgroundColor: UIColor? = .clear) {
         label.text = text
         label.textColor = textColor
@@ -128,7 +120,6 @@ final class LeaderboardPodiumItemStackView: UIStackView {
     }
     
     // MARK: - Methods
-    
     func updateUserImage(image: UIImage?) {
         DispatchQueue.main.async {
             self.userImageView.image = image

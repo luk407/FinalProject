@@ -2,25 +2,20 @@
 import Foundation
 
 final class StoryPostViewModel: ObservableObject {
-    
     // MARK: - Properties
-    
     @Published var headerText: String = ""
     @Published var bodyText: String = ""
     @Published var isSpoilersAllowed: Bool = false
     @Published var isAddPostSheetPresented: Bool = false
     @Published var selectedQuotes: [Quote] = []
-    
     var userInfo: UserInfo
     
     // MARK: - Init
-    
     init(userInfo: UserInfo) {
         self.userInfo = userInfo
     }
     
     // MARK: - Methods
-    
     func addQuote(_ quote: Quote) {
         selectedQuotes.append(quote)
     }
@@ -42,7 +37,7 @@ final class StoryPostViewModel: ObservableObject {
         addPostToFirebase(post: newPost)
         
         addQuotesToFirebase(quotes: selectedQuotes)
-
+        
         updateUserDataOnFirebase(postID: newPost.id)
     }
     
