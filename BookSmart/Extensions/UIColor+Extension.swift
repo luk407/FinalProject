@@ -12,6 +12,6 @@ extension UIColor {
     static let customSilverColor = UIColor(named: "CustomSilverColor")!
     static let customGoldColor = UIColor(named: "CustomGoldColor")!
     static let customDiamondColor = UIColor(named: "CustomDiamondColor")!
-    static let customDarkGreenColor = UIColor(red: 0/255, green: 102/255, blue: 78/255, alpha: 1)
-    static let customDarkRedColor = UIColor(red: 102/255, green: 0/255, blue: 3/255, alpha: 1)
+    static let customDarkGreenColor = UIColor(named: "CustomGreenButtonColor")!
+    static let customDarkRedColor = UIColor(named: "CustomRedButtonColor")!
 }

@@ -146,7 +146,7 @@ struct ProfileSceneView: View {
         .padding()
         .background(
             RoundedRectangle(cornerRadius: 8)
-                .foregroundStyle(Color(uiColor: .customAccentColor.withAlphaComponent(0.7)))
+                .foregroundStyle(Color(uiColor: .customAccentColor.withAlphaComponent(0.6)))
                 .padding(.vertical, 10)
         )
     }
@@ -172,7 +172,7 @@ struct ProfileSceneView: View {
             UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.customAccentColor], for: .normal)
         }
         .padding()
-        .foregroundColor(.white)
+        .foregroundColor(Color(uiColor: .customAccentColor))
         .tint(Color(uiColor: .customAccentColor))
     }
     
@@ -197,9 +197,8 @@ struct ProfileSceneView: View {
                         postListItem(post)
                     }
                     .listRowBackground(
-                        RoundedRectangle(cornerRadius: 8)
-                            .foregroundStyle(Color(uiColor: .customAccentColor.withAlphaComponent(0.7)))
-                            .padding(.vertical, 10)
+                        Rectangle()
+                            .foregroundStyle(Color(uiColor: .customAccentColor.withAlphaComponent(0.6)))
                     )
                 }
                     .scrollContentBackground(.hidden)
@@ -228,14 +227,15 @@ struct ProfileSceneView: View {
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
             if profileSceneViewModel.isOwnProfile {
-                Button {
+                Button(role: .destructive) {
                     profileSceneViewModel.deletePost(post)
                 } label: {
-                    Text("Delete")
+                    deleteSwipeLabel
                 }
-                .tint(.clear)
+                .tint(.customRedButton)
             }
         }
+        
     }
     
     private var commentsList: some View {
@@ -248,9 +248,8 @@ struct ProfileSceneView: View {
                         commentsListItem(comment)
                     }
                     .listRowBackground(
-                        RoundedRectangle(cornerRadius: 8)
-                            .foregroundStyle(Color(uiColor: .customAccentColor.withAlphaComponent(0.7)))
-                            .padding(.vertical, 10)
+                        Rectangle()
+                            .foregroundStyle(Color(uiColor: .customAccentColor.withAlphaComponent(0.6)))
                     )
                 }
                     .scrollContentBackground(.hidden)
@@ -281,12 +280,12 @@ struct ProfileSceneView: View {
                 }
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                         if profileSceneViewModel.isOwnProfile {
-                            Button {
+                            Button(role: .destructive) {
                                 profileSceneViewModel.deleteComment(comment, for: post)
                             } label: {
-                                Text("Delete")
+                                deleteSwipeLabel
                             }
-                            .tint(.clear)
+                            .tint(.customRedButton)
                         }
                     })
         } else {
@@ -304,9 +303,8 @@ struct ProfileSceneView: View {
                         connectionListItem(connection)
                     }
                     .listRowBackground(
-                        RoundedRectangle(cornerRadius: 8)
-                            .foregroundStyle(Color(uiColor: .customAccentColor.withAlphaComponent(0.7)))
-                            .padding(.vertical, 10)
+                        Rectangle()
+                            .foregroundStyle(Color(uiColor: .customAccentColor.withAlphaComponent(0.6)))
                     )
                 }
                     .scrollContentBackground(.hidden)
@@ -335,5 +333,9 @@ struct ProfileSceneView: View {
             }
             .padding(.vertical, 10)
         }
+    }
+    
+    private var deleteSwipeLabel: some View {
+        Label("Delete", systemImage: "trash.fill").foregroundStyle(Color(uiColor: .customBackgroundColor))
     }
 }
