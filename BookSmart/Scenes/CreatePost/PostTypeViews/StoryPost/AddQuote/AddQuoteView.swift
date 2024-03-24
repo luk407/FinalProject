@@ -38,7 +38,7 @@ struct AddQuoteView: View {
         List {
             ForEach(viewModel.searchResults, id: \.self) { result in
                 Text(result.text)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Color(uiColor: .customAccentColor))
                     .listRowBackground(Color(uiColor: .customBackgroundColor))
                     .onTapGesture {
                         viewModel.selectedQuote = result
