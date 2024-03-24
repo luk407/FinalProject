@@ -140,7 +140,7 @@ final class LeaderboardTableViewCell: UITableViewCell {
     
     private func setupPlaceLabelUI() {
         placeLabel.font = .systemFont(ofSize: 20)
-        placeLabel.textColor = .white
+        placeLabel.textColor = .customAccentColor
     }
     
     private func setupCellStackViewUI() {
@@ -166,16 +166,16 @@ final class LeaderboardTableViewCell: UITableViewCell {
     
     private func setupUsernameLabelUI() {
         usernameLabel.font = .systemFont(ofSize: 14)
-        usernameLabel.textColor = .white
+        usernameLabel.textColor = .customAccentColor
     }
     
     private func setupBookIconImageViewUI() {
         bookIconImageView.image = UIImage(systemName: "book.circle")
-        bookIconImageView.tintColor = .white
+        bookIconImageView.tintColor = .customAccentColor
     }
     
     private func setupBooksReadCountLabelUI() {
         booksReadCountLabel.font = .systemFont(ofSize: 14)
-        booksReadCountLabel.textColor = .white
+        booksReadCountLabel.textColor = .customAccentColor
     }
 }

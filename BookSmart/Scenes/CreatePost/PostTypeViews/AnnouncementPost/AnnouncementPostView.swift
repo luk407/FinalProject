@@ -44,7 +44,7 @@ struct AnnouncementPostView: View {
                 List {
                     ForEach(viewModel.booksArray, id: \.self) { result in
                         Text(result.title)
-                            .foregroundStyle(.white)
+                            .foregroundStyle(Color(uiColor: .customAccentColor))
                             .listRowBackground(Color(uiColor: .customBackgroundColor))
                             .onTapGesture {
                                 viewModel.selectedBook = result
@@ -64,18 +64,18 @@ struct AnnouncementPostView: View {
                 EmptyView()
             case .startedBook:
                 Text(viewModel.headerTextForStart)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Color(uiColor: .customAccentColor))
                     .font(.system(size: 20, weight: .bold))
                     .multilineTextAlignment(.center)
             case .finishedBook:
                 Text(viewModel.headerTextForFinish)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Color(uiColor: .customAccentColor))
                     .font(.system(size: 20, weight: .bold))
                     .multilineTextAlignment(.center)
             }
             
             Text("The book is written by \(viewModel.formattedAuthorNames)")
-                .foregroundStyle(.white)
+                .foregroundStyle(Color(uiColor: .customAccentColor))
                 .font(.system(size: 14))
                 .multilineTextAlignment(.center)
         }
@@ -84,7 +84,7 @@ struct AnnouncementPostView: View {
     private var spoilersToggle: some View {
         Toggle("Allow Spoilers", isOn: $viewModel.isSpoilersAllowed)
             .padding()
-            .foregroundColor(.white)
+            .foregroundColor(Color(uiColor: .customAccentColor))
             .tint(Color(uiColor: .customAccentColor))
     }
     
@@ -96,11 +96,11 @@ struct AnnouncementPostView: View {
         .pickerStyle(SegmentedPickerStyle())
         .onAppear {
             UISegmentedControl.appearance().selectedSegmentTintColor = .customAccentColor
-            UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.black], for: .selected)
-            UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.white], for: .normal)
+            UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.customBackgroundColor], for: .selected)
+            UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.customAccentColor], for: .normal)
         }
         .padding()
-        .foregroundColor(.white)
+        .foregroundColor(Color(uiColor: .customAccentColor))
         .tint(Color(uiColor: .customAccentColor))
     }
     
@@ -113,7 +113,7 @@ struct AnnouncementPostView: View {
                 .frame(height: 50)
                 .overlay(content: {
                     Text("Add Post")
-                        .foregroundStyle(.black)
+                        .foregroundStyle(Color(uiColor: .customBackgroundColor))
                 })
         }
     }

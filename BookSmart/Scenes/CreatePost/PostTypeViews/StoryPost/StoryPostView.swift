@@ -34,7 +34,7 @@ struct StoryPostView: View {
     
     // MARK: - Views
     private var headerTextField: some View {
-        TextField("", text: $viewModel.headerText, prompt: Text("Post Header...").foregroundColor(.black), axis: .vertical)
+        TextField("", text: $viewModel.headerText, prompt: Text("Post Header...").foregroundColor(Color(uiColor: .customBackgroundColor)), axis: .vertical)
             .autocorrectionDisabled()
             .textFieldStyle(.plain)
             .lineLimit(1)
@@ -43,12 +43,12 @@ struct StoryPostView: View {
                 RoundedRectangle(cornerRadius: 8)
                     .fill(Color(uiColor: .customAccentColor.withAlphaComponent(0.5)))
             )
-            .foregroundColor(.black)
+            .foregroundColor(Color(uiColor: .customBackgroundColor))
             .padding(EdgeInsets(top: 20, leading: 0, bottom: 20, trailing: 0))
     }
     
     private var bodyTextField: some View {
-        TextField("", text: $viewModel.bodyText, prompt: Text("Post Body...").foregroundColor(.black), axis: .vertical)
+        TextField("", text: $viewModel.bodyText, prompt: Text("Post Body...").foregroundColor(Color(uiColor: .customBackgroundColor)), axis: .vertical)
             .autocorrectionDisabled()
             .frame(height: 200, alignment: .topLeading)
             .textFieldStyle(.plain)
@@ -57,7 +57,7 @@ struct StoryPostView: View {
                 RoundedRectangle(cornerRadius: 8)
                     .fill(Color(uiColor: .customAccentColor.withAlphaComponent(0.5)))
             )
-            .foregroundColor(.black)
+            .foregroundColor(Color(uiColor: .customBackgroundColor))
             .onChange(of: selectedQuote) { newQuote in
                 if let quote = newQuote {
                     viewModel.bodyText += "\(quote.text) - \(quote.author)."
@@ -70,7 +70,7 @@ struct StoryPostView: View {
     private var spoilersToggle: some View {
         Toggle("Allow Spoilers", isOn: $viewModel.isSpoilersAllowed)
             .padding()
-            .foregroundColor(.white)
+            .foregroundColor(Color(uiColor: .customAccentColor))
             .tint(Color(uiColor: .customAccentColor))
     }
     
@@ -91,7 +91,7 @@ struct StoryPostView: View {
                 .frame(height: 50)
                 .overlay(content: {
                     Text("Add Post")
-                        .foregroundStyle(.black)
+                        .foregroundStyle(Color(uiColor: .customBackgroundColor))
                 })
         }
     }

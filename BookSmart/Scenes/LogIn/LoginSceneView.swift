@@ -191,10 +191,11 @@ final class LoginSceneView: UIViewController {
         emailTextField.autocapitalizationType = .none
         emailTextField.autocorrectionType = .no
         emailTextField.font = .systemFont(ofSize: 14)
-        emailTextField.textColor = .black
+        emailTextField.textColor = .customBackgroundColor
+        emailTextField.tintColor = .customAccentColor
         emailTextField.borderStyle = .roundedRect
         emailTextField.backgroundColor = .customAccentColor.withAlphaComponent(0.5)
-        emailTextField.attributedPlaceholder = NSAttributedString(string: "Email...", attributes: [NSAttributedString.Key.foregroundColor: UIColor.black])
+        emailTextField.attributedPlaceholder = NSAttributedString(string: "Email...", attributes: [NSAttributedString.Key.foregroundColor: UIColor.customBackgroundColor])
     }
     
     private func setupPasswordStackViewUI() {
@@ -214,10 +215,11 @@ final class LoginSceneView: UIViewController {
         passwordTextField.autocapitalizationType = .none
         passwordTextField.isSecureTextEntry = true
         passwordTextField.font = .systemFont(ofSize: 14)
-        passwordTextField.textColor = .black
+        passwordTextField.textColor = .customBackgroundColor
+        passwordTextField.tintColor = .customAccentColor
         passwordTextField.borderStyle = .roundedRect
         passwordTextField.backgroundColor = .customAccentColor.withAlphaComponent(0.5)
-        passwordTextField.attributedPlaceholder = NSAttributedString(string: "Password...", attributes: [NSAttributedString.Key.foregroundColor: UIColor.black])
+        passwordTextField.attributedPlaceholder = NSAttributedString(string: "Password...", attributes: [NSAttributedString.Key.foregroundColor: UIColor.customBackgroundColor])
     }
     
     private func setupDontHaveAccountStackViewUI() {
@@ -230,19 +232,19 @@ final class LoginSceneView: UIViewController {
     private func setupDontHaveAccountLabelUI() {
         dontHaveAccountLabel.text = "Don't have an account?"
         dontHaveAccountLabel.font = .systemFont(ofSize: 20)
-        dontHaveAccountLabel.textColor = .black
+        dontHaveAccountLabel.textColor = .customBackgroundColor
     }
     
     private func setupSignUpButtonUI() {
         signUpButton.setTitle("Sign Up", for: .normal)
         signUpButton.titleLabel?.font = .systemFont(ofSize: 20)
-        signUpButton.setTitleColor(.blue, for: .normal)
+        signUpButton.setTitleColor(.customIsMetColor, for: .normal)
         signUpButton.addTarget(self, action: #selector(signupButtonPressed), for: .touchUpInside)
     }
     
     private func setupLoginButtonUI() {
         loginButton.setTitle("Log In", for: .normal)
-        loginButton.setTitleColor(.black, for: .normal)
+        loginButton.setTitleColor(.customBackgroundColor, for: .normal)
         loginButton.backgroundColor = .customAccentColor
         loginButton.layer.cornerRadius = 8
         loginButton.addTarget(self, action: #selector(loginButtonPressed), for: .touchUpInside)
@@ -254,7 +256,19 @@ final class LoginSceneView: UIViewController {
     }
     
     private func setupBookAnimationView() {
-        animationView = .init(name: "Animation - 1707736393008")
+        if let index = mainStackView.arrangedSubviews.firstIndex(where: { $0 === animationView }) {
+            mainStackView.removeArrangedSubview(animationView)
+            animationView.removeFromSuperview()
+        }
+        
+        var animationName: String
+        if traitCollection.userInterfaceStyle == .dark {
+            animationName = "Animation-Book-Dark"
+        } else {
+            animationName = "Animation-Book-Light"
+        }
+        
+        animationView = .init(name: animationName)
         animationView.contentMode = .scaleAspectFill
         animationView.loopMode = .autoReverse
         animationView.animationSpeed = 1
@@ -276,6 +290,14 @@ final class LoginSceneView: UIViewController {
         ])
     }
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            setupBookAnimationView()
+        }
+    }
+
     // MARK: - Button Methods
     @objc private func signupButtonPressed() {
         MethodsManager.shared.fadeAnimation(elements: signUpButton) {

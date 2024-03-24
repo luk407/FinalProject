@@ -115,8 +115,8 @@ final class PostDetailsSceneView: UIViewController {
         typeCommentTextView.font = .systemFont(ofSize: 16)
         typeCommentTextView.backgroundColor = .customAccentColor.withAlphaComponent(0.5)
         typeCommentTextView.layer.cornerRadius = 8
-        typeCommentTextView.tintColor = .black
-        typeCommentTextView.textColor = .black
+        typeCommentTextView.tintColor = .customBackgroundColor
+        typeCommentTextView.textColor = .customBackgroundColor
     }
     
     private func setupSubmitCommentButtonUI() {

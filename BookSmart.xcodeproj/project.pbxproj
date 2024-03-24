@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		50341BD953DEE2B08274C776 /* Pods_BookSmart.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12D6CD48DC41620955E6C180 /* Pods_BookSmart.framework */; };
 		A106948A2B56EC73009E5843 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10694892B56EC73009E5843 /* AppDelegate.swift */; };
 		A106948C2B56EC73009E5843 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A106948B2B56EC73009E5843 /* SceneDelegate.swift */; };
 		A10694932B56EC75009E5843 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A10694922B56EC75009E5843 /* Assets.xcassets */; };
@@ -58,18 +57,18 @@
 		A13726172B681B8000F1EA6E /* LeaderboardPodiumItemStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13726162B681B8000F1EA6E /* LeaderboardPodiumItemStackView.swift */; };
 		A137261A2B6821C200F1EA6E /* LeaderboardTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13726192B6821C200F1EA6E /* LeaderboardTableViewCell.swift */; };
 		A137261D2B6980E900F1EA6E /* AnnouncementsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A137261C2B6980E900F1EA6E /* AnnouncementsTableViewCell.swift */; };
+		A166D31C2BAEE6A50016839D /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = A166D31B2BAEE6A50016839D /* Lottie */; };
+		A166D31E2BB017D00016839D /* Animation-Book-Light.json in Resources */ = {isa = PBXBuildFile; fileRef = A166D31D2BB017D00016839D /* Animation-Book-Light.json */; };
 		A193933F2B6B81620077D7EF /* AnnouncementTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A193933E2B6B81620077D7EF /* AnnouncementTableViewCell.swift */; };
 		A19393462B6FA7860077D7EF /* OnboardingSceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A19393452B6FA7860077D7EF /* OnboardingSceneView.swift */; };
 		A19393482B6FA99B0077D7EF /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A19393472B6FA99B0077D7EF /* OnboardingViewController.swift */; };
 		A193934B2B72831E0077D7EF /* PostDetailsSceneViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A193934A2B72831D0077D7EF /* PostDetailsSceneViewRepresentable.swift */; };
 		A193934D2B72A88F0077D7EF /* FirebaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A193934C2B72A88F0077D7EF /* FirebaseManager.swift */; };
 		A193934F2B72C3A50077D7EF /* MethodsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A193934E2B72C3A50077D7EF /* MethodsManager.swift */; };
-		A19393512B7A35C20077D7EF /* Animation - 1707736393008.json in Resources */ = {isa = PBXBuildFile; fileRef = A19393502B7A35C10077D7EF /* Animation - 1707736393008.json */; };
+		A19393512B7A35C20077D7EF /* Animation-Book-Dark.json in Resources */ = {isa = PBXBuildFile; fileRef = A19393502B7A35C10077D7EF /* Animation-Book-Dark.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		12D6CD48DC41620955E6C180 /* Pods_BookSmart.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BookSmart.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		274334B987A9B723D85284C0 /* Pods-BookSmart.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookSmart.release.xcconfig"; path = "Target Support Files/Pods-BookSmart/Pods-BookSmart.release.xcconfig"; sourceTree = "<group>"; };
 		A10694862B56EC73009E5843 /* BookSmart.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BookSmart.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A10694892B56EC73009E5843 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A106948B2B56EC73009E5843 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -118,14 +117,14 @@
 		A13726162B681B8000F1EA6E /* LeaderboardPodiumItemStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardPodiumItemStackView.swift; sourceTree = "<group>"; };
 		A13726192B6821C200F1EA6E /* LeaderboardTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardTableViewCell.swift; sourceTree = "<group>"; };
 		A137261C2B6980E900F1EA6E /* AnnouncementsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementsTableViewCell.swift; sourceTree = "<group>"; };
+		A166D31D2BB017D00016839D /* Animation-Book-Light.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "Animation-Book-Light.json"; sourceTree = "<group>"; };
 		A193933E2B6B81620077D7EF /* AnnouncementTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementTableViewCell.swift; sourceTree = "<group>"; };
 		A19393452B6FA7860077D7EF /* OnboardingSceneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingSceneView.swift; sourceTree = "<group>"; };
 		A19393472B6FA99B0077D7EF /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		A193934A2B72831D0077D7EF /* PostDetailsSceneViewRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailsSceneViewRepresentable.swift; sourceTree = "<group>"; };
 		A193934C2B72A88F0077D7EF /* FirebaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManager.swift; sourceTree = "<group>"; };
 		A193934E2B72C3A50077D7EF /* MethodsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MethodsManager.swift; sourceTree = "<group>"; };
-		A19393502B7A35C10077D7EF /* Animation - 1707736393008.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "Animation - 1707736393008.json"; sourceTree = "<group>"; };
-		B566704DF59F45D532D95469 /* Pods-BookSmart.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookSmart.debug.xcconfig"; path = "Target Support Files/Pods-BookSmart/Pods-BookSmart.debug.xcconfig"; sourceTree = "<group>"; };
+		A19393502B7A35C10077D7EF /* Animation-Book-Dark.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "Animation-Book-Dark.json"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,29 +136,18 @@
 				A137260F2B64FDA300F1EA6E /* FirebaseStorage in Frameworks */,
 				A10694E42B5718C5009E5843 /* FirebaseAuth in Frameworks */,
 				A10694F02B5718C5009E5843 /* FirebaseFirestore in Frameworks */,
-				50341BD953DEE2B08274C776 /* Pods_BookSmart.framework in Frameworks */,
+				A166D31C2BAEE6A50016839D /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		92D13D1D8E7358AC9D1978D4 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				B566704DF59F45D532D95469 /* Pods-BookSmart.debug.xcconfig */,
-				274334B987A9B723D85284C0 /* Pods-BookSmart.release.xcconfig */,
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
 		A106947D2B56EC73009E5843 = {
 			isa = PBXGroup;
 			children = (
 				A10694882B56EC73009E5843 /* BookSmart */,
 				A10694872B56EC73009E5843 /* Products */,
-				A137260D2B64FDA300F1EA6E /* Frameworks */,
-				92D13D1D8E7358AC9D1978D4 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -306,7 +294,8 @@
 		A10694CC2B56F622009E5843 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				A19393502B7A35C10077D7EF /* Animation - 1707736393008.json */,
+				A19393502B7A35C10077D7EF /* Animation-Book-Dark.json */,
+				A166D31D2BB017D00016839D /* Animation-Book-Light.json */,
 				A10694922B56EC75009E5843 /* Assets.xcassets */,
 				A10695122B57D9A4009E5843 /* GoogleService-Info.plist */,
 			);
@@ -399,14 +388,6 @@
 			path = PostTableViewCell;
 			sourceTree = "<group>";
 		};
-		A137260D2B64FDA300F1EA6E /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				12D6CD48DC41620955E6C180 /* Pods_BookSmart.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		A13726182B68219F00F1EA6E /* LeaderboardTableViewCell */ = {
 			isa = PBXGroup;
 			children = (
@@ -463,11 +444,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A106949A2B56EC75009E5843 /* Build configuration list for PBXNativeTarget "BookSmart" */;
 			buildPhases = (
-				F5455381813BBB6B6D9357E8 /* [CP] Check Pods Manifest.lock */,
 				A10694822B56EC73009E5843 /* Sources */,
 				A10694832B56EC73009E5843 /* Frameworks */,
 				A10694842B56EC73009E5843 /* Resources */,
-				1A5443A5FC789443F345E5B9 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -479,6 +458,7 @@
 				A10694E32B5718C5009E5843 /* FirebaseAuth */,
 				A10694EF2B5718C5009E5843 /* FirebaseFirestore */,
 				A137260E2B64FDA300F1EA6E /* FirebaseStorage */,
+				A166D31B2BAEE6A50016839D /* Lottie */,
 			);
 			productName = BookSmart;
 			productReference = A10694862B56EC73009E5843 /* BookSmart.app */;
@@ -511,6 +491,7 @@
 			packageReferences = (
 				A10694CF2B56FB66009E5843 /* XCRemoteSwiftPackageReference "GenericNetworkLayer" */,
 				A10694D62B5718C5009E5843 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				A166D31A2BAEE6A50016839D /* XCRemoteSwiftPackageReference "lottie-spm" */,
 			);
 			productRefGroup = A10694872B56EC73009E5843 /* Products */;
 			projectDirPath = "";
@@ -526,55 +507,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A19393512B7A35C20077D7EF /* Animation - 1707736393008.json in Resources */,
+				A19393512B7A35C20077D7EF /* Animation-Book-Dark.json in Resources */,
 				A10694932B56EC75009E5843 /* Assets.xcassets in Resources */,
 				A10695132B57D9A4009E5843 /* GoogleService-Info.plist in Resources */,
+				A166D31E2BB017D00016839D /* Animation-Book-Light.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		1A5443A5FC789443F345E5B9 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-BookSmart/Pods-BookSmart-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-BookSmart/Pods-BookSmart-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BookSmart/Pods-BookSmart-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		F5455381813BBB6B6D9357E8 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-BookSmart-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		A10694822B56EC73009E5843 /* Sources */ = {
@@ -758,7 +698,6 @@
 		};
 		A106949B2B56EC75009E5843 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B566704DF59F45D532D95469 /* Pods-BookSmart.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -789,7 +728,6 @@
 		};
 		A106949C2B56EC75009E5843 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 274334B987A9B723D85284C0 /* Pods-BookSmart.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -858,6 +796,14 @@
 				minimumVersion = 10.20.0;
 			};
 		};
+		A166D31A2BAEE6A50016839D /* XCRemoteSwiftPackageReference "lottie-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-spm.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.4.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -880,6 +826,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A10694D62B5718C5009E5843 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseStorage;
+		};
+		A166D31B2BAEE6A50016839D /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A166D31A2BAEE6A50016839D /* XCRemoteSwiftPackageReference "lottie-spm" */;
+			productName = Lottie;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

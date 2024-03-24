@@ -33,6 +33,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { _, _ in }
         
         UNUserNotificationCenter.current().delegate = self
+        
+        let domain = Bundle.main.bundleIdentifier!
+        UserDefaults.standard.removePersistentDomain(forName: domain)
+        UserDefaults.standard.synchronize()
+        print(Array(UserDefaults.standard.dictionaryRepresentation().keys).count)
 
         return true
     }

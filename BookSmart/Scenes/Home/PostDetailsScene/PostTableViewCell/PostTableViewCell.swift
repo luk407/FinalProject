@@ -200,7 +200,7 @@ final class PostTableViewCell: UITableViewCell {
     
     private func setupNameLabelUI() {
         nameLabel.font = .boldSystemFont(ofSize: 16)
-        nameLabel.textColor = .white
+        nameLabel.textColor = .customAccentColor
     }
     
     private func setupUsernameLabelUI() {
@@ -210,7 +210,7 @@ final class PostTableViewCell: UITableViewCell {
     
     private func setupTimeLabelUI() {
         timeLabel.font = .systemFont(ofSize: 14)
-        timeLabel.textColor = .white
+        timeLabel.textColor = .customAccentColor
     }
     
     private func setupPostContentStackViewUI() {
@@ -223,13 +223,13 @@ final class PostTableViewCell: UITableViewCell {
     
     private func setupHeaderLabelUI() {
         headerLabel.font = .boldSystemFont(ofSize: 16)
-        headerLabel.textColor = .white
+        headerLabel.textColor = .customAccentColor
         headerLabel.numberOfLines = 0
     }
     
     private func setupBodyTextViewUI() {
         bodyTextView.font = .systemFont(ofSize: 14)
-        bodyTextView.textColor = .white
+        bodyTextView.textColor = .customAccentColor
         bodyTextView.numberOfLines = 0
     }
     

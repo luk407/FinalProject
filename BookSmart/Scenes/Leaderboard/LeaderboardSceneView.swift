@@ -28,7 +28,7 @@ final class LeaderboardSceneView: UIViewController {
                                                                           imageSize: 70,
                                                                           username: "",
                                                                           booksReadCount: 0,
-                                                                          shadowColor: .clear)
+                                                                          shadowColor: .customBronzeColor)
     
     private let leaderboardTableView = UITableView(frame: .zero, style: .grouped)
     

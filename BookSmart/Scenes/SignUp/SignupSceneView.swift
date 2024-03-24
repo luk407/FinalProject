@@ -196,10 +196,11 @@ class SignupSceneView: UIViewController {
         usernameTextField.autocapitalizationType = .none
         usernameTextField.autocorrectionType = .no
         usernameTextField.font = .systemFont(ofSize: 14)
-        usernameTextField.textColor = .black
+        usernameTextField.textColor = .customBackgroundColor
+        usernameTextField.tintColor = .customAccentColor
         usernameTextField.borderStyle = .roundedRect
         usernameTextField.backgroundColor = .customAccentColor.withAlphaComponent(0.5)
-        usernameTextField.attributedPlaceholder = NSAttributedString(string: "Nickname...", attributes: [NSAttributedString.Key.foregroundColor: UIColor.black])
+        usernameTextField.attributedPlaceholder = NSAttributedString(string: "Nickname...", attributes: [NSAttributedString.Key.foregroundColor: UIColor.customBackgroundColor])
     }
     
     private func setupEmailStackViewUI() {
@@ -219,10 +220,11 @@ class SignupSceneView: UIViewController {
         emailTextField.autocapitalizationType = .none
         emailTextField.autocorrectionType = .no
         emailTextField.font = .systemFont(ofSize: 14)
-        emailTextField.textColor = .black
+        emailTextField.textColor = .customBackgroundColor
+        emailTextField.tintColor = .customAccentColor
         emailTextField.borderStyle = .roundedRect
         emailTextField.backgroundColor = .customAccentColor.withAlphaComponent(0.5)
-        emailTextField.attributedPlaceholder = NSAttributedString(string: "Email...", attributes: [NSAttributedString.Key.foregroundColor: UIColor.black])
+        emailTextField.attributedPlaceholder = NSAttributedString(string: "Email...", attributes: [NSAttributedString.Key.foregroundColor: UIColor.customBackgroundColor])
     }
     
     private func setupPasswordStackViewUI() {
@@ -242,16 +244,17 @@ class SignupSceneView: UIViewController {
         passwordTextField.isSecureTextEntry = true
         passwordTextField.autocapitalizationType = .none
         passwordTextField.font = .systemFont(ofSize: 14)
-        passwordTextField.textColor = .black
+        passwordTextField.textColor = .customBackgroundColor
+        passwordTextField.tintColor = .customAccentColor
         passwordTextField.borderStyle = .roundedRect
         passwordTextField.backgroundColor = .customAccentColor.withAlphaComponent(0.5)
-        passwordTextField.attributedPlaceholder = NSAttributedString(string: "Password...", attributes: [NSAttributedString.Key.foregroundColor: UIColor.black])
+        passwordTextField.attributedPlaceholder = NSAttributedString(string: "Password...", attributes: [NSAttributedString.Key.foregroundColor: UIColor.customBackgroundColor])
         passwordTextField.addTarget(self, action: #selector(SignupSceneView.textFieldDidChange(_:)), for: .editingChanged)
     }
     
     private func setupSignupButtonUI() {
         signupButton.setTitle("Sign Up", for: .normal)
-        signupButton.setTitleColor(.black, for: .normal)
+        signupButton.setTitleColor(.customBackgroundColor, for: .normal)
         signupButton.backgroundColor = .lightGray
         signupButton.layer.cornerRadius = 8
         signupButton.addTarget(self, action: #selector(signupButtonPressed), for: .touchUpInside)

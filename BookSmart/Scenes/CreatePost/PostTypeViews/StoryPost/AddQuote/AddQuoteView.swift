@@ -26,7 +26,9 @@ struct AddQuoteView: View {
             .background(Color(uiColor: .customBackgroundColor))
         }
         .searchable(text: $viewModel.searchText, prompt: "Search for a quote")
+        .tint(Color(uiColor: .customAccentColor))
         .textInputAutocapitalization(.never)
+        .autocorrectionDisabled()
         .foregroundStyle(Color(uiColor: .customAccentColor))
     }
     

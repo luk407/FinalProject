@@ -56,7 +56,7 @@ final class LeaderboardPodiumItemStackView: UIStackView {
         setupLabelUI(
             label: placeLabel,
             text: "\(place)",
-            textColor: .white,
+            textColor: .customAccentColor,
             font: UIFont.boldSystemFont(ofSize: 16),
             backgroundColor: .clear)
         
@@ -68,20 +68,20 @@ final class LeaderboardPodiumItemStackView: UIStackView {
         setupLabelUI(
             label: usernameLabel,
             text: "@\(username)",
-            textColor: .white,
+            textColor: .customAccentColor,
             font: UIFont.systemFont(ofSize: 13))
         
         setupLabelUI(
             label: booksReadCountLabel,
             text: "\(booksReadCount)",
-            textColor: .white,
+            textColor: .customAccentColor,
             font: UIFont.systemFont(ofSize: 12))
         
         setupIconUI(
             imageView: bookIconImageView,
             image: UIImage(systemName: "book.circle"),
             size: 20,
-            color: .white)
+            color: .customAccentColor)
     }
     
     // MARK: - UI

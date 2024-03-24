@@ -118,7 +118,7 @@ struct ProfileSceneView: View {
             TextField("", text: $profileSceneViewModel.fetchedOwnerDisplayName)
                 .autocorrectionDisabled()
                 .font(.system(size: 24).bold())
-                .foregroundStyle(.white)
+                .foregroundStyle(Color(uiColor: .customAccentColor))
                 .disabled(!profileSceneViewModel.isEditable)
             
             TextField("", text: $profileSceneViewModel.fetchedOwnerUsername)
@@ -134,13 +134,13 @@ struct ProfileSceneView: View {
         VStack(spacing: 8) {
             Text("Bio")
                 .font(.system(size: 16).bold())
-                .foregroundStyle(.black)
+                .foregroundStyle(Color(uiColor: .customBackgroundColor))
                 .frame(maxWidth: .infinity, alignment: .leading)
             
-            TextField("", text: $profileSceneViewModel.fetchedOwnerBio, prompt: Text("Nothing to see here...").foregroundColor(.black), axis: .vertical)
+            TextField("", text: $profileSceneViewModel.fetchedOwnerBio, prompt: Text("Nothing to see here...").foregroundColor(Color(uiColor: .customBackgroundColor)), axis: .vertical)
                 .autocorrectionDisabled()
                 .font(.system(size: 14))
-                .foregroundStyle(.black)
+                .foregroundStyle(Color(uiColor: .customBackgroundColor))
                 .disabled(!profileSceneViewModel.isEditable)
         }
         .padding()
@@ -168,8 +168,8 @@ struct ProfileSceneView: View {
         .pickerStyle(SegmentedPickerStyle())
         .onAppear {
             UISegmentedControl.appearance().selectedSegmentTintColor = .customAccentColor
-            UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.black], for: .selected)
-            UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.white], for: .normal)
+            UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.customBackgroundColor], for: .selected)
+            UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.customAccentColor], for: .normal)
         }
         .padding()
         .foregroundColor(.white)
@@ -213,14 +213,14 @@ struct ProfileSceneView: View {
             HStack(spacing: 8) {
                 Text(post.header)
                     .font(.system(size: 12))
-                    .foregroundStyle(.black)
+                    .foregroundStyle(Color(uiColor: .customBackgroundColor))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .lineLimit(5)
                 
                 VStack(spacing: 8) {
                     Text(MethodsManager.shared.timeAgoString(from: post.postingTime))
                         .font(.system(size: 10))
-                        .foregroundStyle(.black)
+                        .foregroundStyle(Color(uiColor: .customBackgroundColor))
                     Spacer()
                 }
             }
@@ -266,14 +266,14 @@ struct ProfileSceneView: View {
                     HStack(spacing: 8) {
                         Text(comment.body)
                             .font(.system(size: 12))
-                            .foregroundStyle(.black)
+                            .foregroundStyle(Color(uiColor: .customBackgroundColor))
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .lineLimit(5)
                         
                         VStack {
                             Text(MethodsManager.shared.timeAgoString(from: comment.commentTime))
                                 .font(.system(size: 10))
-                                .foregroundStyle(.black)
+                                .foregroundStyle(Color(uiColor: .customBackgroundColor))
                             Spacer()
                         }
                     }
@@ -326,11 +326,11 @@ struct ProfileSceneView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text(connection.displayName)
                         .font(.system(size: 16).bold())
-                        .foregroundStyle(.black)
+                        .foregroundStyle(Color(uiColor: .customBackgroundColor))
                     
                     Text("@\(connection.userName)")
                         .font(.system(size: 12))
-                        .foregroundStyle(.black.opacity(0.8))
+                        .foregroundStyle(Color(uiColor: .customBackgroundColor).opacity(0.8))
                 }
             }
             .padding(.vertical, 10)
