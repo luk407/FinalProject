@@ -77,6 +77,7 @@ class SignupSceneView: UIViewController {
         setupPasswordStackViewConstraints()
         setupPasswordTextFieldConstraints()
         setupSignupButtonConstraints()
+        setupPasswordStrengthChecklistViewConstraints()
     }
     
     private func setupUI() {
@@ -156,6 +157,13 @@ class SignupSceneView: UIViewController {
         NSLayoutConstraint.activate([
             signupButton.heightAnchor.constraint(equalToConstant: 50),
             signupButton.widthAnchor.constraint(equalToConstant: 200)
+        ])
+    }
+    
+    private func setupPasswordStrengthChecklistViewConstraints() {
+        NSLayoutConstraint.activate([
+            passwordStrengthChecklistView.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor, constant: 40),
+            passwordStrengthChecklistView.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor, constant: -40),
         ])
     }
     

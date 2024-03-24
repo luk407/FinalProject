@@ -5,6 +5,8 @@ final class ChecklistItemView: UIView {
     // MARK: - Properties
     private let mainStackView = UIStackView()
     
+    private let isMetIcon = UIImageView()
+    
     private let titleLabel = UILabel()
     
     // MARK: - Init
@@ -12,6 +14,7 @@ final class ChecklistItemView: UIView {
         super.init(frame: frame)
         setupSubviews()
         setupMainStackViewConstraints()
+        setupIsMetIconConstraints()
         setupMainStackViewUI()
         setupTitleLabelUI()
     }
@@ -23,6 +26,7 @@ final class ChecklistItemView: UIView {
     // MARK: - Methods
     private func setupSubviews() {
         addSubview(mainStackView)
+        mainStackView.addArrangedSubview(isMetIcon)
         mainStackView.addArrangedSubview(titleLabel)
     }
     
@@ -36,25 +40,35 @@ final class ChecklistItemView: UIView {
         ])
     }
     
+    private func setupIsMetIconConstraints() {
+        NSLayoutConstraint.activate([
+            isMetIcon.heightAnchor.constraint(equalToConstant: 12),
+            isMetIcon.widthAnchor.constraint(equalToConstant: 12),
+        ])
+    }
+    
     // MARK: - UI
     private func setupMainStackViewUI() {
         mainStackView.translatesAutoresizingMaskIntoConstraints = false
         mainStackView.axis = .horizontal
         mainStackView.spacing = 8
-        mainStackView.alignment = .leading
-        mainStackView.distribution = .fillProportionally
+        mainStackView.alignment = .center
+        mainStackView.distribution = .fill
     }
     
     private func setupTitleLabelUI() {
         titleLabel.font = .systemFont(ofSize: 12)
+        titleLabel.textColor = .customBackgroundColor
     }
     
     func update(title: String, isMet: Bool) {
         titleLabel.text = title
         if isMet {
-            titleLabel.textColor = .customIsMetColor
+            isMetIcon.image = UIImage(systemName: "circle.fill")
+            isMetIcon.tintColor = .customIsMetColor
         } else {
-            titleLabel.textColor = .customBackgroundColor
+            isMetIcon.image = UIImage(systemName: "circle")?.withTintColor(.customIsMetColor)
+            isMetIcon.tintColor = .customIsMetColor
         }
     }
 }

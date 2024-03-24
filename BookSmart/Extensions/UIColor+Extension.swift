@@ -7,7 +7,7 @@ extension UIColor {
     static let customLikeButtonColor = UIColor(named: "CustomLikeButtonColor")!
     static let customCommentButtonColor = UIColor(named: "CustomCommentButtonColor")!
     static let customShareButtonColor = UIColor(named: "CustomShareButtonColor")!
-    static let customIsMetColor = UIColor(red: 2/255, green: 113/255, blue: 72/113, alpha: 1)
+    static let customIsMetColor = UIColor(named: "CustomIsMetColor")!
     static let customBronzeColor = UIColor(named: "CustomBronzeColor")!
     static let customSilverColor = UIColor(named: "CustomSilverColor")!
     static let customGoldColor = UIColor(named: "CustomGoldColor")!
