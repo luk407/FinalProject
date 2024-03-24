@@ -54,7 +54,7 @@ final class ChecklistItemView: UIView {
         if isMet {
             titleLabel.textColor = .customIsMetColor
         } else {
-            titleLabel.textColor = .black
+            titleLabel.textColor = .customBackgroundColor
         }
     }
 }

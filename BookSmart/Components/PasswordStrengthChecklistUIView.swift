@@ -85,7 +85,7 @@ final class PasswordStrengthChecklistView: UIView {
     }
     
     private func setupRequiredLabelUI() {
-        requiredLabel.textColor = .black
+        requiredLabel.textColor = .customBackgroundColor
         requiredLabel.text = "Your password should have:"
         requiredLabel.font = .systemFont(ofSize: 15)
     }

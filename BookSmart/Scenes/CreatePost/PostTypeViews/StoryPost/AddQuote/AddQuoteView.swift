@@ -26,7 +26,9 @@ struct AddQuoteView: View {
             .background(Color(uiColor: .customBackgroundColor))
         }
         .searchable(text: $viewModel.searchText, prompt: "Search for a quote")
+        .tint(Color(uiColor: .customAccentColor))
         .textInputAutocapitalization(.never)
+        .autocorrectionDisabled()
         .foregroundStyle(Color(uiColor: .customAccentColor))
     }
     
@@ -36,7 +38,7 @@ struct AddQuoteView: View {
         List {
             ForEach(viewModel.searchResults, id: \.self) { result in
                 Text(result.text)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Color(uiColor: .customAccentColor))
                     .listRowBackground(Color(uiColor: .customBackgroundColor))
                     .onTapGesture {
                         viewModel.selectedQuote = result

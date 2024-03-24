@@ -197,12 +197,12 @@ final class CommentTableViewCell: UITableViewCell {
     
     private func setupNameLabelUI() {
         nameLabel.font = .boldSystemFont(ofSize: 16)
-        nameLabel.textColor = .white
+        nameLabel.textColor = .customAccentColor
     }
     
     private func setupTimeLabelUI() {
         timeLabel.font = .systemFont(ofSize: 14)
-        timeLabel.textColor = .white
+        timeLabel.textColor = .customAccentColor
     }
     
     private func setupCommentContentStackViewUI() {
@@ -215,7 +215,7 @@ final class CommentTableViewCell: UITableViewCell {
     
     private func setupBodyTextViewUI() {
         bodyTextView.font = .systemFont(ofSize: 14)
-        bodyTextView.textColor = .white
+        bodyTextView.textColor = .customAccentColor
         bodyTextView.numberOfLines = 0
     }
     

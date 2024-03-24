@@ -32,7 +32,7 @@ final class AddQuoteViewModel: ObservableObject {
     // MARK: - Methods
     
     func fetchQuotesData() {
-        guard let url = URL(string: "https://mocki.io/v1/8a037bf0-1240-4620-97ad-ebd8abded49d#") else { return }
+        guard let url = URL(string: "https://mocki.io/v1/76321d05-316a-49c0-b508-bdef2f1b9c3f") else { return }
         
         NetworkManager().request(with: url) { [ weak self ] (result: Result<[Quote], Error>) in
             switch result {

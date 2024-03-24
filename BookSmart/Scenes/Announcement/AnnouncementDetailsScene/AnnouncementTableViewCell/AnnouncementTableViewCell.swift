@@ -291,7 +291,7 @@ final class AnnouncementTableViewCell: UITableViewCell {
     
     private func setupNameLabelUI() {
         nameLabel.font = .boldSystemFont(ofSize: 16)
-        nameLabel.textColor = .white
+        nameLabel.textColor = .customAccentColor
     }
     
     private func setupUsernameLabelUI() {
@@ -310,13 +310,13 @@ final class AnnouncementTableViewCell: UITableViewCell {
         
         spoilerLabel.font = .boldSystemFont(ofSize: 8)
         spoilerLabel.numberOfLines = 2
-        spoilerLabel.textColor = .black
+        spoilerLabel.textColor = .customBackgroundColor
         spoilerLabel.textAlignment = NSTextAlignment(.center)
     }
     
     private func setupTimeLabelUI() {
         timeLabel.font = .systemFont(ofSize: 14)
-        timeLabel.textColor = .white
+        timeLabel.textColor = .customAccentColor
         timeLabel.textAlignment = NSTextAlignment(.center)
     }
     
@@ -329,14 +329,14 @@ final class AnnouncementTableViewCell: UITableViewCell {
     
     private func setupHeaderLabelUI() {
         headerLabel.font = .boldSystemFont(ofSize: 16)
-        headerLabel.textColor = .white
+        headerLabel.textColor = .customAccentColor
         headerLabel.numberOfLines = 0
         headerLabel.textAlignment = NSTextAlignment(.center)
     }
     
     private func setupBodyLabelUI() {
         bodyLabel.font = .systemFont(ofSize: 14)
-        bodyLabel.textColor = .white
+        bodyLabel.textColor = .customAccentColor
         bodyLabel.numberOfLines = 0
         bodyLabel.lineBreakMode = .byWordWrapping
         bodyLabel.textAlignment = NSTextAlignment(.center)
