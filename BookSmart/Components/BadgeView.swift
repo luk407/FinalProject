@@ -36,7 +36,7 @@ struct BadgeView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 15, height: 15)
-                        .foregroundStyle(Color(uiColor: .black))
+                        .foregroundStyle(Color(uiColor: .customBackgroundColor))
                 }
         }
     }

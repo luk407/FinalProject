@@ -37,7 +37,7 @@ final class OnboardingSceneView: UIPageViewController {
         
         let firstPage = OnboardingViewController(imageName: "logo",
                                                  titleText: "Welcome",
-                                                 subtitleText: "to BookSmart")
+                                                 subtitleText: "")
         let secondPage = OnboardingViewController(imageName: "connection",
                                                   titleText: "Connect",
                                                   subtitleText: "with people from around the world, who enjoy reading books.")

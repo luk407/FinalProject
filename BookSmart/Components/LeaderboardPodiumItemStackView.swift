@@ -119,6 +119,14 @@ final class LeaderboardPodiumItemStackView: UIStackView {
         imageView.layer.shadowRadius = 50
     }
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            userImageView.layer.borderColor = UIColor.customAccentColor.cgColor
+        }
+    }
+    
     // MARK: - Methods
     func updateUserImage(image: UIImage?) {
         DispatchQueue.main.async {

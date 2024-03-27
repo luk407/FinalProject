@@ -85,7 +85,6 @@ final class PostDetailsSceneViewModel {
     }
     
     func getAuthorInfo(with authorID: UserInfo.ID, completion: @escaping (UserInfo?) -> Void)  {
-        
         FirebaseManager.shared.getAuthorInfo(with: authorID) { authorInfo in
             completion(authorInfo)
         }

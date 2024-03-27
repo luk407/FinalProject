@@ -256,7 +256,7 @@ final class AnnouncementsTableViewCell: UITableViewCell {
     
     private func setupAnnouncementAuthorStackViewUI() {
         announcementAuthorStackView.axis = .horizontal
-        announcementAuthorStackView.spacing = 24
+        announcementAuthorStackView.spacing = 32
         announcementAuthorStackView.alignment = .top
         announcementAuthorStackView.distribution = .fillProportionally
     }
@@ -264,7 +264,7 @@ final class AnnouncementsTableViewCell: UITableViewCell {
     private func setupAuthorInfoViewUI() {
         authorInfoStackView.translatesAutoresizingMaskIntoConstraints = false
         authorInfoStackView.axis = .vertical
-        authorInfoStackView.spacing = 8
+        authorInfoStackView.spacing = 4
     }
     
     private func setupBackgroundImageViewUI() {
@@ -324,7 +324,7 @@ final class AnnouncementsTableViewCell: UITableViewCell {
     
     private func setupPostContentStackViewUI() {
         postContentStackView.axis = .vertical
-        postContentStackView.spacing = 16
+        postContentStackView.spacing = 8
         postContentStackView.alignment = .center
         postContentStackView.distribution = .fillProportionally
     }
@@ -411,6 +411,14 @@ final class AnnouncementsTableViewCell: UITableViewCell {
         
         stackView.addArrangedSubview(imageView)
         stackView.addArrangedSubview(label)
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            authorImageView.layer.borderColor = UIColor.customBackgroundColor.cgColor
+        }
     }
     
     // MARK: - Button Methods

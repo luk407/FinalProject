@@ -63,12 +63,13 @@ class SignupSceneView: UIViewController {
         inputInfoStackView.addArrangedSubview(passwordStackView)
         passwordStackView.addArrangedSubview(passwordLabel)
         passwordStackView.addArrangedSubview(passwordTextField)
-        mainStackView.addArrangedSubview(signupButton)
         mainStackView.addArrangedSubview(passwordStrengthChecklistView)
+        mainStackView.addArrangedSubview(signupButton)
     }
     
     private func setupConstraints() {
         setupMainStackViewConstraints()
+        setupLogoConstraints()
         setupInputInfoStackViewConstraints()
         setupNicknameStackViewConstraints()
         setupNicknameTextFieldConstraints()
@@ -100,23 +101,30 @@ class SignupSceneView: UIViewController {
     // MARK: - Constraints
     private func setupMainStackViewConstraints() {
         NSLayoutConstraint.activate([
-            mainStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
+            //mainStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
             mainStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
             mainStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
-            mainStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -50),
+            mainStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            //mainStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -50),
+        ])
+    }
+    
+    private func setupLogoConstraints() {
+        NSLayoutConstraint.activate([
+            logoImageView.widthAnchor.constraint(equalToConstant: 200)
         ])
     }
     
     private func setupInputInfoStackViewConstraints() {
         NSLayoutConstraint.activate([
             inputInfoStackView.widthAnchor.constraint(equalTo: mainStackView.widthAnchor),
-            inputInfoStackView.heightAnchor.constraint(equalToConstant: 300)
+            //inputInfoStackView.heightAnchor.constraint(equalToConstant: 300)
         ])
     }
     
     private func setupNicknameStackViewConstraints() {
         NSLayoutConstraint.activate([
-            usernameStackView.widthAnchor.constraint(equalToConstant: 300),
+            usernameStackView.widthAnchor.constraint(equalTo: inputInfoStackView.widthAnchor),
         ])
     }
     
@@ -129,7 +137,7 @@ class SignupSceneView: UIViewController {
     
     private func setupEmailStackViewConstraints() {
         NSLayoutConstraint.activate([
-            emailStackView.widthAnchor.constraint(equalToConstant: 300),
+            emailStackView.widthAnchor.constraint(equalTo: inputInfoStackView.widthAnchor),
         ])
     }
     
@@ -142,7 +150,7 @@ class SignupSceneView: UIViewController {
     
     private func setupPasswordStackViewConstraints() {
         NSLayoutConstraint.activate([
-            passwordStackView.widthAnchor.constraint(equalToConstant: 300),
+            passwordStackView.widthAnchor.constraint(equalTo: inputInfoStackView.widthAnchor),
         ])
     }
     
@@ -156,14 +164,13 @@ class SignupSceneView: UIViewController {
     private func setupSignupButtonConstraints() {
         NSLayoutConstraint.activate([
             signupButton.heightAnchor.constraint(equalToConstant: 50),
-            signupButton.widthAnchor.constraint(equalToConstant: 200)
+            signupButton.widthAnchor.constraint(equalTo: inputInfoStackView.widthAnchor)
         ])
     }
     
     private func setupPasswordStrengthChecklistViewConstraints() {
         NSLayoutConstraint.activate([
-            passwordStrengthChecklistView.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor, constant: 40),
-            passwordStrengthChecklistView.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor, constant: -40),
+            passwordStrengthChecklistView.widthAnchor.constraint(equalTo: inputInfoStackView.widthAnchor),
         ])
     }
     
@@ -172,7 +179,7 @@ class SignupSceneView: UIViewController {
         mainStackView.translatesAutoresizingMaskIntoConstraints = false
         mainStackView.axis = .vertical
         mainStackView.alignment = .center
-        mainStackView.spacing = 20
+        mainStackView.spacing = 16
         mainStackView.distribution = .fillProportionally
     }
     
@@ -184,13 +191,13 @@ class SignupSceneView: UIViewController {
     private func setupInputInfoStackViewUI() {
         inputInfoStackView.axis = .vertical
         inputInfoStackView.alignment = .center
-        inputInfoStackView.spacing = 10
+        inputInfoStackView.spacing = 16
         inputInfoStackView.distribution = .fillProportionally
     }
     private func setupNicknameStackViewUI() {
         usernameStackView.axis = .vertical
         usernameStackView.alignment = .leading
-        usernameStackView.spacing = 5
+        usernameStackView.spacing = 8
         usernameStackView.distribution = .fillProportionally
     }
     
@@ -204,17 +211,24 @@ class SignupSceneView: UIViewController {
         usernameTextField.autocapitalizationType = .none
         usernameTextField.autocorrectionType = .no
         usernameTextField.font = .systemFont(ofSize: 14)
-        usernameTextField.textColor = .customBackgroundColor
+        usernameTextField.textColor = .customAccentColor
         usernameTextField.tintColor = .customAccentColor
         usernameTextField.borderStyle = .roundedRect
-        usernameTextField.backgroundColor = .customAccentColor.withAlphaComponent(0.5)
-        usernameTextField.attributedPlaceholder = NSAttributedString(string: "Nickname...", attributes: [NSAttributedString.Key.foregroundColor: UIColor.customBackgroundColor])
+        usernameTextField.backgroundColor = .customBackgroundColor
+        usernameTextField.layer.borderColor = UIColor.customAccentColor.cgColor
+        usernameTextField.layer.borderWidth = 2
+        usernameTextField.layer.cornerRadius = 8
+        usernameTextField.attributedPlaceholder = NSAttributedString(string: "Nickname...", attributes: [NSAttributedString.Key.foregroundColor: UIColor.customAccentColor.withAlphaComponent(0.5)])
+        
+        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 12, height: usernameTextField.frame.height))
+        usernameTextField.leftView = paddingView
+        usernameTextField.leftViewMode = .always
     }
     
     private func setupEmailStackViewUI() {
         emailStackView.axis = .vertical
         emailStackView.alignment = .leading
-        emailStackView.spacing = 5
+        emailStackView.spacing = 8
         emailStackView.distribution = .fillProportionally
     }
     
@@ -228,17 +242,24 @@ class SignupSceneView: UIViewController {
         emailTextField.autocapitalizationType = .none
         emailTextField.autocorrectionType = .no
         emailTextField.font = .systemFont(ofSize: 14)
-        emailTextField.textColor = .customBackgroundColor
+        emailTextField.textColor = .customAccentColor
         emailTextField.tintColor = .customAccentColor
         emailTextField.borderStyle = .roundedRect
-        emailTextField.backgroundColor = .customAccentColor.withAlphaComponent(0.5)
-        emailTextField.attributedPlaceholder = NSAttributedString(string: "Email...", attributes: [NSAttributedString.Key.foregroundColor: UIColor.customBackgroundColor])
+        emailTextField.backgroundColor = .customBackgroundColor
+        emailTextField.layer.borderColor = UIColor.customAccentColor.cgColor
+        emailTextField.layer.borderWidth = 2
+        emailTextField.layer.cornerRadius = 8
+        emailTextField.attributedPlaceholder = NSAttributedString(string: "Email...", attributes: [NSAttributedString.Key.foregroundColor: UIColor.customAccentColor.withAlphaComponent(0.5)])
+        
+        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 12, height: emailTextField.frame.height))
+        emailTextField.leftView = paddingView
+        emailTextField.leftViewMode = .always
     }
     
     private func setupPasswordStackViewUI() {
         passwordStackView.axis = .vertical
         passwordStackView.alignment = .leading
-        passwordStackView.spacing = 5
+        passwordStackView.spacing = 8
         passwordStackView.distribution = .fillProportionally
     }
     
@@ -252,12 +273,19 @@ class SignupSceneView: UIViewController {
         passwordTextField.isSecureTextEntry = true
         passwordTextField.autocapitalizationType = .none
         passwordTextField.font = .systemFont(ofSize: 14)
-        passwordTextField.textColor = .customBackgroundColor
+        passwordTextField.textColor = .customAccentColor
         passwordTextField.tintColor = .customAccentColor
         passwordTextField.borderStyle = .roundedRect
-        passwordTextField.backgroundColor = .customAccentColor.withAlphaComponent(0.5)
-        passwordTextField.attributedPlaceholder = NSAttributedString(string: "Password...", attributes: [NSAttributedString.Key.foregroundColor: UIColor.customBackgroundColor])
+        passwordTextField.backgroundColor = .customBackgroundColor
+        passwordTextField.layer.borderColor = UIColor.customAccentColor.cgColor
+        passwordTextField.layer.borderWidth = 2
+        passwordTextField.layer.cornerRadius = 8
+        passwordTextField.attributedPlaceholder = NSAttributedString(string: "Password...", attributes: [NSAttributedString.Key.foregroundColor: UIColor.customAccentColor.withAlphaComponent(0.5)])
         passwordTextField.addTarget(self, action: #selector(SignupSceneView.textFieldDidChange(_:)), for: .editingChanged)
+        
+        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 12, height: passwordTextField.frame.height))
+        passwordTextField.leftView = paddingView
+        passwordTextField.leftViewMode = .always
     }
     
     private func setupSignupButtonUI() {
@@ -270,6 +298,16 @@ class SignupSceneView: UIViewController {
     
     private func setupEmptyAlertUI() {
         emptyAlert.addAction(UIAlertAction(title: "OK", style: .cancel))
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            usernameTextField.layer.borderColor = UIColor.customAccentColor.cgColor
+            emailTextField.layer.borderColor = UIColor.customAccentColor.cgColor
+            passwordTextField.layer.borderColor = UIColor.customAccentColor.cgColor
+        }
     }
     
     // MARK: - Button Methods

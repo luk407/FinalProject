@@ -216,7 +216,7 @@ final class PostsTableViewCell: UITableViewCell {
         authorInfoStackView.axis = .horizontal
         authorInfoStackView.distribution = .fillProportionally
         authorInfoStackView.alignment = .center
-        authorInfoStackView.spacing = 16
+        authorInfoStackView.spacing = 8
     }
     
     private func setupAuthorImageViewUI() {
@@ -236,7 +236,7 @@ final class PostsTableViewCell: UITableViewCell {
         namesStackView.axis = .vertical
         namesStackView.distribution = .fillProportionally
         namesStackView.alignment = .leading
-        namesStackView.spacing = 8
+        namesStackView.spacing = 4
     }
     
     private func setupNameLabelUI() {
@@ -272,7 +272,7 @@ final class PostsTableViewCell: UITableViewCell {
     
     private func setupPostContentStackViewUI() {
         postContentStackView.axis = .vertical
-        postContentStackView.spacing = 16
+        postContentStackView.spacing = 8
         postContentStackView.alignment = .leading
         postContentStackView.distribution = .fillProportionally
         postContentStackView.layoutIfNeeded()
@@ -357,6 +357,14 @@ final class PostsTableViewCell: UITableViewCell {
         
         stackView.addArrangedSubview(imageView)
         stackView.addArrangedSubview(label)
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            authorImageView.layer.borderColor = UIColor.customAccentColor.cgColor
+        }
     }
     
     // MARK: - Button Methods

@@ -179,13 +179,13 @@ final class AnnouncementTableViewCell: UITableViewCell {
     
     private func setupAuthorInfoViewConstraints() {
         NSLayoutConstraint.activate([
-            authorInfoStackView.heightAnchor.constraint(equalToConstant: 170)
+            authorInfoStackView.heightAnchor.constraint(greaterThanOrEqualToConstant: 200)
         ])
     }
     
     private func setupBackgroundImageViewConstraints() {
         NSLayoutConstraint.activate([
-            backgroundImageView.heightAnchor.constraint(equalToConstant: 100),
+            backgroundImageView.heightAnchor.constraint(equalToConstant: 130),
             backgroundImageView.widthAnchor.constraint(equalToConstant: 100),
         ])
     }
@@ -245,7 +245,7 @@ final class AnnouncementTableViewCell: UITableViewCell {
             backgroundColor: .customAccentColor.withAlphaComponent(0.1),
             radiusSize: 8,
             borderColor: .customAccentColor,
-            borderWidth: 1)
+            borderWidth: 0)
         mainStackView.isLayoutMarginsRelativeArrangement = true
         mainStackView.layoutMargins = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
     }
@@ -322,7 +322,7 @@ final class AnnouncementTableViewCell: UITableViewCell {
     
     private func setupPostContentStackViewUI() {
         postContentStackView.axis = .vertical
-        postContentStackView.spacing = 16
+        postContentStackView.spacing = 8
         postContentStackView.alignment = .center
         postContentStackView.distribution = .fillProportionally
     }
@@ -401,6 +401,14 @@ final class AnnouncementTableViewCell: UITableViewCell {
         
         stackView.addArrangedSubview(imageView)
         stackView.addArrangedSubview(label)
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            authorImageView.layer.borderColor = UIColor.customBackgroundColor.cgColor
+        }
     }
     
     // MARK: - Private Methods

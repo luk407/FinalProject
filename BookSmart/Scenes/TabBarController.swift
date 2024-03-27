@@ -62,7 +62,7 @@ final class TabBarController: UITabBarController {
         announcementsViewController.tabBarItem = UITabBarItem(title: "Announcements", image: UIImage(systemName: "megaphone.fill"), selectedImage: nil)
         announcementsViewController.tabBarItem.tag = 1
         
-        createPostViewController.tabBarItem = UITabBarItem(title: "Create Post", image: UIImage(systemName: "plus.circle"), selectedImage: nil)
+        createPostViewController.tabBarItem = UITabBarItem(title: "Create Post", image: UIImage(systemName: "plus.circle.fill"), selectedImage: nil)
         createPostViewController.tabBarItem.tag = 2
         
         leaderboardViewController.tabBarItem = UITabBarItem(title: "Leaderboard", image: UIImage(systemName: "flag.2.crossed.fill"), selectedImage: nil)
@@ -85,7 +85,9 @@ final class TabBarController: UITabBarController {
         searchBar.barTintColor = .customBackgroundColor
         searchBar.autocapitalizationType = .none
         searchBar.autocorrectionType = .no
-        searchBar.tintColor = .white
+        searchBar.tintColor = .customAccentColor
+        searchBar.backgroundColor = .customBackgroundColor
+        UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.customAccentColor]
         if let textFieldInsideSearchBar = searchBar.value(forKey: "searchField") as? UITextField {
             textFieldInsideSearchBar.textColor = .white
         }

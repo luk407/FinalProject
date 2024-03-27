@@ -164,7 +164,7 @@ final class PostTableViewCell: UITableViewCell {
         mainStackView.backgroundColor = .customBackgroundColor
         mainStackView.axis = .vertical
         mainStackView.spacing = 8
-        mainStackView.alignment = .leading
+        mainStackView.alignment = .center
         mainStackView.customize(
             backgroundColor: .customAccentColor.withAlphaComponent(0.1),
             radiusSize: 8,
@@ -195,7 +195,7 @@ final class PostTableViewCell: UITableViewCell {
     private func setupNamesStackViewUI() {
         namesStackView.axis = .vertical
         namesStackView.alignment = .leading
-        namesStackView.spacing = 8
+        namesStackView.spacing = 4
     }
     
     private func setupNameLabelUI() {
@@ -215,7 +215,7 @@ final class PostTableViewCell: UITableViewCell {
     
     private func setupPostContentStackViewUI() {
         postContentStackView.axis = .vertical
-        postContentStackView.spacing = 16
+        postContentStackView.spacing = 8
         postContentStackView.alignment = .leading
         postContentStackView.layoutIfNeeded()
         
@@ -292,6 +292,14 @@ final class PostTableViewCell: UITableViewCell {
         
         stackView.addArrangedSubview(imageView)
         stackView.addArrangedSubview(label)
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            authorImageView.layer.borderColor = UIColor.customAccentColor.cgColor
+        }
     }
     
     // MARK: - Button Methods

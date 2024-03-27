@@ -131,7 +131,7 @@ struct ProfileSceneView: View {
     }
     
     private var bioView: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: 4) {
             Text("Bio")
                 .font(.system(size: 16).bold())
                 .foregroundStyle(Color(uiColor: .customBackgroundColor))
@@ -168,10 +168,10 @@ struct ProfileSceneView: View {
         .pickerStyle(SegmentedPickerStyle())
         .onAppear {
             UISegmentedControl.appearance().selectedSegmentTintColor = .customAccentColor
-            UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.customBackgroundColor], for: .selected)
-            UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.customAccentColor], for: .normal)
+            UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.customBackgroundColor, .font: UIFont.systemFont(ofSize: 12)], for: .selected)
+            UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.customAccentColor, .font: UIFont.systemFont(ofSize: 12)], for: .normal)
         }
-        .padding()
+        //.padding()
         .foregroundColor(Color(uiColor: .customAccentColor))
         .tint(Color(uiColor: .customAccentColor))
     }
@@ -223,7 +223,7 @@ struct ProfileSceneView: View {
                     Spacer()
                 }
             }
-            .padding(.vertical, 10)
+            .padding(.vertical, 4)
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
             if profileSceneViewModel.isOwnProfile {
@@ -276,7 +276,7 @@ struct ProfileSceneView: View {
                             Spacer()
                         }
                     }
-                    .padding(.vertical, 10)
+                    //.padding(.vertical, 4)
                 }
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                         if profileSceneViewModel.isOwnProfile {
@@ -318,10 +318,10 @@ struct ProfileSceneView: View {
             HStack(spacing: 16) {
                 Image(uiImage: profileSceneViewModel.getImageFromCache(userIDString: connection.id.uuidString))
                     .resizable()
-                    .frame(width: 30, height: 30)
+                    .frame(width: 28, height: 28)
                     .clipShape(Circle())
                 
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: 4) {
                     Text(connection.displayName)
                         .font(.system(size: 16).bold())
                         .foregroundStyle(Color(uiColor: .customBackgroundColor))
@@ -331,7 +331,7 @@ struct ProfileSceneView: View {
                         .foregroundStyle(Color(uiColor: .customBackgroundColor).opacity(0.8))
                 }
             }
-            .padding(.vertical, 10)
+            .padding(.vertical, 4)
         }
     }
     

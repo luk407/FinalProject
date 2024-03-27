@@ -5,7 +5,7 @@ final class PostDetailsSceneView: UIViewController {
     // MARK: - Properties
     private var detailsTableView = UITableView()
     private var typeCommentStackView = UIStackView()
-    private var typeCommentTextView = UITextView()
+    private var typeCommentTextView = UITextField()
     private var submitCommentButton = UIButton()
     
     private var lastDisplayedRow: Int = -1
@@ -79,15 +79,15 @@ final class PostDetailsSceneView: UIViewController {
     
     private func setupTypeCommentTextViewConstraint() {
         NSLayoutConstraint.activate([
-            typeCommentTextView.heightAnchor.constraint(equalToConstant: 50),
+            typeCommentTextView.heightAnchor.constraint(equalToConstant: 32),
             typeCommentTextView.widthAnchor.constraint(greaterThanOrEqualToConstant: 100)
         ])
     }
     
     private func setupSubmitCommentButtonConstraints() {
         NSLayoutConstraint.activate([
-            submitCommentButton.heightAnchor.constraint(equalToConstant: 50),
-            submitCommentButton.widthAnchor.constraint(equalToConstant: 50)
+            submitCommentButton.heightAnchor.constraint(equalToConstant: 32),
+            submitCommentButton.widthAnchor.constraint(equalToConstant: 32)
         ])
     }
     
@@ -117,6 +117,11 @@ final class PostDetailsSceneView: UIViewController {
         typeCommentTextView.layer.cornerRadius = 8
         typeCommentTextView.tintColor = .customBackgroundColor
         typeCommentTextView.textColor = .customBackgroundColor
+        typeCommentTextView.attributedPlaceholder = NSAttributedString(string: "Type a comment...", attributes: [NSAttributedString.Key.foregroundColor: UIColor.customAccentColor.withAlphaComponent(0.5)])
+        
+        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 12, height: typeCommentTextView.frame.height))
+        typeCommentTextView.leftView = paddingView
+        typeCommentTextView.leftViewMode = .always
     }
     
     private func setupSubmitCommentButtonUI() {
@@ -127,7 +132,7 @@ final class PostDetailsSceneView: UIViewController {
     
     // MARK: - Button Methods
     @objc private func submitCommentButtonTapped() {
-        viewModel.submitCommentButtonTapped(commentText: typeCommentTextView.text)
+        viewModel.submitCommentButtonTapped(commentText: typeCommentTextView.text ?? "")
         typeCommentTextView.text = ""
         typeCommentTextView.resignFirstResponder()
     }

@@ -13,7 +13,7 @@ final public class MethodsManager {
         if let years = components.year, years > 0 {
             return "\(years)y"
         } else if let months = components.month, months > 0 {
-            return "\(months)m"
+            return "\(months)mo"
         } else if let days = components.day, days > 0 {
             return "\(days)d"
         } else if let hours = components.hour, hours > 0 {

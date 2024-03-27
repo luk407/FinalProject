@@ -58,7 +58,7 @@ final class ChecklistItemView: UIView {
     
     private func setupTitleLabelUI() {
         titleLabel.font = .systemFont(ofSize: 12)
-        titleLabel.textColor = .customBackgroundColor
+        titleLabel.textColor = .customAccentColor
     }
     
     func update(title: String, isMet: Bool) {

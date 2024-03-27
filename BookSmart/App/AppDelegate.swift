@@ -25,8 +25,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         UINavigationBar.appearance().tintColor = .customAccentColor
         
         let tabBarAppearance = UITabBarAppearance()
+        let tabBarItemAppearance = UITabBarItemAppearance()
+
         tabBarAppearance.configureWithOpaqueBackground()
         tabBarAppearance.backgroundColor = UIColor.clear
+        
+        tabBarItemAppearance.normal.titleTextAttributes = [NSAttributedString.Key.font:UIFont(name: "Helvetica", size: 9)!]
+        tabBarItemAppearance.selected.titleTextAttributes = [NSAttributedString.Key.font:UIFont(name: "Helvetica", size: 9)!]
+        
+        tabBarAppearance.stackedLayoutAppearance = tabBarItemAppearance
         UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
         UITabBar.appearance().standardAppearance = tabBarAppearance
         

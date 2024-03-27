@@ -77,15 +77,13 @@ final class PasswordStrengthChecklistView: UIView {
         mainStackView.translatesAutoresizingMaskIntoConstraints = false
         mainStackView.isLayoutMarginsRelativeArrangement = true
         mainStackView.axis = .vertical
-        mainStackView.spacing = 4
+        mainStackView.spacing = 8
         mainStackView.alignment = .leading
         mainStackView.distribution = .fillProportionally
-        mainStackView.customize(backgroundColor: .customAccentColor.withAlphaComponent(0.5), radiusSize: 8, borderWidth: 1)
-        mainStackView.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
     }
     
     private func setupRequiredLabelUI() {
-        requiredLabel.textColor = .customBackgroundColor
+        requiredLabel.textColor = .customAccentColor
         requiredLabel.text = "Your password should have:"
         requiredLabel.font = .systemFont(ofSize: 15)
     }
