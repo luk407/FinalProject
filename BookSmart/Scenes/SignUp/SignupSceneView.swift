@@ -101,11 +101,9 @@ class SignupSceneView: UIViewController {
     // MARK: - Constraints
     private func setupMainStackViewConstraints() {
         NSLayoutConstraint.activate([
-            //mainStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
             mainStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
             mainStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
             mainStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-            //mainStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -50),
         ])
     }
     
@@ -118,7 +116,6 @@ class SignupSceneView: UIViewController {
     private func setupInputInfoStackViewConstraints() {
         NSLayoutConstraint.activate([
             inputInfoStackView.widthAnchor.constraint(equalTo: mainStackView.widthAnchor),
-            //inputInfoStackView.heightAnchor.constraint(equalToConstant: 300)
         ])
     }
     

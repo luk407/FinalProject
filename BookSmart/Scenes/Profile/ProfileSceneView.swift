@@ -55,6 +55,7 @@ struct ProfileSceneView: View {
             
             Image(uiImage: (profileSceneViewModel.selectedImage == nil ? profileSceneViewModel.fetchedOwnerImage : profileSceneViewModel.selectedImage)!)
                 .resizable()
+                .scaledToFill()
                 .background(Color(uiColor: .customAccentColor))
                 .frame(width: 100, height: 100)
                 .clipShape(
@@ -276,7 +277,7 @@ struct ProfileSceneView: View {
                             Spacer()
                         }
                     }
-                    //.padding(.vertical, 4)
+                    .padding(.vertical, 4)
                 }
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                         if profileSceneViewModel.isOwnProfile {
@@ -318,6 +319,7 @@ struct ProfileSceneView: View {
             HStack(spacing: 16) {
                 Image(uiImage: profileSceneViewModel.getImageFromCache(userIDString: connection.id.uuidString))
                     .resizable()
+                    .scaledToFill()
                     .frame(width: 28, height: 28)
                     .clipShape(Circle())
                 

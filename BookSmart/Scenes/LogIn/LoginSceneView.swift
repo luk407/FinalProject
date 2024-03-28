@@ -106,11 +106,9 @@ final class LoginSceneView: UIViewController {
     // MARK: - Constraints
     private func setupMainStackViewConstraints() {
         NSLayoutConstraint.activate([
-            //mainStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             mainStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
             mainStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
             mainStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-            //mainStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
         ])
     }
     
@@ -124,7 +122,6 @@ final class LoginSceneView: UIViewController {
         NSLayoutConstraint.activate([
             inputInfoStackView.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor),
             inputInfoStackView.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor),
-            //inputInfoStackView.heightAnchor.constraint(equalToConstant: 150)
         ])
     }
     
